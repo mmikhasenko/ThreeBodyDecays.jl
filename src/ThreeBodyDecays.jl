@@ -1,4 +1,4 @@
-module ThreeBodyDecay
+module ThreeBodyDecays
 
 using QuadGK
 using StaticArrays
