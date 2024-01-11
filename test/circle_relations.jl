@@ -1,5 +1,5 @@
 using Test
-using ThreeBodyDecay
+using ThreeBodyDecays
 
 @testset "Circular permutations" begin
     m1 = 0.938

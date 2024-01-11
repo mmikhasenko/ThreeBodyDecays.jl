@@ -1,5 +1,5 @@
-using ThreeBodyDecay
-using ThreeBodyDecay.PartialWaveFunctions
+using ThreeBodyDecays
+using ThreeBodyDecays.PartialWaveFunctions
 using Test
 
 let

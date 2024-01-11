@@ -1,5 +1,5 @@
 using Test
-using ThreeBodyDecay
+using ThreeBodyDecays
 using Statistics
 
 using Random

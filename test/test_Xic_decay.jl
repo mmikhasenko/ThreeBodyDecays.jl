@@ -1,4 +1,4 @@
-using ThreeBodyDecay
+using ThreeBodyDecays
 using Test
 
 @testset "Xic2pKpi" begin

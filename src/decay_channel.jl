@@ -50,7 +50,7 @@ amplitude(cs::RecouplingLS, two_λa, two_λb) =
 @with_kw struct DecayChain{X,V1<:Recoupling,V2<:Recoupling,T}
     k::Int
     #
-    two_s::Int # isobar spin
+    two_j::Int # isobar spin
     #
     Xlineshape::X # lineshape
     #
@@ -65,12 +65,12 @@ function printable_l(two_l)
     waves = ['S', 'P', 'D', 'F', 'G', 'H']
     return l < 6 ? waves[l+1] : string(l)[1]
 end
-printable_s(two_s) = two_s // 2
+printable_s(two_j) = two_j // 2
 printable_ls(two_ls) = (printable_s(two_ls[2]), printable_l(two_ls[1]))
 
 """
     DecayChainLS(k, Xlineshape;
-        two_s, # give two_s, i.e. the spin of the isobar
+        two_j, # give two_j, i.e. the spin of the isobar
         parity, # 
         Ps, # need parities: [1,2,3,0]
         tbs) # give three-body-system structure
@@ -79,25 +79,25 @@ printable_ls(two_ls) = (printable_s(two_ls[2]), printable_l(two_ls[1]))
 """
 function DecayChainLS(k, Xlineshape;
     tbs=error("give three-body-system structure"),
-    two_s=0,
+    two_j=0,
     parity::Char='+',
     Ps=SVector('+', '+', '+', '+'))
     # 
-    lsLS = vcat(possible_lsLS(k, two_s, parity, tbs.two_js, Ps)...)
+    lsLS = vcat(possible_lsLS(k, two_j, parity, tbs.two_js, Ps)...)
     length(lsLS) == 0 && error("there are no possible LS couplings")
     # 
     lsLS_sorted = sort(lsLS, by=x -> x.LS[1])
     @unpack ls, LS = lsLS_sorted[1]
     #
     i, j = ij_from_k(k)
-    return DecayChain(; k, Xlineshape, tbs, two_s,
-        Hij=RecouplingLS(two_s, Int.(2 .* ls), tbs.two_js[i], tbs.two_js[j]),
-        HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* LS), two_s, tbs.two_js[k]))
+    return DecayChain(; k, Xlineshape, tbs, two_j,
+        Hij=RecouplingLS(two_j, Int.(2 .* ls), tbs.two_js[i], tbs.two_js[j]),
+        HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* LS), two_j, tbs.two_js[k]))
 end
 
 """
     DecayChainsLS(k, Xlineshape;
-        two_s, # give two_s, i.e. the spin of the isobar
+        two_j, # give two_j, i.e. the spin of the isobar
         parity, # 
         Ps, # need parities: [1,2,3,0]
         tbs) # give three-body-system structure
@@ -105,17 +105,17 @@ end
     Returns an array of the decay chains with all possible couplings
 """
 function DecayChainsLS(k, Xlineshape;
-    two_s=error("give two_s, i.e. the spin of the isobar, two_s=..."),
+    two_j=error("give two_j, i.e. the spin of the isobar, two_j=..."),
     parity::Char=error("give the parity, parity=..."),
     Ps=error("need parities: Ps=[P1,2,3,0]"),
     tbs=error("give three-body-system structure, tbs=..."))
     # 
     i, j = ij_from_k(k)
-    LSlsv = possible_lsLS(k, two_s, parity, tbs.two_js, Ps)
+    LSlsv = possible_lsLS(k, two_j, parity, tbs.two_js, Ps)
     return [DecayChain(;
-        k, Xlineshape, tbs, two_s,
-        Hij=RecouplingLS(two_s, Int.(2 .* x.ls), tbs.two_js[i], tbs.two_js[j]),
-        HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* x.LS), two_s, tbs.two_js[k]))
+        k, Xlineshape, tbs, two_j,
+        Hij=RecouplingLS(two_j, Int.(2 .* x.ls), tbs.two_js[i], tbs.two_js[j]),
+        HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* x.LS), two_j, tbs.two_js[k]))
             for x in LSlsv]
 end
 
@@ -126,7 +126,7 @@ wignerd_doublearg_sign(two_j, two_λ1, two_λ2, cosθ, ispositive) =
 
 function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
 
-    @unpack k, tbs, two_s, HRk, Hij = dc
+    @unpack k, tbs, two_j, HRk, Hij = dc
     # 
     i, j = ij_from_k(k)
     #
@@ -158,7 +158,7 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
             wignerd_doublearg_sign(two_js[4], two_λs[4], two_λs′[4], cosζ0, ispositive(w0)) *
             # 
             amplitude(HRk, two_λs′[4] + two_λs′[k], two_λs′[k]) * phase(two_js[k] - two_λs′[k]) * # particle-2 convention
-            sqrt(two_s * T1 + 1) * wignerd_doublearg_sign(two_s, two_λs′[4] + two_λs′[k], two_λs′[i] - two_λs′[j], cosθ, true) *
+            sqrt(two_j * T1 + 1) * wignerd_doublearg_sign(two_j, two_λs′[4] + two_λs′[k], two_λs′[i] - two_λs′[j], cosθ, true) *
             amplitude(Hij, two_λs′[i], two_λs′[j]) * phase(two_js[j] - two_λs′[j]) * # particle-2 convention
             # 
             wignerd_doublearg_sign(two_js[i], two_λs′[i], two_λs[i], cosζi, ispositive(wi)) *

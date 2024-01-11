@@ -1,5 +1,5 @@
 using Test
-using ThreeBodyDecay
+using ThreeBodyDecays
 
 @testset "Line-shape functions" begin
     lsh = BreitWigner(0.77, 0.15)

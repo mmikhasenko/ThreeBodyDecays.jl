@@ -115,4 +115,4 @@ export jacobean_squaredalitz,
         jacobean_squaredalitz3
 include("squaredalitz.jl")
 
-end  # module ThreeBodyDecay
+end  # module ThreeBodyDecays

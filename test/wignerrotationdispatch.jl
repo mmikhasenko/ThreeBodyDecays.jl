@@ -1,5 +1,5 @@
 
-using ThreeBodyDecay
+using ThreeBodyDecays
 using Test
 
 @testset "correct typearg" begin

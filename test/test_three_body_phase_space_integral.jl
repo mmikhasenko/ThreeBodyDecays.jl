@@ -1,4 +1,4 @@
-using ThreeBodyDecay
+using ThreeBodyDecays
 using Test
 using Parameters
 
@@ -6,7 +6,7 @@ function QTB_mismatch_factor(dc)
   k = dc.k
   i, j = ij_from_k(k)
   @unpack Hij, HRk = dc
-  @unpack two_s, tbs = dc
+  @unpack two_j, tbs = dc
   @unpack two_js = tbs
   #
   avHHsq =
@@ -14,7 +14,7 @@ function QTB_mismatch_factor(dc)
         abs2(amplitude(Hij, two_τ, two_λs[k])) *
         abs2(amplitude(Hij, two_λs[i], two_λs[j]))
         for two_λs in itr(tbs.two_js),
-        two_τ in -dc.two_s:2:dc.two_s)
+        two_τ in -dc.two_j:2:dc.two_j)
   return avHHsq
 end
 
@@ -30,7 +30,7 @@ end
 @testset "QaudGK vs Cuba for P-wave within 0.01%" begin
   tbs = ThreeBodySystem(1.0, 1.5, 2.0, m0=6.0)
   #
-  ch = DecayChainLS(1, σ -> 1.0; two_s=2, tbs=tbs, parity='-', Ps=['+', '+', '+', '+'])
+  ch = DecayChainLS(1, σ -> 1.0; two_j=2, tbs=tbs, parity='-', Ps=['+', '+', '+', '+'])
   sp = summed_over_polarization((σs, two_λ) -> abs2(amplitude(ch, σs, two_λ)), tbs.two_js)
   #
   v_qtv = RhoQTB(tbs.ms.m0^2, σ -> 1.0, tbs.ms^2)
@@ -47,7 +47,7 @@ tbs = ThreeBodySystem(1.0, 1.5, 2.0; m0=6.0, two_js=ThreeBodySpins(0, 1, 0; two_
 
 @testset "QaudGK vs Cuba for half-integer spin within 0.01%" begin
   #
-  ch = DecayChainLS(1, σ -> 1.0; two_s=1, tbs=tbs, parity='-', Ps=['-', '+', '-', '+'])
+  ch = DecayChainLS(1, σ -> 1.0; two_j=1, tbs=tbs, parity='-', Ps=['-', '+', '-', '+'])
   sp = summed_over_polarization((σs, two_λ) -> abs2(amplitude(ch, σs, two_λ)), tbs.two_js)
   #
   v_qtv = RhoQTB(tbs.ms.m0^2, σ -> 1.0, tbs.ms^2)
@@ -61,7 +61,7 @@ end
 
 @testset "QaudGK vs Cuba for half-integer spin and P-wave within 0.01%" begin
   #
-  ch = DecayChainLS(1, σ -> 1.0; two_s=1, tbs=tbs, parity='+', Ps=['-', '+', '-', '+'])
+  ch = DecayChainLS(1, σ -> 1.0; two_j=1, tbs=tbs, parity='+', Ps=['-', '+', '-', '+'])
   sp = summed_over_polarization((σs, two_λ) -> abs2(amplitude(ch, σs, two_λ)), tbs.two_js)
   # sp = σs->abs2(amplitude(ch,σs,[0,0,0,0]))
   #

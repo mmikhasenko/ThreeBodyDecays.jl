@@ -1,10 +1,10 @@
 # ThreeBodyDecays
 
-![Build Status](https://github.com/mmikhasenko/ThreeBodyDecay.jl/actions/workflows/ci.yaml/badge.svg)
-[![Codecov](https://codecov.io/gh/mmikhasenko/ThreeBodyDecay.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/mmikhasenko/ThreeBodyDecay.jl)
+![Build Status](https://github.com/mmikhasenko/ThreeBodyDecays.jl/actions/workflows/ci.yaml/badge.svg)
+[![Codecov](https://codecov.io/gh/mmikhasenko/ThreeBodyDecays.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/mmikhasenko/ThreeBodyDecays.jl)
 [![arXiv article](https://img.shields.io/badge/article-PRD%20101%2C%20034033-yellowgreen)](https://arxiv.org/abs/1910.04566)
 
-<!-- [![Coveralls](https://coveralls.io/repos/github/mmikhasenko/ThreeBodyDecay.jl/badge.svg?branch=master)](https://coveralls.io/github/mmikhasenko/ThreeBodyDecay.jl?branch=master) -->
+<!-- [![Coveralls](https://coveralls.io/repos/github/mmikhasenko/ThreeBodyDecays.jl/badge.svg?branch=master)](https://coveralls.io/github/mmikhasenko/ThreeBodyDecays.jl?branch=master) -->
 
 A framework for the amplitude analysis of multibody decay chains.
 The main focus of the project is the three-body decay and reactions required the Dalitz Plot analysis.
@@ -19,7 +19,7 @@ The code inherits notations of the paper:
 - `s` is a total invariant mass of three particles,
 - `σ` is a two-particle invariant mass squared, `σₖ = (pᵢ+pⱼ)²`,
 - `θᵢⱼ` is a scattering angle, an angle between `vec pᵢ` and `- vec pₖ`.
-- `hat θₖ₍ⱼ₎` is a isobar angle (the Wigner angle of the 0-particle), an angle of `vec pⱼ+pⱼ` with respect the the chain `j`.
+- `ζ⁰ₖ₍ⱼ₎` is the Wigner angle of the 0-particle, an angle of `vec pⱼ+pⱼ` with respect the the chain `j`.
 - `ζᵏᵢ₍₀₎` is the Wigner angle for the final-state particle (see the paper for the definition).
 
 ## API for describing the decay
@@ -52,15 +52,15 @@ it is a simple Breit-Wigner function in the example below.
 
 ```julia
 # chains-1, i.e. (2+3): Λs with the lowest ls, LS
-Λ1520  = DecayChainLS(1, σ->BW(σ, 1.5195, 0.0156); two_s = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Λ1690  = DecayChainLS(1, σ->BW(σ, 1.685,  0.050 ); two_s = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Λ1810  = DecayChainLS(1, σ->BW(σ, 1.80,   0.090 ); two_s = 5/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Λ1520  = DecayChainLS(1, σ->BW(σ, 1.5195, 0.0156); two_j = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Λ1690  = DecayChainLS(1, σ->BW(σ, 1.685,  0.050 ); two_j = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Λ1810  = DecayChainLS(1, σ->BW(σ, 1.80,   0.090 ); two_j = 5/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
 Λs = (Λ1520,Λ1690,Λ1810)
 #
 # chains-3, i.e. (1+2): Pentaquarks with the lowest ls, LS
-Pc4312 = DecayChainLS(3, σ->BW(σ, 4.312, 0.015); two_s = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Pc4440 = DecayChainLS(3, σ->BW(σ, 4.440, 0.010); two_s = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Pc4457 = DecayChainLS(3, σ->BW(σ, 4.457, 0.020); two_s = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Pc4312 = DecayChainLS(3, σ->BW(σ, 4.312, 0.015); two_j = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Pc4440 = DecayChainLS(3, σ->BW(σ, 4.440, 0.010); two_j = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Pc4457 = DecayChainLS(3, σ->BW(σ, 4.457, 0.020); two_j = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
 Pcs = (Pc4312,Pc4440,Pc4457)
 #
 A(σs,two_λs,cs) = sum(c*amplitude(dc,σs,two_λs) for (c, dc) in zip(cs, (Λs...,Pcs...)))

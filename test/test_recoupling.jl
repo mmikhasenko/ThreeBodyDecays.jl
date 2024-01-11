@@ -1,4 +1,4 @@
-using ThreeBodyDecay
+using ThreeBodyDecays
 using Test
 using Parameters
 
@@ -35,7 +35,7 @@ end
     dc_pc = DecayChain(
         k=1,
         Xlineshape=σ -> BW(σ, mΣb, ΓΣb),
-        tbs=tbs, two_s=1,
+        tbs=tbs, two_j=1,
         Hij=ParityRecoupling(1, 0, '-'),
         HRk=ParityRecoupling(1, 0, '-'))
     # 
@@ -49,7 +49,7 @@ end
     dc_pv = DecayChain(
         k=1,
         Xlineshape=σ -> BW(σ, mΣb, ΓΣb),
-        tbs=tbs, two_s=1,
+        tbs=tbs, two_j=1,
         Hij=ParityRecoupling(1, 0, '-'),
         HRk=NoRecoupling(1, 0))
     #
@@ -61,7 +61,7 @@ end
     dc_pv = DecayChain(
         k=1,
         Xlineshape=σ -> BW(σ, mΣb, ΓΣb),
-        tbs=tbs, two_s=1,
+        tbs=tbs, two_j=1,
         Hij=ParityRecoupling(1, 0, '-'),
         HRk=NoRecoupling(1, 0))
     #

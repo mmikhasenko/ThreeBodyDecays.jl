@@ -1,4 +1,4 @@
-using ThreeBodyDecay
+using ThreeBodyDecays
 using Test
 
 ms = let
@@ -15,7 +15,7 @@ Kibble(σs_b[1], ms^2)
 Kibble.(σs_b, Ref(ms^2))
 
 @testset "Border is an array of MandestamTuple, vanishes Kibble" begin
-    @test σs_b isa Vector{T} where {T<:ThreeBodyDecay.MandestamTuple{Float64}}
+    @test σs_b isa Vector{T} where {T<:ThreeBodyDecays.MandestamTuple{Float64}}
     @test all(sum.(σs_b) .≈ sum(ms^2))
     @test all(Kibble.(σs_b, Ref(ms^2)) .< 1e-3)
 end

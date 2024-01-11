@@ -1,5 +1,5 @@
 using Test
-using ThreeBodyDecay
+using ThreeBodyDecays
 
 @testset "calculation of the binary decay" begin
     (p1, p2) = four_vectors_in_binary_decay(2rand() - 1, π * (2rand() - 1);

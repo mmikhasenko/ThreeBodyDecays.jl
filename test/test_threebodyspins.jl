@@ -1,4 +1,4 @@
-using ThreeBodyDecay
+using ThreeBodyDecays
 using Test
 
 two_js = ThreeBodySpins(1, 0, 2; two_h0=3)

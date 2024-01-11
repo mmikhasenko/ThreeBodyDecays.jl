@@ -1,5 +1,5 @@
 using Test
-using ThreeBodyDecay
+using ThreeBodyDecays
 
 @testset "jp_str macro" begin
     @test jp"3+" == str2jp("3+")

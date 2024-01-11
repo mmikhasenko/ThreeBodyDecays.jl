@@ -1,4 +1,4 @@
-using ThreeBodyDecay
+using ThreeBodyDecays
 using Test
 
 ms = ThreeBodyMasses(1.0, 2.0, 3.0; m0=120.0)

@@ -1,5 +1,5 @@
 using Test
-using ThreeBodyDecay
+using ThreeBodyDecays
 
 let m1sq = 1.0, m2sq = 2.0, iϵ = 1e-8im
   sv = (√m1sq + √m2sq)^2 .+ rand(10) # rand -> [0, 1]

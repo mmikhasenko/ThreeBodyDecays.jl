@@ -1,4 +1,4 @@
-using ThreeBodyDecay
+using ThreeBodyDecays
 using Test
 
 @testset "LS amplitude integer spin" begin
@@ -6,7 +6,7 @@ using Test
     dpp = randomPoint(tbs)
     #
     dc = DecayChainLS(1, σ -> 1 / (4.1^2 - σ - 0.1im);
-        two_s=2,
+        two_j=2,
         parity='-',
         Ps=['+', '+', '+', '+'],
         tbs=tbs)
@@ -20,7 +20,7 @@ end
     σs = randomPoint(tbs.ms)
     dpp = DalitzPlotPoint(; σs=σs, two_λs=[1, 0, 0, 1])
     #
-    dc = DecayChainLS(3, σ -> 1 / (4.1^2 - σ - 0.1im); two_s=3, parity='-', Ps=['+', '-', '-', '+'], tbs=tbs)
+    dc = DecayChainLS(3, σ -> 1 / (4.1^2 - σ - 0.1im); two_j=3, parity='-', Ps=['+', '-', '-', '+'], tbs=tbs)
     # @show amplitude(dpp, dc)
     @test sum(reim(amplitude(dc, dpp)) .≈ 0.0) == 0
     # testing something else?
