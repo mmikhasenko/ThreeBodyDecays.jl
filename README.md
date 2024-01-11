@@ -1,4 +1,4 @@
-# ThreeBodyDecay
+# ThreeBodyDecays
 
 ![Build Status](https://github.com/mmikhasenko/ThreeBodyDecay.jl/actions/workflows/ci.yaml/badge.svg)
 [![Codecov](https://codecov.io/gh/mmikhasenko/ThreeBodyDecay.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/mmikhasenko/ThreeBodyDecay.jl)
