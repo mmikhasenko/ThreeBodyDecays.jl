@@ -51,17 +51,23 @@ The lineshape of the isobar is specified by the second argument,
 it is a simple Breit-Wigner function in the example below.
 
 ```julia
+struct BW
+  m::Float64
+  Γ::Float64
+end
+(bw::BW)(σ::Number) = 1/(bw.m^2-σ-1im*bw.m*bw.Γ)
+
 # chains-1, i.e. (2+3): Λs with the lowest ls, LS
-Λ1520  = DecayChainLS(1, σ->BW(σ, 1.5195, 0.0156); two_j = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Λ1690  = DecayChainLS(1, σ->BW(σ, 1.685,  0.050 ); two_j = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Λ1810  = DecayChainLS(1, σ->BW(σ, 1.80,   0.090 ); two_j = 5/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Λ1520  = DecayChainLS(1, BW(1.5195, 0.0156); two_j = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Λ1690  = DecayChainLS(1, BW(1.685,  0.050 ); two_j = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Λ1810  = DecayChainLS(1, BW(1.80,   0.090 ); two_j = 5/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
 Λs = (Λ1520,Λ1690,Λ1810)
 #
 # chains-3, i.e. (1+2): Pentaquarks with the lowest ls, LS
-Pc4312 = DecayChainLS(3, σ->BW(σ, 4.312, 0.015); two_j = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Pc4440 = DecayChainLS(3, σ->BW(σ, 4.440, 0.010); two_j = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Pc4457 = DecayChainLS(3, σ->BW(σ, 4.457, 0.020); two_j = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Pcs = (Pc4312,Pc4440,Pc4457)
+Pc4312 = DecayChainLS(3, BW(4.312, 0.015); two_j = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Pc4440 = DecayChainLS(3, BW(4.440, 0.010); two_j = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Pc4457 = DecayChainLS(3, BW(4.457, 0.020); two_j = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Pcs = (Pc4312, Pc4440, Pc4457)
 #
 A(σs,two_λs,cs) = sum(c*amplitude(dc,σs,two_λs) for (c, dc) in zip(cs, (Λs...,Pcs...)))
 ```
@@ -102,22 +108,3 @@ plot(
   plot(border31(tbs), xlab="σ₁ (GeV²)", ylab="σ₃ (GeV²)"),
   plot(border12(tbs), xlab="σ₂ (GeV²)", ylab="σ₁ (GeV²)"))
 ```
-
-![border31](example/plot/border31_12.png)
-
-A phase-space sample is generated using the `flatDalitzPlotSample` function.
-By weighting the sample one gets the intensity distribution.
-The intensity function can also be plotted on the Dalitz plan using a grid.
-
-```julia
-using TypedTables # converint inteface of selecting columns
-#
-σsv = Table(flatDalitzPlotSample(tbs.ms; Nev = 10_000))
-weights = I.(σsv) # dot is a broadcast
-#
-plot(layout=(900,350), layout=grid(1,2), xlab="σ₁ (GeV²)", ylab="σ₃ (GeV²)")
-histogram2d!(sp=1, σsv.σ1, σsv.σ3, weights=weights, lab="weighted phase space"))
-plot!(sp=2, I, tbs.ms; iσx=1, iσy=3, lab="on a grid")
-```
-
-![Scatter and Histogram](example/plot/dalitz31.png)

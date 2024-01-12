@@ -1,8 +1,6 @@
 module ThreeBodyDecays
 
-using QuadGK
 using StaticArrays
-using Cuba
 using PartialWaveFunctions
 using Parameters
 using RecipesBase
@@ -56,36 +54,13 @@ export possible_helicities
 export border31, border12, border23
 export border13, border21, border32
 export border
-export flatDalitzPlotSample
 include("tbs_struct.jl")
-
-# density
-export getbinned1dDensity,
-        getbinned2dDensity
-export gridded_density_function
-include("rand_corr.jl")
-
-export rotz!, roty!, roty_cos!, roty_cos_inv!, boostz!
-export invmasssq
-export four_vectors_in_binary_decay
-include("rand_gen.jl")
-
-#lineshape
-export pole, BW, BWdw
-export Lineshape, BreitWigner, amp
-export ScattLenApproximation, ScattLen
-export Rho, iRho, ChewMandestam
-export RhoQTB, iRhoQTB
-#
-export three_body_phase_space_integral
-include("lineshape.jl")
 
 export change_basis_3from1,
         change_basis_1from2,
         change_basis_2from3
 include("cross_channel_relations.jl")
 
-#
 export jp, str2jp
 export @jp_str
 export ⊗
@@ -100,19 +75,5 @@ export itr, summed_over_polarization
 include("decay_channel.jl")
 
 include("dalitzplotsrecipe.jl")
-
-export squaredalitz,
-        squaredalitz1,
-        squaredalitz2,
-        squaredalitz3
-export invsquaredalitz,
-        invsquaredalitz1,
-        invsquaredalitz2,
-        invsquaredalitz3
-export jacobean_squaredalitz,
-        jacobean_squaredalitz1,
-        jacobean_squaredalitz2,
-        jacobean_squaredalitz3
-include("squaredalitz.jl")
 
 end  # module ThreeBodyDecays

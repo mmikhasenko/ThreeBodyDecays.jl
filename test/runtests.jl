@@ -12,15 +12,10 @@ end
 
 include("wignerrotationdispatch.jl")
 
-@safetestset "four vectors" begin
-    include("test_generation.jl")
-end
-
 # angular functions
 @safetestset "Angular Functions block" begin
     include("circle_relations.jl")
     include("test_representaiton_property.jl")
-    include("check_lineshape_functions.jl")
 end
 
 @safetestset "Permutations" begin
@@ -31,31 +26,12 @@ end
     include("wigner_angle_sumrules.jl")
 end
 
-# Lineshapes
-@safetestset "Lineshapes" begin
-    # include("breit-wigner.jl")
-    include("scattering_length_X3872.jl")
-end
-
 # JPC functions
 @safetestset "Couplings" begin
     include("test_couplings.jl")
     include("test_recoupling.jl")
     include("test_ls_amplitude.jl")
     include("test_sum_over_polarization.jl")
-end
-
-# Integrals
-@safetestset "Integrals" begin
-    include("test_three_body_phase_space_integral.jl")
-end
-# examples
-@safetestset "Complete example" begin
-    include("test_Xic_decay.jl")
-end
-
-@safetestset "square dalitz" begin
-    include("test_transformations_of_squaredalitz.jl")
 end
 
 include("test_inference.jl")

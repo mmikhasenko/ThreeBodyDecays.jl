@@ -14,5 +14,6 @@
   "editor.formatOnSave": true,
   "editor.rulers": [88],
   "files.eol": "\n",
-  "rewrap.wrappingColumn": 88
+  "rewrap.wrappingColumn": 88,
+  "julia.environmentPath": "c:\\Users\\mikha\\Documents\\ThreeBodyDecays.jl"
 }

@@ -154,23 +154,9 @@ for (i, j) in ((1, 2), (2, 1), (2, 3), (3, 2), (3, 1), (1, 3))
     end)
 end
 
-# 
-function flatDalitzPlotSample(ms::MassTuple; Nev::Int=10000, σbins::Int=500)
-    @unpack m0, m1, m2, m3 = ms
-    density = getbinned1dDensity(σ1 -> sqrt(Kallen(σ1, m2^2, m3^2) * Kallen(σ1, m0^2, m1^2)) / σ1, lims1(ms), σbins)
-    σ1v = [rand(density) for _ in 1:Nev]
-    σ3v = [σ3of1(2 * rand() - 1, σ1, ms^2) for σ1 in σ1v]
-    return [Invariants(ms; σ1=σ1, σ3=σ3) for (σ1, σ3) in zip(σ1v, σ3v)]
-end
-
 #
 inrange(x, r) = r[1] < x < r[2]
 inphrange(σs::MandestamTuple, ms::MassTuple) = Kibble(σs, ms^2) < 0 &&
                                                inrange(σs[1], lims1(ms)) && inrange(σs[2], lims2(ms)) && inrange(σs[3], lims3(ms))
-#
-# 
-change_basis_3from1(τ1, ms::MassTuple) = change_basis_3from1(τ1..., ms.m1^2, ms.m2^2, ms.m3^2, ms.m0^2)
-change_basis_1from2(τ2, ms::MassTuple) = change_basis_3from1(τ2..., ms.m2^2, ms.m3^2, ms.m1^2, ms.m0^2)
-change_basis_2from3(τ3, ms::MassTuple) = change_basis_3from1(τ3..., ms.m3^2, ms.m1^2, ms.m2^2, ms.m0^2)
 
 

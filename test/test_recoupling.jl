@@ -29,12 +29,14 @@ end
 
     mΛb2S = 6.3 # just a peak of the plot
 
+    bw(σ) = 1 / (mΣb^2 - σ - 1im * mΣb * ΓΣb)
+
     tbs = ThreeBodySystem(mπ, mΛb, mπ; m0=mΛb2S,
         two_js=ThreeBodySpins(0, 1, 0; two_h0=1))  # (0- 1/2+ 0- | 1/2+)
 
     dc_pc = DecayChain(
         k=1,
-        Xlineshape=σ -> BW(σ, mΣb, ΓΣb),
+        Xlineshape=bw,
         tbs=tbs, two_j=1,
         Hij=ParityRecoupling(1, 0, '-'),
         HRk=ParityRecoupling(1, 0, '-'))
@@ -48,7 +50,7 @@ end
     # 
     dc_pv = DecayChain(
         k=1,
-        Xlineshape=σ -> BW(σ, mΣb, ΓΣb),
+        Xlineshape=bw,
         tbs=tbs, two_j=1,
         Hij=ParityRecoupling(1, 0, '-'),
         HRk=NoRecoupling(1, 0))
@@ -60,7 +62,7 @@ end
     # 
     dc_pv = DecayChain(
         k=1,
-        Xlineshape=σ -> BW(σ, mΣb, ΓΣb),
+        Xlineshape=bw,
         tbs=tbs, two_j=1,
         Hij=ParityRecoupling(1, 0, '-'),
         HRk=NoRecoupling(1, 0))
