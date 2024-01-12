@@ -17,12 +17,14 @@ using ThreeBodyDecays
     dpp = randomPoint(tbs)
     σs = dpp.σs
 
+    bw_Σb(σ) = 1 / (mΣb^2 - σ - 1im * mΣb * ΓΣb)
+    bwΣb_x(σ) = 1 / (mΣb_x^2 - σ - 1im * mΣb_x * ΓΣb_x)
     # lineshape
-    dc_Σb1 = DecayChainLS(1, σ -> BW(σ, mΣb, ΓΣb); tbs=tbs, two_j=1, parity='+', Ps=['-', '+', '-', '+'])
-    dc_Σb3 = DecayChainLS(3, σ -> BW(σ, mΣb, ΓΣb); tbs=tbs, two_j=1, parity='+', Ps=['-', '+', '-', '+'])
+    dc_Σb1 = DecayChainLS(1, bw_Σb; tbs=tbs, two_j=1, parity='+', Ps=['-', '+', '-', '+'])
+    dc_Σb3 = DecayChainLS(3, bw_Σb; tbs=tbs, two_j=1, parity='+', Ps=['-', '+', '-', '+'])
 
-    dc_Σb_x1 = DecayChainLS(1, σ -> BW(σ, mΣb_x, ΓΣb_x); tbs=tbs, two_j=3, parity='+', Ps=['-', '+', '-', '+'])
-    dc_Σb_x3 = DecayChainLS(3, σ -> BW(σ, mΣb_x, ΓΣb_x); tbs=tbs, two_j=3, parity='+', Ps=['-', '+', '-', '+'])
+    dc_Σb_x1 = DecayChainLS(1, bwΣb_x; tbs=tbs, two_j=3, parity='+', Ps=['-', '+', '-', '+'])
+    dc_Σb_x3 = DecayChainLS(3, bwΣb_x; tbs=tbs, two_j=3, parity='+', Ps=['-', '+', '-', '+'])
 
     full_a(σs, two_λs) = sum(amplitude(ch, σs, two_λs) for ch in [dc_Σb1, dc_Σb_x1, dc_Σb3, dc_Σb_x3])
     full_a(dpp) = full_a(dpp.σs, dpp.two_λs)

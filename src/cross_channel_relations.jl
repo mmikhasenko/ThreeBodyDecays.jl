@@ -1,3 +1,6 @@
+
+
+
 # recoupling function
 # two options for the type:
 #   - either all arguments are Float64 or energy variables are complex
@@ -65,3 +68,7 @@ function change_basis_3from1(σ1, cosθ1, ϕ1, cosθ23, ϕ23,
         ϕ12 = (n1_rot[2] != zero(n1_rot[2])) ? atan(n1_rot[3], n1_rot[2]) : rand() * one(n1_rot[2])
         return σ3, cosθ3, ϕ3, cosθ12, ϕ12
 end
+
+change_basis_3from1(τ1, ms::MassTuple) = change_basis_3from1(τ1..., ms.m1^2, ms.m2^2, ms.m3^2, ms.m0^2)
+change_basis_1from2(τ2, ms::MassTuple) = change_basis_3from1(τ2..., ms.m2^2, ms.m3^2, ms.m1^2, ms.m0^2)
+change_basis_2from3(τ3, ms::MassTuple) = change_basis_3from1(τ3..., ms.m3^2, ms.m1^2, ms.m2^2, ms.m0^2)

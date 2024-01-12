@@ -17,7 +17,7 @@ Explicit forms: `σ3of1`, `σ1of2`, `σ2of3`.
 See also `σkofj(k,z,σj,msq)`
 """
 function σjofk(k, z, σk, msq)
-    i, j, _ = ijk(k)
+    i, j = ij_from_k(k)
     #
     s = msq[4]
     # σj = (p0-pj)² in the rest frame of (i,j)
@@ -63,7 +63,7 @@ an angle of between vectors pi and -pk in the (ij) rest frame.
 Explicit forms: `cosθ23`, `cosθ31`, `cosθ12`.
 """
 function cosθij(k, σs, msq)
-    (i, j) = ij_from_k(k)
+    i, j = ij_from_k(k)
     #
     s = msq[4]
     EE4σ = (σs[k] + msq[i] - msq[j]) * (s - σs[k] - msq[k])
