@@ -1,10 +1,10 @@
 @with_kw struct ThreeBodyDecay{N, T, L<:Number}
-    names::SVector{N,String}
     chains::SVector{N,T}
     couplings::SVector{N,L}
+    names::SVector{N,String}
 end
 
-
+const VectPairStringChain = Vector{Pair{String, Tuple{F, DecayChain{X,T}}}} where {F<:Number, X,T}
 """
     ThreeBodyDecay(; chains, couplings, names)
 
@@ -20,24 +20,30 @@ Constructs a `ThreeBodyDecay` object with the given parameters.
 
 # Examples
 ```julia
-ThreeBodyDecay(chains=[chain1, chain2, chain3], couplings=[1.0, -1.0, 0.2im],
+ThreeBodyDecay(
+    chains=[chain1, chain2, chain3],
+    couplings=[1.0, -1.0, 0.2im],
     names=["L1405", "L1405", "K892"])
 ```
 """
-function ThreeBodyDecay(; chains, couplings, names)
-    N = length(chains)
-    N != length(couplings) && error("Length of couplings does not match the length of the chains")
-    N != length(names) && error("Length of names does not match the length of the chains")
+function ThreeBodyDecay(descriptor::VectPairStringChain)
+    N = length(descriptor)
+
     #
-    sv_chains = (SVector{N,ChainΛb2Λγ{T,R1,R2} where {T,R1,R2}})(chains)
+    names = first.(descriptor)
+    cd = getindex.(descriptor, 2)
+    couplings = first.(cd)
+    chains = getindex.(cd, 2)
+    # 
+    sv_chains = (SVector{N})(chains)
     sv_couplings = SVector{N}(couplings)
     sv_names = SVector{N}(names)
     #
     ThreeBodyDecay(sv_chains, sv_couplings, sv_names)
 end
 
-amplitude(model::ThreeBodyDecay, σs, two_λs) =
-    sum(c * amplitude(d, σs, two_λs)
+amplitude(model::ThreeBodyDecay, p...) =
+    sum(c * amplitude(d, p...)
         for (c, d) in zip(model.couplings, model.chains))
 
 import Base: getindex, length
@@ -52,8 +58,11 @@ length(model::ThreeBodyDecay{N}) where N = length(model.chains)
 masses(model::ThreeBodyDecay) = masses(first(model.chains).tbs)
 spins(model::ThreeBodyDecay) = spins(first(model.chains).tbs)
 
-masses(tbs::ThreeBodySystem) = tbs.ms
-spins(tbs::ThreeBodySystem) = tbs.two_js
+"""
+    unpolarized_intensity(model::ThreeBodyDecay, σs; kw...)
 
-export masses, spins
-export ThreeBodyDecay
+Computes squared amplitude summed over spin projections.
+"""
+unpolarized_intensity(model::ThreeBodyDecay, σs; kw...) =
+    sum(abs2, amplitude(model, σs, two_λs; kw...)
+              for two_λs in itr(spins(model)))
