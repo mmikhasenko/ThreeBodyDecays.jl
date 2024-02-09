@@ -46,6 +46,9 @@ two_j1(tbs::ThreeBodySystem) = tbs.two_js[1]
 two_j2(tbs::ThreeBodySystem) = tbs.two_js[2]
 two_j3(tbs::ThreeBodySystem) = tbs.two_js[3]
 
+masses(tbs::ThreeBodySystem) = tbs.ms
+spins(tbs::ThreeBodySystem) = tbs.two_js
+
 # -----------------------------------------------------
 
 const ParityTuple = NamedTuple{(:P1, :P2, :P3, :P0),NTuple{4,Char}}

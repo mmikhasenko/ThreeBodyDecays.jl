@@ -76,6 +76,12 @@ export amplitude
 export itr, summed_over_polarization
 include("decay_channel.jl")
 
+
+export masses, spins
+export ThreeBodyDecay
+include("model.jl")
+
+
 include("dalitzplotsrecipe.jl")
 
 end  # module ThreeBodyDecays
