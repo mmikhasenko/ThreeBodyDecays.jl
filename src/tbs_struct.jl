@@ -80,17 +80,23 @@ Invariants(σ1, σ2, σ3) = MandestamTuple{typeof(σ1)}((σ1, σ2, σ3))
 
 # -----------------------------------------------------
 
+circleorigin(k, t) = (t[mod(k, 3)+1], t[mod(k+1, 3)+1], t[mod(k-1, 3)+1])
+
+function x2σs_ki(k, x, ms::MassTuple)
+    l, h = lims(k, ms)
+    σk = l + x[1] * (h - l)
+    σi = σiofk(k, 2x[2]-1, σk, ms^2)
+    σj = sum(ms^2) - σk - σi
+    σt = circleorigin(-k, (σi, σj, σk))
+    return MandestamTuple{typeof(ms.m0)}(σt)
+end
+
+randomPoint(ms::MassTuple) = x2σs_ki(3, rand(2), ms)
+
+
 @with_kw struct DalitzPlotPoint{I,S}
     σs::I
     two_λs::S
-end
-#
-function randomPoint(ms::MassTuple)
-    x1, x2 = rand(2)
-    l, h = lims1(ms)
-    σ1 = l + x1 * (h - l)
-    σ3 = σ3of1(2x2 - 1, σ1, ms^2)
-    return Invariants(ms; σ1=σ1, σ3=σ3)
 end
 
 function randomPoint(tbs::ThreeBodySystem)

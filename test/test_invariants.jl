@@ -44,6 +44,22 @@ end
     @test σs.σ1 ≈ σ1of2(z31, σs.σ2, ms^2)
 end
 
+@testset "Circle to Origin" begin
+    @test circleorigin(-3, (1, 2, 3)) == (1, 2, 3)
+    @test circleorigin(-2, (3, 1, 2)) == (1, 2, 3)
+    @test circleorigin(-1, (2, 3, 1)) == (1, 2, 3)
+end
+
+@testset "Mapping of [0,1]x[0,1] to invariants" begin
+    @test Kibble(x2σs_ki(3, [0.01, 0.99], ms), ms^2) < 0
+    @test Kibble(x2σs_ki(3, [0.99, 0.01], ms), ms^2) < 0
+    # 
+    @test Kibble(x2σs_ki(3, [0.01, 0.99], ms), ms^2) < 0
+    @test Kibble(x2σs_ki(3, [0.99, 0.01], ms), ms^2) < 0
+    # 
+    @test Kibble(x2σs_ki(3, [0.01, 0.99], ms), ms^2) < 0
+    @test Kibble(x2σs_ki(3, [0.99, 0.01], ms), ms^2) < 0
+end
 
 @testset "Random points" begin
     σs = randomPoint(ms)
