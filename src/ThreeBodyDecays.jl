@@ -56,6 +56,7 @@ export border31, border12, border23
 export border13, border21, border32
 export border
 export circleorigin
+export unpolarized_intensity
 include("tbs_struct.jl")
 
 export change_basis_3from1,

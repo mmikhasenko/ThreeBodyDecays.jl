@@ -42,17 +42,17 @@ function ThreeBodyDecay(descriptor::VectPairStringChain)
     ThreeBodyDecay(sv_chains, sv_couplings, sv_names)
 end
 
-amplitude(model::ThreeBodyDecay, p...) =
-    sum(c * amplitude(d, p...)
+amplitude(model::ThreeBodyDecay, p...; kw...) =
+    sum(c * amplitude(d, p...; kw...)
         for (c, d) in zip(model.couplings, model.chains))
 
 import Base: getindex, length
 
 getindex(model::ThreeBodyDecay, key...) = 
-    ThreeBodyDecay(;
-        chains=getindex(model.chains, key...),
-        couplings=getindex(model.couplings, key...),
-        names=getindex(model.names, key...))
+    ThreeBodyDecay(
+        getindex(model.names, key...) .=> zip(
+            getindex(model.couplings, key...),
+            getindex(model.chains, key...)))
 
 length(model::ThreeBodyDecay{N}) where N = length(model.chains)
 masses(model::ThreeBodyDecay) = masses(first(model.chains).tbs)
