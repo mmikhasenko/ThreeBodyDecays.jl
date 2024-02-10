@@ -1,6 +1,7 @@
 using Test
 using ThreeBodyDecays
 
+# test model constraction
 model = let
 	tbs = ThreeBodySystem(
 		ms = ThreeBodyMasses(0.141, 0.142, 0.143; m0 = 3.09),
