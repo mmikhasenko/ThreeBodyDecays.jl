@@ -10,6 +10,10 @@ using ThreeBodyDecays
     include("test_invariants.jl")
 end
 
+@safetestset "Test of the ThreeBodyDecay structure" begin
+    include("test_model.jl")
+end
+
 include("wignerrotationdispatch.jl")
 
 # angular functions

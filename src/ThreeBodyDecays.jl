@@ -48,12 +48,15 @@ export MandestamTuple, SpinTuple, ParityTuple
 export ThreeBodySystem
 export DalitzPlotPoint
 export Invariants
+export x2σs_ki
 export randomPoint
 export nt, x2, over2
 export possible_helicities
 export border31, border12, border23
 export border13, border21, border32
 export border
+export circleorigin
+export unpolarized_intensity
 include("tbs_struct.jl")
 
 export change_basis_3from1,
@@ -73,6 +76,12 @@ export DecayChain, DecayChainLS, DecayChainsLS
 export amplitude
 export itr, summed_over_polarization
 include("decay_channel.jl")
+
+
+export masses, spins
+export ThreeBodyDecay
+include("model.jl")
+
 
 include("dalitzplotsrecipe.jl")
 

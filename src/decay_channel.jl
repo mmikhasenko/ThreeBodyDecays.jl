@@ -47,15 +47,15 @@ RecouplingLS(two_ls, (jp, (jpa, jpb))::Pair{A,Tuple{B,C}} where {A<:jp,B<:jp,C<:
 amplitude(cs::RecouplingLS, two_λa, two_λb) =
     jls_coupling(cs.two_ja, two_λa, cs.two_jb, two_λb, cs.two_j, cs.two_ls[1], cs.two_ls[2])
 
-@with_kw struct DecayChain{X,V1<:Recoupling,V2<:Recoupling,T}
+@with_kw struct DecayChain{X,T}
     k::Int
     #
     two_j::Int # isobar spin
     #
     Xlineshape::X # lineshape
     #
-    HRk::V1
-    Hij::V2
+    HRk::Recoupling
+    Hij::Recoupling
     #
     tbs::T # the structure with masses and spins
 end
