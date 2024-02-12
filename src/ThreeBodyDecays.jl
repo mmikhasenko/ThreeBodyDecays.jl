@@ -53,7 +53,7 @@ export DalitzPlotPoint
 export Invariants
 export x2σs_ki
 export randomPoint
-export nt, x2, over2
+export nt, x2, d2
 export possible_helicities
 export border31, border12, border23
 export border13, border21, border32
@@ -69,12 +69,14 @@ include("cross_channel_relations.jl")
 
 export jp, str2jp
 export @jp_str
+export letterL
 export ⊗
 export possible_ls, possible_lsLS
 export possible_coupling_schemes
 include("coupling_scheme.jl")
 
 export NoRecoupling, ParityRecoupling, RecouplingLS
+export AbstractDecayChain
 export DecayChain, DecayChainLS, DecayChainsLS
 export amplitude
 export itr, summed_over_polarization

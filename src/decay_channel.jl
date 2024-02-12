@@ -47,7 +47,9 @@ RecouplingLS(two_ls, (jp, (jpa, jpb))::Pair{A,Tuple{B,C}} where {A<:jp,B<:jp,C<:
 amplitude(cs::RecouplingLS, two_λa, two_λb) =
     jls_coupling(cs.two_ja, two_λa, cs.two_jb, two_λb, cs.two_j, cs.two_ls[1], cs.two_ls[2])
 
-@with_kw struct DecayChain{X,T}
+abstract type AbstractDecayChain end
+
+@with_kw struct DecayChain{X,T} <: AbstractDecayChain
     k::Int
     #
     two_j::Int # isobar spin
@@ -60,16 +62,8 @@ amplitude(cs::RecouplingLS, two_λa, two_λb) =
     tbs::T # the structure with masses and spins
 end
 
-iterate(x::DecayChain) = (x, nothing)
-length(x::DecayChain) = 1
-
-function printable_l(two_l)
-    l = div(two_l, 2)
-    waves = ['S', 'P', 'D', 'F', 'G', 'H']
-    return l < 6 ? waves[l+1] : string(l)[1]
-end
-printable_s(two_j) = two_j // 2
-printable_ls(two_ls) = (printable_s(two_ls[2]), printable_l(two_ls[1]))
+iterate(x::AbstractDecayChain) = (x, nothing)
+length(x::AbstractDecayChain) = 1
 
 """
     DecayChainLS(k, Xlineshape;

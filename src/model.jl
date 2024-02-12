@@ -1,10 +1,10 @@
-@with_kw struct ThreeBodyDecay{N, T, L<:Number}
+@with_kw struct ThreeBodyDecay{N, T<:AbstractDecayChain, L<:Number}
     chains::SVector{N,T}
     couplings::SVector{N,L}
     names::SVector{N,String}
 end
 
-const VectPairStringChain = Vector{Pair{String, Tuple{F, DecayChain{X,T}}}} where {F<:Number, X,T}
+const VectPairStringChain = Vector{Pair{String, Tuple{F, DC}}} where {F<:Number, DC<:AbstractDecayChain}
 """
     ThreeBodyDecay(; chains, couplings, names)
 
