@@ -6,7 +6,6 @@ end
 
 jp(v::Tuple{T,Char} where {T<:Number}) = jp(v[1], v[2])
 
-import Base: length
 length(jp1::jp) = 0
 two_j(jp::jp) = Int(2jp.j)
 # 

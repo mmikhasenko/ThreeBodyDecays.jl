@@ -7,6 +7,9 @@ using RecipesBase
 using Polynomials
 using PolynomialRoots
 
+import Base: getindex, iterate, length
+
+
 export Kallen, sqrtKallenFact, Kibble,
         inphrange,
         lims, lims1, lims2, lims3
