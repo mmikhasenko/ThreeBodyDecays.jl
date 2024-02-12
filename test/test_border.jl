@@ -20,8 +20,6 @@ Kibble.(σs_b, Ref(ms^2))
     @test all(Kibble.(σs_b, Ref(ms^2)) .< 1e-3)
 end
 
-
-
 # Check if the border function works for the case of unbalanced masses.
 
 const m_small = 0.1
@@ -39,7 +37,6 @@ const m_large = 10.0
         # 
         σs_b = border(ms)
         extremaKibble = Kibble.(σs_b, Ref(ms^2)) |> extrema
-        @show extremaKibble
         @test all(abs.(extremaKibble) .< 1e-5)
     end
 end
