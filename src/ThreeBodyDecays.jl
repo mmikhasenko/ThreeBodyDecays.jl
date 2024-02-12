@@ -51,7 +51,7 @@ export MandestamTuple, SpinTuple, ParityTuple
 export ThreeBodySystem
 export DalitzPlotPoint
 export Invariants
-export x2σs_ki
+export x2σs
 export randomPoint
 export nt, x2, d2
 export possible_helicities

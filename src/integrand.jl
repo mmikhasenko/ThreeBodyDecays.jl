@@ -10,7 +10,7 @@ function phase_space_integrand_ki(function_σs, ms; k)
     σkmin, σkmax = lims(k, ms)
     # 
     function integrand(x)
-        σs = x2σs_ki(k, x, ms)
+        σs = x2σs(k, x, ms)
         σk = σs[k]
         jac_z = sqrt(Kallen(m0sq, σk, mksq) * Kallen(σk, misq, mjsq)) / σk
         jac_σk = (σkmax - σkmin)
