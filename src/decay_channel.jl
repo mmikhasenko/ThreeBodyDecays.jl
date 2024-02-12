@@ -60,6 +60,9 @@ amplitude(cs::RecouplingLS, two_λa, two_λb) =
     tbs::T # the structure with masses and spins
 end
 
+iterate(x::DecayChain) = (x, nothing)
+length(x::DecayChain) = 1
+
 function printable_l(two_l)
     l = div(two_l, 2)
     waves = ['S', 'P', 'D', 'F', 'G', 'H']
