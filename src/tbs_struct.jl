@@ -85,7 +85,7 @@ Invariants(σ1, σ2, σ3) = MandestamTuple{typeof(σ1)}((σ1, σ2, σ3))
 
 circleorigin(k, t) = (t[mod(k, 3)+1], t[mod(k+1, 3)+1], t[mod(k-1, 3)+1])
 
-function x2σs(k, x, ms::MassTuple)
+function x2σs(x, ms::MassTuple; k::Int)
     l, h = lims(k, ms)
     σk = l + x[1] * (h - l)
     σj = σjofk(k, 2x[2]-1, σk, ms^2)
@@ -94,7 +94,7 @@ function x2σs(k, x, ms::MassTuple)
     return MandestamTuple{typeof(ms.m0)}(σt)
 end
 
-randomPoint(ms::MassTuple) = x2σs(3, rand(2), ms)
+randomPoint(ms::MassTuple) = x2σs(rand(2), ms; k=3)
 
 
 @with_kw struct DalitzPlotPoint{I,S}
