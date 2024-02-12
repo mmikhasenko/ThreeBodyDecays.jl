@@ -33,12 +33,23 @@ let
     @test size(lsLSv) == (1, 2)
 end
 
-@testset "x2 over2" begin
+@testset "x2, times 2" begin
     @test x2(1 // 2) == 1
     @test x2(3) == 6
     @test x2((2, 3 // 2)) == (4, 3)
-    # 
-    @test over2(3) == 3 // 2
-    @test over2(2) == 1
-    @test over2((2, 3)) == (1, 3 // 2)
+end
+
+@testset "d2, div 2" begin
+    @test d2(3) == "3/2"
+    @test d2(4) == "2"
+
+    @test d2((2, 1)) == ("1", "1/2")
+    @test d2([3, 2]) == ["3/2", "1"]
+end
+
+@testset "letterL" begin
+    @test letterL(0) == 'S'
+    @test letterL(3) == 'F'
+    @test letterL("2") == 'D'
+    @test letterL(4 |> d2) == 'D'
 end
