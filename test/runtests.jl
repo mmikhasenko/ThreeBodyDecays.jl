@@ -39,3 +39,7 @@ end
 end
 
 include("test_inference.jl")
+
+@safetestset "Integrals" begin
+    include("test_integrals.jl")
+end

@@ -51,7 +51,7 @@ export MandestamTuple, SpinTuple, ParityTuple
 export ThreeBodySystem
 export DalitzPlotPoint
 export Invariants
-export x2σs_ki
+export x2σs
 export randomPoint
 export nt, x2, d2
 export possible_helicities
@@ -82,11 +82,12 @@ export amplitude
 export itr, summed_over_polarization
 include("decay_channel.jl")
 
-
 export masses, spins
 export ThreeBodyDecay
 include("model.jl")
 
+export phase_space_integrand_ki
+include("integrand.jl")
 
 include("dalitzplotsrecipe.jl")
 

@@ -51,14 +51,14 @@ end
 end
 
 @testset "Mapping of [0,1]x[0,1] to invariants" begin
-    @test Kibble(x2σs_ki(3, [0.01, 0.99], ms), ms^2) < 0
-    @test Kibble(x2σs_ki(3, [0.99, 0.01], ms), ms^2) < 0
+    @test Kibble(x2σs([0.01, 0.99], ms; k=3), ms^2) < 0
+    @test Kibble(x2σs([0.99, 0.01], ms; k=3), ms^2) < 0
     # 
-    @test Kibble(x2σs_ki(3, [0.01, 0.99], ms), ms^2) < 0
-    @test Kibble(x2σs_ki(3, [0.99, 0.01], ms), ms^2) < 0
+    @test Kibble(x2σs([0.01, 0.99], ms; k=3), ms^2) < 0
+    @test Kibble(x2σs([0.99, 0.01], ms; k=3), ms^2) < 0
     # 
-    @test Kibble(x2σs_ki(3, [0.01, 0.99], ms), ms^2) < 0
-    @test Kibble(x2σs_ki(3, [0.99, 0.01], ms), ms^2) < 0
+    @test Kibble(x2σs([0.01, 0.99], ms; k=3), ms^2) < 0
+    @test Kibble(x2σs([0.99, 0.01], ms; k=3), ms^2) < 0
 end
 
 @testset "Random points" begin
