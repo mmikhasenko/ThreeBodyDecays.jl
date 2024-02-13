@@ -6,7 +6,7 @@ Kibble(σs, msq) = Kallen(Kallen(msq[4], msq[1], σs[1]),
     Kallen(msq[4], msq[3], σs[3]))
 #
 """
-    σjofk(k,z,σi,msq)
+    σjofk(z,σi,msq; k::Int)
 
 Computes invariant σj = (p0-pj)² from
 the scattering angle z=cosθij in the rest from of (i,j),
@@ -16,7 +16,7 @@ Explicit forms: `σ3of1`, `σ1of2`, `σ2of3`.
 
 See also `σkofj(k,z,σj,msq)`
 """
-function σjofk(k, z, σk, msq)
+function σjofk(z, σk, msq; k::Int)
     i, j = ij_from_k(k)
     #
     s = msq[4]
@@ -27,9 +27,9 @@ function σjofk(k, z, σk, msq)
     σi = s + msq[j] - (EE4σ - sqrt(p²q²4σ) * z) / (2σk)
     return σi
 end
-σ3of1(z, σ1, msq) = σjofk(1, z, σ1, msq)
-σ1of2(z, σ2, msq) = σjofk(2, z, σ2, msq)
-σ2of3(z, σ3, msq) = σjofk(3, z, σ3, msq)
+σ3of1(z, σ1, msq) = σjofk(z, σ1, msq; k=1)
+σ1of2(z, σ2, msq) = σjofk(z, σ2, msq; k=2)
+σ2of3(z, σ3, msq) = σjofk(z, σ3, msq; k=3)
 
 
 """
@@ -43,13 +43,13 @@ Explicit forms: `σ3of2`, `σ1of3`, `σ2of1`.
  
 See also `σjofj(k,z,σk,msq)`
 """
-function σiofk(k, z, σk, msq)
-    σj = σjofk(k, z, σk, msq)
+function σiofk(z, σk, msq; k::Int)
+    σj = σjofk(z, σk, msq; k)
     sum(msq) - σj - σk
 end
-σ3of2(z, σ2, msq) = σiofk(2, z, σ2, msq)
-σ1of3(z, σ3, msq) = σiofk(3, z, σ3, msq)
-σ2of1(z, σ1, msq) = σiofk(1, z, σ1, msq)
+σ3of2(z, σ2, msq) = σiofk(z, σ2, msq; k=2)
+σ1of3(z, σ3, msq) = σiofk(z, σ3, msq; k=3)
+σ2of1(z, σ1, msq) = σiofk(z, σ1, msq; k=1)
 
 
 # Scattering angle
@@ -62,7 +62,7 @@ an angle of between vectors pi and -pk in the (ij) rest frame.
 
 Explicit forms: `cosθ23`, `cosθ31`, `cosθ12`.
 """
-function cosθij(k, σs, msq)
+function cosθij(σs, msq; k::Int)
     i, j = ij_from_k(k)
     #
     s = msq[4]
@@ -71,6 +71,6 @@ function cosθij(k, σs, msq)
     rest = σs[j] - msq[k] - msq[i]
     return (2σs[k] * rest - EE4σ) / pp4σ
 end
-cosθ23(σs, msq) = cosθij(1, σs, msq)
-cosθ31(σs, msq) = cosθij(2, σs, msq)
-cosθ12(σs, msq) = cosθij(3, σs, msq)
+cosθ23(σs, msq) = cosθij(σs, msq; k=1)
+cosθ31(σs, msq) = cosθij(σs, msq; k=2)
+cosθ12(σs, msq) = cosθij(σs, msq; k=3)

@@ -66,19 +66,22 @@ iterate(x::AbstractDecayChain) = (x, nothing)
 length(x::AbstractDecayChain) = 1
 
 """
-    DecayChainLS(k, Xlineshape;
-        two_j, # give two_j, i.e. the spin of the isobar
+    DecayChainLS(;
+        k, # chain is specified by the spectator index k
+        Xlineshape, # lambda function for lineshape
+        two_j, # the spin of the isobar
         parity, # 
-        Ps, # need parities: [1,2,3,0]
+        Ps, # need parities for particles [1,2,3,0], e.g. Ps=['+','+','+','+']
         tbs) # give three-body-system structure
 
     Returns the decay chain with the smallest LS, ls
 """
-function DecayChainLS(k, Xlineshape;
+function DecayChainLS(;
+    k, Xlineshape,
     tbs=error("give three-body-system structure"),
-    two_j=0,
-    parity::Char='+',
-    Ps=SVector('+', '+', '+', '+'))
+    two_j=error("give two_j, i.e. the spin of the isobar, two_j=..."),
+    parity::Char=error("give the parity, parity='+' or '-'"),
+    Ps=error("need parities, e.g Ps=['+','+','+','+']"))
     # 
     lsLS = vcat(possible_lsLS(k, two_j, parity, tbs.two_js, Ps)...)
     length(lsLS) == 0 && error("there are no possible LS couplings")
@@ -93,15 +96,19 @@ function DecayChainLS(k, Xlineshape;
 end
 
 """
-    DecayChainsLS(k, Xlineshape;
-        two_j, # give two_j, i.e. the spin of the isobar
+    DecayChainsLS(;
+        k, # chain is specified by the spectator index k
+        Xlineshape, # lambda function for lineshape
+        two_j, # the spin of the isobar
         parity, # 
-        Ps, # need parities: [1,2,3,0]
+        Ps, # need parities for particles [1,2,3,0], e.g. Ps=['+','+','+','+']
         tbs) # give three-body-system structure
 
     Returns an array of the decay chains with all possible couplings
 """
-function DecayChainsLS(k, Xlineshape;
+function DecayChainsLS(;
+    k,
+    Xlineshape,
     two_j=error("give two_j, i.e. the spin of the isobar, two_j=..."),
     parity::Char=error("give the parity, parity=..."),
     Ps=error("need parities: Ps=[P1,2,3,0]"),
@@ -140,7 +147,7 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     cosζj = cosζ(wj, σs, ms²)
     cosζk = cosζ(wk, σs, ms²)
     #
-    cosθ = cosθij(k, σs, ms²)
+    cosθ = cosθij(σs, ms²; k)
     #
     T = typeof(two_λs[1])
     T1 = one(T)

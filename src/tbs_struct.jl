@@ -88,7 +88,7 @@ circleorigin(k, t) = (t[mod(k, 3)+1], t[mod(k+1, 3)+1], t[mod(k-1, 3)+1])
 function x2σs(x, ms::MassTuple; k::Int)
     l, h = lims(k, ms)
     σk = l + x[1] * (h - l)
-    σj = σjofk(k, 2x[2]-1, σk, ms^2)
+    σj = σjofk(2x[2]-1, σk, ms^2; k)
     σi = sum(ms^2) - σk - σj
     σt = circleorigin(-k, (σi, σj, σk))
     return MandestamTuple{typeof(ms.m0)}(σt)

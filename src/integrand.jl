@@ -3,7 +3,7 @@
     
 Computes the phase-space integral over the Dalitz plot (dsigma1 x dsigma3). Returns complex value
 """
-function phase_space_integrand_ki(function_σs, ms; k::Int)
+function phase_space_integrand(function_σs, ms; k::Int)
     mssq = ms^2
     i,j = ij_from_k(k)
     misq, mjsq, mksq, m0sq = mssq[i], mssq[j], mssq[k], mssq[4]

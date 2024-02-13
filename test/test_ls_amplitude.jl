@@ -5,7 +5,9 @@ using Test
     tbs = ThreeBodySystem(2.0, 1.0, 1.5; m0=6.0)
     dpp = randomPoint(tbs)
     #
-    dc = DecayChainLS(1, σ -> 1 / (4.1^2 - σ - 0.1im);
+    dc = DecayChainLS(;
+        k=1,
+        Xlineshape = σ -> 1 / (4.1^2 - σ - 0.1im),
         two_j=2,
         parity='-',
         Ps=['+', '+', '+', '+'],
@@ -20,7 +22,9 @@ end
     σs = randomPoint(tbs.ms)
     dpp = DalitzPlotPoint(; σs=σs, two_λs=[1, 0, 0, 1])
     #
-    dc = DecayChainLS(3, σ -> 1 / (4.1^2 - σ - 0.1im); two_j=3, parity='-', Ps=['+', '-', '-', '+'], tbs=tbs)
+    dc = DecayChainLS(; k=3,
+        Xlineshape = σ -> 1 / (4.1^2 - σ - 0.1im),
+        two_j=3, parity='-', Ps=['+', '-', '-', '+'], tbs=tbs)
     # @show amplitude(dpp, dc)
     @test sum(reim(amplitude(dc, dpp)) .≈ 0.0) == 0
     # testing something else?

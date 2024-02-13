@@ -86,7 +86,7 @@ export masses, spins
 export ThreeBodyDecay
 include("model.jl")
 
-export phase_space_integrand_ki
+export phase_space_integrand
 include("integrand.jl")
 
 include("dalitzplotsrecipe.jl")
