@@ -24,7 +24,7 @@ model = let
 end
 
 @testset "Properties of the model" begin
-    @test length(model) == 3
+	@test length(model) == 3
 end
 
 @testset "masses with ThreeBodySystem" begin
@@ -42,25 +42,25 @@ end
 end
 
 @testset "Amplitude with ThreeBodyDecay" begin
-    ms = masses(model)
-	σs = x2σs([0.1, 0.9], ms; k=2)
-    refA_xxx1 = 0.5360686514001554 + 0.005104210009658071im
+	ms = masses(model)
+	σs = x2σs([0.1, 0.9], ms; k = 2)
+	refA_xxx1 = 0.5360686514001554 + 0.005104210009658071im
 	@test amplitude(model, σs, spins(model)) ≈ refA_xxx1
-    @test amplitude(model, σs, spins(model); refζs=(1, 2, 3, 1)) ≈ refA_xxx1
-    @test amplitude(model, σs, spins(model); refζs=(2, 3, 2, 1)) ≈ refA_xxx1
-    @test amplitude(model, σs, spins(model); refζs=(2, 2, 3, 1)) ≈ refA_xxx1
+	@test amplitude(model, σs, spins(model); refζs = (1, 2, 3, 1)) ≈ refA_xxx1
+	@test amplitude(model, σs, spins(model); refζs = (2, 3, 2, 1)) ≈ refA_xxx1
+	@test amplitude(model, σs, spins(model); refζs = (2, 2, 3, 1)) ≈ refA_xxx1
 end
 
 @testset "Intensity with ThreeBodyDecay" begin
-    ms = masses(model)
-	σs = x2σs([0.1, 0.9], ms; k=2)
-    refI = 0.574791303947608
-    @test unpolarized_intensity(model, σs) ≈ refI
-    @test unpolarized_intensity(model, σs; refζs=(1, 2, 3, 1)) ≈ refI
+	ms = masses(model)
+	σs = x2σs([0.1, 0.9], ms; k = 2)
+	refI = 0.574791303947608
+	@test unpolarized_intensity(model, σs) ≈ refI
+	@test unpolarized_intensity(model, σs; refζs = (1, 2, 3, 1)) ≈ refI
 end
 
 @testset "Indexing model" begin
-    _model = model[2:3]
-    @test _model.chains[1] == model.chains[2]
-    @test length(_model) == 2
+	_model = model[2:3]
+	@test _model.chains[1] == model.chains[2]
+	@test length(_model) == 2
 end
