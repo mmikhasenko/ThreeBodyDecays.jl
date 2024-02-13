@@ -102,11 +102,11 @@ plot(lab = "", grid = false, size = (600, 300),
 # can be visualized by passing an amplitude function and the kinematic mass object.
 
 plot(masses(model), σs -> abs2(amplitude(Pc4312, σs, (2, -1, 0, 1))))
-plot(masses(model), Base.Fix1(unpolarized_intensity, model); iσx = 1, iσy=3)
+plot(masses(model), Base.Fix1(unpolarized_intensity, model); iσx = 1, iσy = 3)
 
-# The 
+# The projections of the Dalitz Plot can be computed numerically using integration routine, e.g. `QuadGK`.
 
-plot(4.2:0.003:4.6) do e1
+plot(4.2, 4.6) do e1
 	I = Base.Fix1(unpolarized_intensity, model)
 	e1 * quadgk(projection_integrand(I, masses(model), e1^2; k = 3), 0, 1)[1]
 end
