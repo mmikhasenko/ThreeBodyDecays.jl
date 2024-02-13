@@ -1,7 +1,7 @@
 using ThreeBodyDecays
 using Test
 using Cuba
-
+using QuadGK
 
 @testset "phase space mapping" begin
 	ms = ThreeBodyMasses(0.141, 0.142, 0.143; m0 = 3.09)
@@ -24,4 +24,13 @@ end
 	@test isapprox(value_1, ref_value; rtol = 1e-6)
 	@test isapprox(value_2, ref_value; rtol = 1e-6)
 	@test isapprox(value_3, ref_value; rtol = 1e-6)
+end
+
+@testset "projection integral" begin
+	ms = ThreeBodyMasses(0.141, 0.142, 0.143; m0 = 3.09)
+	f = projection_integrand(σs -> 1, ms, 0.7^2; k = 1)
+	@test quadgk(f, 0, 1)[1] ≈ 8.253210733598506
+	# 
+	@test quadgk(projection_integrand(σs -> 1, ms, 0.7^2; k = 2), 0, 1)[1] ≈ 8.258640762296254
+	@test quadgk(projection_integrand(σs -> 1, ms, 0.7^2; k = 3), 0, 1)[1] ≈ 8.26409477583501
 end
