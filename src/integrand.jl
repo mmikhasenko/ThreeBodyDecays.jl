@@ -21,5 +21,17 @@ function phase_space_integrand(function_σs, ms; k::Int)
 end
 
 
-
+function projection_integrand(function_σs, ms, σk; k)
+	l, h = lims(k, ms)
+	!(l < σk < h) && return x -> 0.0
+	σjlims = σjofk.([-1, 1], Ref(σk), Ref(ms^2); k)
+	function integrand(x)
+		σj = σjlims[1] + x[1] * (σjlims[2] - σjlims[1])
+		σi = sum(ms^2) - σk - σj
+		σt = circleorigin(-k, (σi, σj, σk))
+		σs = MandestamTuple{typeof(ms.m0)}(σt)
+		return function_σs(σs) * (σjlims[2] - σjlims[1])
+	end
+	return integrand
+end
 

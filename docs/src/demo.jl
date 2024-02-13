@@ -11,6 +11,8 @@
 
 using ThreeBodyDecays # import the module
 using Plots
+using QuadGK
+theme(:wong2)
 
 # decay Λb ⟶ Jψ p K
 constants = Dict(
@@ -27,7 +29,7 @@ ms = ThreeBodyMasses(   # masses m1,m2,m3,m0
 	m0 = constants["mLb"])
 
 # create two-body system
-tbs = ThreeBodySystem(ms,
+tbs = ThreeBodySystem(; ms,
 	two_js = ThreeBodySpins(2, 1, 0; two_h0 = 1)) # twice spin
 
 Concerving = ThreeBodyParities('-', '+', '-'; P0 = '+')
@@ -69,10 +71,10 @@ Pcs = (Pc4312, Pc4440, Pc4457)
 # The full model is the vector of decay chains, and 
 # couplings for each decay chain. 
 
-model = ThreeBodyDecay(
+const model = ThreeBodyDecay(
 	["Λ1520", "Λ1690", "Λ1810", "Pc4312", "Pc4440", "Pc4457"] .=>
 		zip(
-			[1, 1.1, 0.4im, 2.2, 2.1im, -0.3im],
+			[2, 2.1, 1.4im, 0.4, 0.3im, -0.8im],
 			[Λ1520, Λ1690, Λ1810, Pc4312, Pc4440, Pc4457]))
 
 # just a random point of the Dalitz Plot
@@ -100,4 +102,11 @@ plot(lab = "", grid = false, size = (600, 300),
 # can be visualized by passing an amplitude function and the kinematic mass object.
 
 plot(masses(model), σs -> abs2(amplitude(Pc4312, σs, (2, -1, 0, 1))))
-plot(masses(model), Base.Fix1(unpolarized_intensity, model))
+plot(masses(model), Base.Fix1(unpolarized_intensity, model); iσx = 1, iσy=3)
+
+# The 
+
+plot(4.2:0.003:4.6) do e1
+	I = Base.Fix1(unpolarized_intensity, model)
+	e1 * quadgk(projection_integrand(I, masses(model), e1^2; k = 3), 0, 1)[1]
+end

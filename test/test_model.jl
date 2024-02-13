@@ -23,6 +23,8 @@ model = let
 		"K(892)" .=> [(4.0, ch1), (2.0, ch2), (3.0, ch3)])
 end
 
+
+
 @testset "Properties of the model" begin
 	@test length(model) == 3
 end

@@ -87,6 +87,7 @@ export ThreeBodyDecay
 include("model.jl")
 
 export phase_space_integrand
+export projection_integrand
 include("integrand.jl")
 
 include("dalitzplotsrecipe.jl")
