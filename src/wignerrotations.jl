@@ -1,12 +1,12 @@
 
 abstract type AbstractWignerRotation end
 struct TriavialWignerRotation <: AbstractWignerRotation
-    k::Int
+	k::Int
 end
 struct WignerRotation{N} <: AbstractWignerRotation
-    k::Int
-    ispositive::Bool
-    iseven::Bool
+	k::Int
+	ispositive::Bool
+	iseven::Bool
 end
 
 const Arg0WignerRotation = WignerRotation{0}
@@ -14,7 +14,7 @@ const Arg2WignerRotation = WignerRotation{2}
 const Arg3WignerRotation = WignerRotation{3}
 
 WignerRotation{N}(k::Int, ispositive::Bool) where {N} =
-    WignerRotation{N}(k, ispositive, true)
+	WignerRotation{N}(k, ispositive, true)
 
 ispositive(wr::TriavialWignerRotation) = true
 ispositive(wr::WignerRotation) = wr.ispositive
@@ -35,7 +35,7 @@ issequential(i, j) = (j - i) ∈ (1, -2)
 
 
 """
-    wr(system_a, reference_b, particle_c=0)
+	wr(system_a, reference_b, particle_c=0)
 
 Create a WignerRotation object of the right type based on provided indices.
 The daughter particles are numbered 1,2,3, the mother particle is 0.
@@ -44,17 +44,17 @@ The daughter particles are numbered 1,2,3, the mother particle is 0.
 For `system_a` and `reference_b` the spectator notations are used, i.e.
 1 for the system (2,3), 2 for the system (3,1), and 3 for the system (1,2).
 """
-function wr(system_a, reference_b, particle_c=0)
-    system_a == reference_b && return TriavialWignerRotation(particle_c)
-    S = issequential(system_a, reference_b)
-    A, B = S ? (system_a, reference_b) : (reference_b, system_a)
-    # 
-    particle_c == 0 && return Arg0WignerRotation(A, S)
-    #
-    particle_c ∉ (system_a, reference_b) && return Arg3WignerRotation(particle_c, S)
-    #
-    T = (particle_c == A)
-    return Arg2WignerRotation(particle_c, !(S), T)
+function wr(system_a, reference_b, particle_c = 0)
+	system_a == reference_b && return TriavialWignerRotation(particle_c)
+	S = issequential(system_a, reference_b)
+	A, B = S ? (system_a, reference_b) : (reference_b, system_a)
+	# 
+	particle_c == 0 && return Arg0WignerRotation(A, S)
+	#
+	particle_c ∉ (system_a, reference_b) && return Arg3WignerRotation(particle_c, S)
+	#
+	T = (particle_c == A)
+	return Arg2WignerRotation(particle_c, !(S), T)
 end
 
 
@@ -62,42 +62,42 @@ end
 cosζ(wr::TriavialWignerRotation, σs, msq) = one(σs[1])
 
 function cosζ(wr::Arg0WignerRotation, σs, msq)
-    i, j, k = ijk(wr)
-    # 
-    s = msq[4]
-    EE4s = (s + msq[i] - σs[i]) * (s + msq[k] - σs[k])
-    pp4s = sqrt(Kallen(s, msq[i], σs[i]) * Kallen(s, msq[k], σs[k]))
-    rest = σs[j] - msq[i] - msq[k]
-    return (EE4s - 2s * rest) / pp4s
+	i, j, k = ijk(wr)
+	# 
+	s = msq[4]
+	EE4s = (s + msq[i] - σs[i]) * (s + msq[k] - σs[k])
+	pp4s = sqrt(Kallen(s, msq[i], σs[i]) * Kallen(s, msq[k], σs[k]))
+	rest = σs[j] - msq[i] - msq[k]
+	return (EE4s - 2s * rest) / pp4s
 end
 
 function cosζ(wr::Arg2WignerRotation, σs, msq)
-    i, j, k = ijk(wr)
-    # 
-    if !(iseven(wr))
-        i, j = j, i
-    end
-    # 
-    msq[k] ≈ 0 && return one(σs[1])
-    # 
-    s = msq[4]
-    EE4mksq = (s + msq[k] - σs[k]) * (σs[i] - msq[k] - msq[j])
-    pp4mksq = sqrt(Kallen(s, msq[k], σs[k]) * Kallen(msq[k], msq[j], σs[i]))
-    rest = σs[j] - s - msq[j]
-    return (2msq[k] * rest + EE4mksq) / pp4mksq
+	i, j, k = ijk(wr)
+	# 
+	if !(iseven(wr))
+		i, j = j, i
+	end
+	# 
+	msq[k] ≈ 0 && return one(σs[1])
+	# 
+	s = msq[4]
+	EE4mksq = (s + msq[k] - σs[k]) * (σs[i] - msq[k] - msq[j])
+	pp4mksq = sqrt(Kallen(s, msq[k], σs[k]) * Kallen(msq[k], msq[j], σs[i]))
+	rest = σs[j] - s - msq[j]
+	return (2msq[k] * rest + EE4mksq) / pp4mksq
 end
 
 # 
 function cosζ(wr::Arg3WignerRotation, σs, msq)
-    i, j, k = ijk(wr)
-    # 
-    msq[k] ≈ 0 && return one(σs[1])
-    # 
-    s = msq[4]
-    EE4m1sq = (σs[i] - msq[j] - msq[k]) * (σs[j] - msq[k] - msq[i])
-    pp4m1sq = sqrt(Kallen(σs[i], msq[j], msq[k]) * Kallen(σs[j], msq[k], msq[i]))
-    rest = msq[i] + msq[j] - σs[k]
-    return (2msq[k] * rest + EE4m1sq) / pp4m1sq
+	i, j, k = ijk(wr)
+	# 
+	msq[k] ≈ 0 && return one(σs[1])
+	# 
+	s = msq[4]
+	EE4m1sq = (σs[i] - msq[j] - msq[k]) * (σs[j] - msq[k] - msq[i])
+	pp4m1sq = sqrt(Kallen(σs[i], msq[j], msq[k]) * Kallen(σs[j], msq[k], msq[i]))
+	rest = msq[i] + msq[j] - σs[k]
+	return (2msq[k] * rest + EE4m1sq) / pp4m1sq
 end
 
 # explicit
@@ -127,7 +127,7 @@ cosθhatk3(k, σs, ms²) = cosζ(wr(k, 3, 0), σs, ms²)
 
 
 """
-    Phase for wigner d-functions for clockwise rotations
+	Phase for wigner d-functions for clockwise rotations
 """
 phase(two_λ1_minus_λ2) = (abs(two_λ1_minus_λ2) % 4 == 2 ? -one(two_λ1_minus_λ2) : one(two_λ1_minus_λ2))
 phase(two_λ1, two_λ2) = phase(two_λ1 - two_λ2)
