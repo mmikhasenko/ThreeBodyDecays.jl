@@ -4,7 +4,7 @@
 	names::SVector{N, String}
 end
 
-const VectPairStringChain = Vector{Pair{String, Tuple{F, DC}}} where {F <: Number, DC <: AbstractDecayChain}
+const VectPairStringChain = AbstractVector{<:Pair{<:AbstractString, <:Tuple{<:Number, <:AbstractDecayChain}}}
 """
 	ThreeBodyDecay(; chains, couplings, names)
 
@@ -37,7 +37,7 @@ function ThreeBodyDecay(descriptor::VectPairStringChain)
 	# 
 	sv_chains = (SVector{N})(chains)
 	sv_couplings = SVector{N}(couplings)
-	sv_names = SVector{N}(names)
+	sv_names = SVector{N, String}(names)
 	#
 	ThreeBodyDecay(sv_chains, sv_couplings, sv_names)
 end

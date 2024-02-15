@@ -1,5 +1,7 @@
 using Test
 using ThreeBodyDecays
+using StaticArrays
+
 
 # test model constraction
 model = let
@@ -23,7 +25,16 @@ model = let
 		"K(892)" .=> [(4.0, ch1), (2.0, ch2), (3.0, ch3)])
 end
 
-
+@testset "Construction with SVectors" begin
+	_model = ThreeBodyDecay(
+		SVector("K(892)", "K(892)", "K(892)") .=>
+			SVector(zip(model.couplings, model.chains)...))
+	@test _model == model
+	_model = ThreeBodyDecay(
+		SubString("K(892))", 1, 6) .=>
+			SVector(zip(model.couplings, model.chains)...))
+	@test _model == model
+end
 
 @testset "Properties of the model" begin
 	@test length(model) == 3
