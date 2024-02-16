@@ -172,7 +172,7 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs = (1, 2, 3, 1))
 	return f * lineshape
 end
 #
-amplitude(dc::DecayChain, dpp) = amplitude(dc, dpp.σs, dpp.two_λs)
+amplitude(dc::AbstractDecayChain, dpp) = amplitude(dc, dpp.σs, dpp.two_λs)
 #
 summed_over_polarization(fn, two_js) = σs -> sum(fn(σs, two_λs) for two_λs in itr(two_js))
 #
