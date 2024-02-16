@@ -78,3 +78,25 @@ end
 	@test _model.chains[1] == model.chains[2]
 	@test length(_model) == 2
 end
+
+
+
+
+struct MyDecayChain{T} <: AbstractDecayChain
+	x::T
+end
+ThreeBodyDecays.amplitude(::MyDecayChain, σs, spins) = 1.5
+
+@testset "amplutude for AbstractDecayChain" begin
+	@test amplitude(MyDecayChain(1.0), [1, 2, 3], [1, 2, 3, 4]) == 1.5
+	@test amplitude(MyDecayChain(1.0), randomPoint(system(model))) == 1.5
+end
+
+model3 = ThreeBodyDecay(
+	"MyResonance" .=>
+		zip([3.3, 4.4], [MyDecayChain(1.0), MyDecayChain(2.2)]))
+
+@testset "Customary model" begin
+	@test model3 isa ThreeBodyDecay
+	@test length(model3) == 2
+end
