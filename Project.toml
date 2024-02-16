@@ -1,7 +1,7 @@
 name = "ThreeBodyDecays"
 uuid = "e6563dab-9ca1-5843-bde3-2ccf38d63843"
 authors = ["Misha Mikhasenko <mikhail.mikhasenko@gmail.com>"]
-version = "0.10.3"
+version = "0.10.4"
 
 [deps]
 Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
