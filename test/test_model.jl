@@ -40,19 +40,20 @@ end
 	@test length(model) == 3
 end
 
-@testset "masses with ThreeBodySystem" begin
+@testset "system, masses, spins with ThreeBodySystem" begin
+	@test system(model) == model.chains[1].tbs
+	# 
 	@test masses(model)[1] == 0.141
 	@test masses(model)[2] == 0.142
 	@test masses(model)[3] == 0.143
 	@test masses(model).m0 == 3.09
-end
-
-@testset "spins with ThreeBodySystem" begin
+	# 
 	@test spins(model)[1] == 0
 	@test spins(model)[2] == 0
 	@test spins(model)[3] == 0
 	@test spins(model).two_h0 == 2
 end
+
 
 @testset "Amplitude with ThreeBodyDecay" begin
 	ms = masses(model)

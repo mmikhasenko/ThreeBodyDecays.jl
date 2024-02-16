@@ -55,8 +55,9 @@ getindex(model::ThreeBodyDecay, key...) =
 			getindex(model.chains, key...)))
 
 length(model::ThreeBodyDecay{N}) where N = length(model.chains)
-masses(model::ThreeBodyDecay) = masses(first(model.chains).tbs)
-spins(model::ThreeBodyDecay) = spins(first(model.chains).tbs)
+system(model::ThreeBodyDecay) = first(model.chains).tbs
+masses(model::ThreeBodyDecay) = masses(system(model))
+spins(model::ThreeBodyDecay) = spins(system(model))
 
 """
 	unpolarized_intensity(model::ThreeBodyDecay, σs; kw...)

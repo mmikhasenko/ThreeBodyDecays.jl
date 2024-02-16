@@ -82,7 +82,7 @@ export amplitude
 export itr, summed_over_polarization
 include("decay_channel.jl")
 
-export masses, spins
+export masses, spins, system
 export ThreeBodyDecay
 include("model.jl")
 
