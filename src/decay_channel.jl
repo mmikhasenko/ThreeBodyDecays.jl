@@ -177,3 +177,70 @@ amplitude(dc::AbstractDecayChain, dpp) = amplitude(dc, dpp.σs, dpp.two_λs)
 summed_over_polarization(fn, two_js) = σs -> sum(fn(σs, two_λs) for two_λs in itr(two_js))
 #
 itr(two_js) = Iterators.ProductIterator(Tuple([-two_j:2:two_j for two_j in two_js]))
+
+
+
+
+function aligned_amplitude(dc::DecayChain, σs)
+
+	@unpack k, tbs, two_j, HRk, Hij = dc
+	# 
+	i, j = ij_from_k(k)
+	#
+	ms² = tbs.ms^2
+	two_js = tbs.two_js
+	# 
+	cosθ = cosθij(σs, ms²; k)
+	#
+	itr_two_λs = itr(SVector{4, T}(two_js[1], two_js[2], two_js[3], two_js[4]))
+	lineshape = dc.Xlineshape(σs[k])
+	A = [
+		amplitude(HRk, two_λs[4] + two_λs[k], two_λs[k]) * phase(two_js[k] - two_λs[k]) * # particle-2 convention
+		sqrt(two_j + 1) * wignerd_doublearg_sign(two_j, two_λs[4] + two_λs[k], two_λs[i] - two_λs[j], cosθ, true) *
+		amplitude(Hij, two_λs[i], two_λs[j]) * phase(two_js[j] - two_λs[j]) # particle-2 convention
+		for two_λs in itr_two_λs]
+	return A .* lineshape
+end
+
+
+abstract type AnstractQuantization end
+struct Q{K} <: AbstractQuantization
+end
+
+struct MyDecayChain{K}
+	chain::DecayChain
+end
+
+function amplitude(dc::MyDecayChain{K}, σs, reference::Q{R}) where {K, R}
+	A = aligned_amplitude(dc.chain, σs)
+
+	align!(A, q1::Q{1}, q2::Q{1}, tbs; dim = 1) = nothing
+	align!(A, q1::Q{1}, q2::Q{1}, tbs; dim = 2) = nothing
+	align!(A, q1::Q{2}, q2::Q{2}, tbs; dim = 3) = nothing
+	align!(A, q1::Q{3}, q2::Q{3}, tbs; dim = 4) = nothing
+end
+
+function multiply_along_dim1!(A, M)
+	for (i, j, l, m) in Iterators.product(axes(A)...)
+		sum(A[_i, j, l, m] * M[_i, i] for _i in axes(M, 1))
+	end
+	return nothing
+end
+function multiply_along_dim2!(A, M)
+	for (i, j, l, m) in Iterators.product(axes(A)...)
+		sum(A[i, _j, l, m] * M[_j, j] for _j in axes(M, 1))
+	end
+	return nothing
+end
+function multiply_along_dim3!(A, M)
+	for (i, j, l, m) in Iterators.product(axes(A)...)
+		sum(A[i, j, _l, m] * M[_l, l] for _l in axes(M, 1))
+	end
+	return nothing
+end
+function multiply_along_dim4!(A, M)
+	for (i, j, l, m) in Iterators.product(axes(A)...)
+		sum(A[i, j, l, _m] * M[_m, m] for _m in axes(M, 1))
+	end
+	return nothing
+end
