@@ -79,6 +79,7 @@ export NoRecoupling, ParityRecoupling, RecouplingLS
 export AbstractDecayChain
 export DecayChain, DecayChainLS, DecayChainsLS
 export amplitude
+export aligned_amplitude
 export itr, summed_over_polarization
 include("decay_channel.jl")
 
