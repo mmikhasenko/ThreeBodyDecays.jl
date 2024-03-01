@@ -42,9 +42,13 @@ end
     two_ja::Int
     two_jb::Int
 end
+
 const TwoBodyTopologySpins = Pair{Int,Tuple{Int,Int}}
 RecouplingLS(two_ls, (two_j, (two_ja, two_jb))::TwoBodyTopologySpins) =
     RecouplingLS(two_j, two_ls, two_ja, two_jb)
+# 
+RecouplingLS(two_ls, (jp, (jpa, jpb))::TwoBodyTopologySpinParity) =
+    RecouplingLS(jp.two_j, two_ls, jpa.two_j, jpb.two_j)
 
 amplitude(cs::RecouplingLS, two_λa, two_λb) =
     jls_coupling(cs.two_ja, two_λa, cs.two_jb, two_λb, cs.two_j, cs.two_ls[1], cs.two_ls[2])
@@ -71,9 +75,8 @@ length(x::AbstractDecayChain) = 1
 	DecayChainLS(;
 		k, # chain is specified by the spectator index k
 		Xlineshape, # lambda function for lineshape
-		two_j, # the spin of the isobar
-		parity, # 
-		Ps, # need parities for particles [1,2,3,0], e.g. Ps=['+','+','+','+']
+		jp, # the spin-parity of the resonance, e.g. jp"1/2-"
+		Ps, # need parities, e.g. Ps=ThreeBodyParities('+','+','+'; P0='+')
 		tbs) # give three-body-system structure
 
 	Returns the decay chain with the smallest LS, ls
@@ -81,29 +84,28 @@ length(x::AbstractDecayChain) = 1
 function DecayChainLS(;
     k, Xlineshape,
     tbs=error("give three-body-system structure"),
-    two_j=error("give two_j, i.e. the spin of the isobar, two_j=..."),
-    parity::Char=error("give the parity, parity='+' or '-'"),
-    Ps=error("need parities, e.g Ps=['+','+','+','+']"))
+    jp=error("give spin-parity quantum numbers of the resonance"),
+    Ps=error("need parities"))
     # 
-    two_lsLS = vcat(possible_lsLS(SpinParity(two_j, parity), tbs.two_js, Ps; k)...)
+    _jp = SpinParity(jp)
+    two_lsLS = vcat(possible_lsLS(_jp, tbs.two_js, Ps; k)...)
     length(two_lsLS) == 0 && error("there are no possible LS couplings")
     # 
-    two_lsLS_sorted = sort(two_lsLS, by=x -> x.LS[1])
+    two_lsLS_sorted = sort(two_lsLS, by=x -> x.two_LS[1])
     @unpack two_ls, two_LS = two_lsLS_sorted[1]
     #
     i, j = ij_from_k(k)
-    return DecayChain(; k, Xlineshape, tbs, two_j,
-        Hij=RecouplingLS(two_j, two_ls, tbs.two_js[i], tbs.two_js[j]),
-        HRk=RecouplingLS(tbs.two_js[4], two_LS, two_j, tbs.two_js[k]))
+    return DecayChain(; k, Xlineshape, tbs, _jp.two_j,
+        Hij=RecouplingLS(_jp.two_j, two_ls, tbs.two_js[i], tbs.two_js[j]),
+        HRk=RecouplingLS(tbs.two_js[4], two_LS, _jp.two_j, tbs.two_js[k]))
 end
 
 """
 	DecayChainsLS(;
 		k, # chain is specified by the spectator index k
 		Xlineshape, # lambda function for lineshape
-		two_j, # the spin of the isobar
-		parity, # 
-		Ps, # need parities for particles [1,2,3,0], e.g. Ps=['+','+','+','+']
+		jp, # the spin-parity of the resonance, e.g. jp"1/2-"
+		Ps, # need parities, e.g. Ps=ThreeBodyParities('+','+','+'; P0='+')
 		tbs) # give three-body-system structure
 
 	Returns an array of the decay chains with all possible couplings
@@ -111,17 +113,17 @@ end
 function DecayChainsLS(;
     k,
     Xlineshape,
-    two_j=error("give two_j, i.e. the spin of the isobar, two_j=..."),
-    parity::Char=error("give the parity, parity=..."),
-    Ps=error("need parities: Ps=[P1,2,3,0]"),
+    jp=error("give spin-parity quantum numbers of the resonance"),
+    Ps=error("need parities"),
     tbs=error("give three-body-system structure, tbs=..."))
     # 
     i, j = ij_from_k(k)
-    LSlsv = possible_lsLS(SpinParity(two_j, parity), tbs.two_js, Ps; k)
+    _jp = SpinParity(jp)
+    LSlsv = possible_lsLS(_jp, tbs.two_js, Ps; k)
     return [DecayChain(;
         k, Xlineshape, tbs, two_j,
-        Hij=RecouplingLS(two_j, Int.(2 .* x.ls), tbs.two_js[i], tbs.two_js[j]),
-        HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* x.LS), two_j, tbs.two_js[k]))
+        Hij=RecouplingLS(_jp.two_j, two_ls, tbs.two_js[i], tbs.two_js[j]),
+        HRk=RecouplingLS(tbs.two_js[4], two_LS, _jp.two_j, tbs.two_js[k]))
             for x in LSlsv]
 end
 

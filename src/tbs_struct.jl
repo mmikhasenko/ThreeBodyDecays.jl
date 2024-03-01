@@ -62,7 +62,7 @@ spins(tbs::ThreeBodySystem) = tbs.two_js
 
 # -----------------------------------------------------
 
-struct SpinParity
+@with_kw struct SpinParity
     two_j::Int
     p::Char
 end

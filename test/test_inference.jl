@@ -9,7 +9,7 @@ using Parameters
     dc = DecayChainLS(;
         k=3,
         Xlineshape=σ -> 1 / (4.1^2 - σ - 0.1im),
-        two_j=3, parity='-', Ps=ThreeBodyParities('+', '-', '-'; P0='+'), tbs=tbs)
+        jp=jp"3-", Ps=ThreeBodyParities('+', '-', '-'; P0='+'), tbs=tbs)
 
     @unpack σs, two_λs = randomPoint(tbs)
 

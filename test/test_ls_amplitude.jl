@@ -8,8 +8,7 @@ using Test
     dc = DecayChainLS(;
         k=1,
         Xlineshape=σ -> 1 / (4.1^2 - σ - 0.1im),
-        two_j=2,
-        parity='-',
+        jp="2+",
         Ps=ThreeBodyParities('+', '+', '+', P0='+'),
         tbs=tbs)
     @test sum(reim(amplitude(dc, dpp)) .≈ 0.0) == 0
@@ -23,7 +22,7 @@ end
     #
     dc = DecayChainLS(; k=3,
         Xlineshape=σ -> 1 / (4.1^2 - σ - 0.1im),
-        two_j=3, parity='-', Ps=ThreeBodyParities('+', '-', '-', P0='+'), tbs=tbs)
+        jp="3-", Ps=ThreeBodyParities('+', '-', '-', P0='+'), tbs=tbs)
     # @show amplitude(dpp, dc)
     @test sum(reim(amplitude(dc, dpp)) .≈ 0.0) == 0
     # testing something else?
