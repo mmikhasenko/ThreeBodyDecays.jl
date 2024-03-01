@@ -42,8 +42,9 @@ end
     two_ja::Int
     two_jb::Int
 end
-RecouplingLS(two_ls, (jp, (jpa, jpb))::TwoBodyTopologySpinParity) =
-    RecouplingLS(jp.two_j, two_ls, jpa.two_j, jpb.two_j)
+const TwoBodyTopologySpins = Pair{Int,Tuple{Int,Int}}
+RecouplingLS(two_ls, (two_j, (two_ja, two_jb))::TwoBodyTopologySpins) =
+    RecouplingLS(two_j, two_ls, two_ja, two_jb)
 
 amplitude(cs::RecouplingLS, two_λa, two_λb) =
     jls_coupling(cs.two_ja, two_λa, cs.two_jb, two_λb, cs.two_j, cs.two_ls[1], cs.two_ls[2])
