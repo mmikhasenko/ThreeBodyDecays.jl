@@ -1,16 +1,15 @@
 
-struct jp{T<:Number}
-    j::T
+struct SpinParity
+    two_j::Int
     p::Char
 end
 
-jp(v::Tuple{T,Char} where {T<:Number}) = jp(v[1], v[2])
+SpinParity(s::String) = str2jp(s)
 
-length(jp1::jp) = 0
-two_j(jp::jp) = Int(2jp.j)
-# 
+length(jp1::SpinParity) = 0
+
 # dealing with spin 1/2
-x2(v::Number) = @. Int(2v)
+x2(v) = @. Int(2v)
 x2(v::AbstractString) = Meta.parse(v) |> eval |> x2
 
 _d2(two_s::Int) = iseven(two_s) ? "$(div(two_s,2))" : "$(two_s)/2"
@@ -18,36 +17,38 @@ d2(v) = _d2.(v)
 
 
 ⊗(p1::Char, p2::Char) = p1 == p2 ? '+' : '-'
-⊗(jp1::jp, jp2::jp) = [jp(j, ⊗(jp1.p, jp2.p)) for j in abs(jp1.j - jp2.j):abs(jp1.j + jp2.j)]
+⊗(jp1::SpinParity, jp2::SpinParity) = [jp(j, ⊗(jp1.p, jp2.p)) for j in abs(jp1.two_j - jp2.two_j):abs(jp1.two_j + jp2.two_j)]
 
 function str2jp(pin::AbstractString)
     p = filter(x -> x != '^', pin)
-    !(contains(p, '/')) && return jp(Meta.parse(p[1:end-1]), p[end])
+    !(contains(p, '/')) && return SpinParity(x2(p[1:end-1]), p[end])
     p[end-2:end-1] != "/2" && error("the string should be `x/2±`, while it is $(p)")
     two_j = Meta.parse(p[1:end-3])
     !(typeof(two_j) <: Int) && error("the string should be `x/2±`, while it is $(p)")
-    return jp(two_j // 2, p[end])
+    return SpinParity(two_j, p[end])
 end
 
 macro jp_str(p)
     return str2jp(p)
 end
 
-possible_ls((jp, (jp1, jp2))::Pair{A,Tuple{B,C}} where {A<:jp,B<:jp,C<:jp}) = possible_ls(jp1, jp2; jp)
+possible_ls((jp, (jp1, jp2))::Pair{SpinParity,Tuple{SpinParity,SpinParity}}) = possible_ls(jp1, jp2; jp)
+possible_ls(jp1::AbstractString, jp2::AbstractString; jp::AbstractString) =
+    possible_ls(str2jp(jp1), str2jp(jp2); jp=str2jp(jp))
 
-function possible_ls(jp1::jp, jp2::jp; jp::jp)
-    ls = Vector{Tuple{Int,Number}}(undef, 0)
-    for s in abs(jp1.j - jp2.j):abs(jp1.j + jp2.j)
-        for l in Int(abs(jp.j - s)):Int(abs(jp.j + s))
+function possible_ls(jp1::SpinParity, jp2::SpinParity; jp::SpinParity)
+    two_ls = Vector{Tuple{Int,Int}}(undef, 0)
+    for two_s in abs(jp1.two_j - jp2.two_j):abs(jp1.two_j + jp2.two_j)
+        for two_l in abs(jp.two_j - s):abs(jp.two_j + s)
             if jp1.p ⊗ jp2.p ⊗ jp.p == (isodd(l) ? '-' : '+')
-                push!(ls, (l, s))
+                push!(two_ls, (two_l, two_s))
             end
         end
     end
     return sort(ls, by=x -> x[1])
 end
 
-function possible_lsLS(k::Int, jpR::jp, jps::Vector{T} where {T<:jp})
+function possible_lsLS(k::Int, jpR::SpinParity, jps::AbstractVector{SpinParity})
     i, j = ij_from_k(k)
     lsv = possible_ls(jps[i], jps[j]; jp=jpR)
     LSv = possible_ls(jpR, jps[k]; jp=jps[4])

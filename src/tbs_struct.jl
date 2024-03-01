@@ -30,7 +30,7 @@ function ThreeBodySpins(two_h1_or_h1, two_h2_or_h2, two_h3_or_h3;
     h0=-1, # unrealistic by default
     two_h0=-1) # unrealistic by default
 
-    two_h0 == -1 && h0 == -1 > 0 && return error("Use either two_h0=..., or h0=... key word argument.")
+    two_h0 == -1 && h0 == -1 && return error("Use either two_h0=..., or h0=... key word argument.")
     two_hs = (h0 == -1 && two_h0 != -1) ?
              SpinTuple(Tuple(Int[two_h1_or_h1, two_h2_or_h2, two_h3_or_h3, two_h0])) :
              SpinTuple(Tuple([two_h1_or_h1, two_h2_or_h2, two_h3_or_h3, h0] .|> x2))
