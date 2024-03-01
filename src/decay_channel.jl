@@ -84,7 +84,7 @@ function DecayChainLS(;
     parity::Char=error("give the parity, parity='+' or '-'"),
     Ps=error("need parities, e.g Ps=['+','+','+','+']"))
     # 
-    two_lsLS = vcat(possible_lsLS(k, two_j, parity, tbs.two_js, Ps)...)
+    two_lsLS = vcat(possible_lsLS(SpinParity(two_j, parity), tbs.two_js, Ps; k)...)
     length(two_lsLS) == 0 && error("there are no possible LS couplings")
     # 
     two_lsLS_sorted = sort(two_lsLS, by=x -> x.LS[1])
@@ -116,7 +116,7 @@ function DecayChainsLS(;
     tbs=error("give three-body-system structure, tbs=..."))
     # 
     i, j = ij_from_k(k)
-    LSlsv = possible_lsLS(k, two_j, parity, tbs.two_js, Ps)
+    LSlsv = possible_lsLS(SpinParity(two_j, parity), tbs.two_js, Ps; k)
     return [DecayChain(;
         k, Xlineshape, tbs, two_j,
         Hij=RecouplingLS(two_j, Int.(2 .* x.ls), tbs.two_js[i], tbs.two_js[j]),

@@ -1,45 +1,3 @@
-
-struct SpinParity
-    two_j::Int
-    p::Char
-end
-
-SpinParity(s::String) = str2jp(s)
-SpinParity((two_j, p)::Tuple{Int,Char}) = SpinParity(two_j, p)
-
-length(jp1::SpinParity) = 0
-
-# dealing with spin 1/2
-x2(v) = @. Int(2v)
-x2(v::AbstractString) = Meta.parse(v) |> eval |> x2
-
-_d2(two_s::Int) = iseven(two_s) ? "$(div(two_s,2))" : "$(two_s)/2"
-d2(v) = _d2.(v)
-
-
-⊗(p1::Char, p2::Char) = p1 == p2 ? '+' : '-'
-⊗(jp1::SpinParity, jp2::SpinParity) =
-    [SpinParity(two_j, ⊗(jp1.p, jp2.p))
-     for two_j in abs(jp1.two_j - jp2.two_j):2:abs(jp1.two_j + jp2.two_j)]
-
-function str2jp(pin::AbstractString)
-    p = filter(x -> x != '^', pin)
-    !(contains(p, '/')) && return SpinParity(x2(p[1:end-1]), p[end])
-    p[end-2:end-1] != "/2" && error("the string should be `x/2±`, while it is $(p)")
-    two_j = Meta.parse(p[1:end-3])
-    !(typeof(two_j) <: Int) && error("the string should be `x/2±`, while it is $(p)")
-    return SpinParity(two_j, p[end])
-end
-
-macro jp_str(p)
-    return str2jp(p)
-end
-
-const TwoBodyTopologySpinParity = Pair{SpinParity,Tuple{SpinParity,SpinParity}}
-possible_ls((jp, (jp1, jp2))::TwoBodyTopologySpinParity) = possible_ls(jp1, jp2; jp)
-possible_ls(jp1::AbstractString, jp2::AbstractString; jp::AbstractString) =
-    possible_ls(str2jp(jp1), str2jp(jp2); jp=str2jp(jp))
-
 function possible_ls(jp1::SpinParity, jp2::SpinParity; jp::SpinParity)
     two_ls = Vector{Tuple{Int,Int}}(undef, 0)
     for two_s in abs(jp1.two_j - jp2.two_j):2:abs(jp1.two_j + jp2.two_j)
@@ -52,16 +10,22 @@ function possible_ls(jp1::SpinParity, jp2::SpinParity; jp::SpinParity)
     return sort(two_ls, by=x -> x[1])
 end
 
-function possible_lsLS(k::Int, jpR::SpinParity, jps::AbstractVector{SpinParity})
+
+const TwoBodyTopologySpinParity = Pair{SpinParity,Tuple{SpinParity,SpinParity}}
+possible_ls((jp, (jp1, jp2))::TwoBodyTopologySpinParity) = possible_ls(jp1, jp2; jp)
+possible_ls(jp1::AbstractString, jp2::AbstractString; jp::AbstractString) =
+    possible_ls(str2jp(jp1), str2jp(jp2); jp=str2jp(jp))
+function possible_ls(jp::SpinParity, two_js::SpinTuple, Ps::ParityTuple; k::Int)
     i, j = ij_from_k(k)
-    lsv = possible_ls(jps[i], jps[j]; jp=jpR)
-    LSv = possible_ls(jpR, jps[k]; jp=jps[4])
-    return [(; two_ls, two_LS) for (two_ls, two_LS) in Iterators.product(lsv, LSv)]
+    return possible_ls(SpinParity(two_js[i], Ps[i]), SpinParity(two_js[j], Ps[j]); jp)
 end
-function possible_lsLS(k::Int, two_s, parity::Char, two_js, Ps)
-    jpR = SpinParity(two_s, parity)
-    jps = SpinParity.(zip(two_js, Ps))
-    return possible_lsLS(k, jpR, jps)
+possible_LS(jp::SpinParity, two_js::SpinTuple, Ps::ParityTuple; k::Int) =
+    possible_ls(jp, SpinParity(two_js[k], Ps[k]); jp=SpinParity(two_js[4], Ps[4]))
+
+function possible_lsLS(jp::SpinParity, two_js::SpinTuple, Ps::ParityTuple; k::Int)
+    lsv = possible_ls(jp, two_js, Ps; k)
+    LSv = possible_LS(jp, two_js, Ps; k)
+    return [(; two_ls, two_LS) for (two_ls, two_LS) in Iterators.product(lsv, LSv)]
 end
 
 function jls_coupling(two_j1, two_λ1, two_j2, two_λ2, two_j, two_l, two_s)

@@ -24,14 +24,14 @@ end
 
 let
     @test length(possible_ls(jp"3/2-", jp"3-"; jp=jp"1/2+")) == 4
-    # 
-    lsLSv = possible_lsLS(1, jp"1/2+",
-        [jp"1+", jp"1/2+", jp"0-", jp"1/2-"])
+    #
+    two_js, Ps = ThreeBodySpinParities("1+", "1/2+", "0-"; jp0="1/2-")
+    lsLSv = possible_lsLS(jp"1/2+", two_js, Ps; k=1)
     @test size(lsLSv) == (1, 2)
     #
-    lsLSv = possible_lsLS(1, 1, '+',
-        ThreeBodySpins(2, 1, 0; two_h0=1),
-        ThreeBodyParities('+', '+', '-'; P0='-'))
+    @test length(possible_ls(jp"1+", two_js, Ps; k=1)) == 1
+    @test length(possible_LS(jp"1+", two_js, Ps; k=1)) == 2
+    lsLSv = possible_lsLS(jp"1+", two_js, Ps; k=1)
     @test size(lsLSv) == (1, 2)
 end
 

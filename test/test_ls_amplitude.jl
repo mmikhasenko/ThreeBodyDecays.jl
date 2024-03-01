@@ -10,7 +10,7 @@ using Test
         Xlineshape=σ -> 1 / (4.1^2 - σ - 0.1im),
         two_j=2,
         parity='-',
-        Ps=['+', '+', '+', '+'],
+        Ps=ThreeBodyParities('+', '+', '+', P0='+'),
         tbs=tbs)
     @test sum(reim(amplitude(dc, dpp)) .≈ 0.0) == 0
 end
@@ -23,7 +23,7 @@ end
     #
     dc = DecayChainLS(; k=3,
         Xlineshape=σ -> 1 / (4.1^2 - σ - 0.1im),
-        two_j=3, parity='-', Ps=['+', '-', '-', '+'], tbs=tbs)
+        two_j=3, parity='-', Ps=ThreeBodyParities('+', '-', '-', P0='+'), tbs=tbs)
     # @show amplitude(dpp, dc)
     @test sum(reim(amplitude(dc, dpp)) .≈ 0.0) == 0
     # testing something else?

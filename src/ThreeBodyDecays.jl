@@ -48,13 +48,6 @@ include("wignerrotations.jl")
 
 export str2jp
 export @jp_str
-export letterL
-export ⊗
-export possible_ls, possible_lsLS
-export possible_coupling_schemes
-include("coupling_scheme.jl")
-
-
 export ThreeBodyMasses, ThreeBodySpins, ThreeBodyParities
 export SpinParity, ThreeBodySpinParities
 export MandestamTuple, SpinTuple, ParityTuple
@@ -71,6 +64,12 @@ export border
 export circleorigin
 export unpolarized_intensity
 include("tbs_struct.jl")
+
+export letterL
+export ⊗
+export possible_ls, possible_LS, possible_lsLS
+export possible_coupling_schemes
+include("coupling_scheme.jl")
 
 export change_basis_3from1,
     change_basis_1from2,

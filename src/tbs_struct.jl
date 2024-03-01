@@ -62,11 +62,50 @@ spins(tbs::ThreeBodySystem) = tbs.two_js
 
 # -----------------------------------------------------
 
+struct SpinParity
+    two_j::Int
+    p::Char
+end
+
+SpinParity(s::String) = str2jp(s)
+SpinParity((two_j, p)::Tuple{Int,Char}) = SpinParity(two_j, p)
+
+length(jp1::SpinParity) = 0
+
+# dealing with spin 1/2
+x2(v) = @. Int(2v)
+x2(v::AbstractString) = Meta.parse(v) |> eval |> x2
+
+_d2(two_s::Int) = iseven(two_s) ? "$(div(two_s,2))" : "$(two_s)/2"
+d2(v) = _d2.(v)
+
+
+⊗(p1::Char, p2::Char) = p1 == p2 ? '+' : '-'
+⊗(jp1::SpinParity, jp2::SpinParity) =
+    [SpinParity(two_j, ⊗(jp1.p, jp2.p))
+     for two_j in abs(jp1.two_j - jp2.two_j):2:abs(jp1.two_j + jp2.two_j)]
+
+function str2jp(pin::AbstractString)
+    p = filter(x -> x != '^', pin)
+    !(contains(p, '/')) && return SpinParity(x2(p[1:end-1]), p[end])
+    p[end-2:end-1] != "/2" && error("the string should be `x/2±`, while it is $(p)")
+    two_j = Meta.parse(p[1:end-3])
+    !(typeof(two_j) <: Int) && error("the string should be `x/2±`, while it is $(p)")
+    return SpinParity(two_j, p[end])
+end
+
+macro jp_str(p)
+    return str2jp(p)
+end
+
+# -----------------------------------------------------
+
 const ParityTuple = NamedTuple{(:P1, :P2, :P3, :P0),NTuple{4,Char}}
 #
 ThreeBodyParities(P1, P2, P3;
     P0=error("used the format ThreeBodyParities('+','-','+'; P0='±')")) =
     ParityTuple((P1, P2, P3, P0))
+
 # -----------------------------------------------------
 
 function ThreeBodySpinParities(jp1::SpinParity, jp2::SpinParity, jp3::SpinParity;
