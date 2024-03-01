@@ -4,16 +4,18 @@ using ThreeBodyDecays
 @testset "jp_str macro" begin
     @test jp"3+" == str2jp("3+")
     @test jp"3^+" == jp"3+"
-    @test jp"1/2+" == jp(1 // 2, '+')
-    @test jp"3/2-" == jp(3 // 2, '-')
-    @test jp"3+" == jp(3, '+')
+    @test jp"1/2+" == SpinParity(1, '+')
+    @test jp"3/2-" == SpinParity(3, '-')
+    @test jp"3+" == SpinParity(6, '+')
+    @test SpinParity(6, '+').two_j == 6
+    @test SpinParity(6, '+').p == '+'
 end
 
 
 @testset "jp ⊗ jp" begin
-    Swave = jp(1 // 2, '+') ⊗ jp(1, '-')
-    Pwave = [sw ⊗ jp(1, '-') for sw in Swave]
-    Dwave = [sw ⊗ jp(2, '+') for sw in Swave]
+    Swave = SpinParity("1/2+") ⊗ SpinParity("1-")
+    Pwave = [sw ⊗ SpinParity("1-") for sw in Swave]
+    Dwave = [sw ⊗ SpinParity("2+") for sw in Swave]
     # 
     @test length(Swave) == 2
     @test length(vcat(Pwave...)) == 5

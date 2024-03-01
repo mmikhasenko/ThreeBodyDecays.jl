@@ -22,8 +22,9 @@ amplitude(cs::NoRecoupling, two_λa, two_λb) =
     two_λb::Int
     ηηηphaseisplus::Bool
 end
+
 ParityRecoupling(two_λa::Int, two_λb::Int, ηηηphasesign::Char) = ParityRecoupling(two_λa, two_λb, ηηηphasesign == '+')
-function ParityRecoupling(two_λa::Int, two_λb::Int, (jp, (jp1, jp2))::Pair{A,Tuple{B,C}} where {A<:jp,B<:jp,C<:jp})
+function ParityRecoupling(two_λa::Int, two_λb::Int, (jp, (jp1, jp2))::TwoBodyTopologySpinParity)
     ηηη = jp1.p ⊗ jp2.p ⊗ jp.p
     ηηηphase = (2 * (ηηη == '+') - 1) * x"-1"^(div(jp.two_j - jp1.two_j - jp2.two_j, 2))
     return ParityRecoupling(two_λa, two_λb, ηηηphase == 1)
@@ -41,7 +42,7 @@ end
     two_ja::Int
     two_jb::Int
 end
-RecouplingLS(two_ls, (jp, (jpa, jpb))::Pair{A,Tuple{B,C}} where {A<:jp,B<:jp,C<:jp}) =
+RecouplingLS(two_ls, (jp, (jpa, jpb))::TwoBodyTopologySpinParity) =
     RecouplingLS(jp.two_j, two_ls, jpa.two_j, jpb.two_j)
 
 amplitude(cs::RecouplingLS, two_λa, two_λb) =
@@ -83,16 +84,16 @@ function DecayChainLS(;
     parity::Char=error("give the parity, parity='+' or '-'"),
     Ps=error("need parities, e.g Ps=['+','+','+','+']"))
     # 
-    lsLS = vcat(possible_lsLS(k, two_j, parity, tbs.two_js, Ps)...)
-    length(lsLS) == 0 && error("there are no possible LS couplings")
+    two_lsLS = vcat(possible_lsLS(k, two_j, parity, tbs.two_js, Ps)...)
+    length(two_lsLS) == 0 && error("there are no possible LS couplings")
     # 
-    lsLS_sorted = sort(lsLS, by=x -> x.LS[1])
-    @unpack ls, LS = lsLS_sorted[1]
+    two_lsLS_sorted = sort(two_lsLS, by=x -> x.LS[1])
+    @unpack two_ls, two_LS = two_lsLS_sorted[1]
     #
     i, j = ij_from_k(k)
     return DecayChain(; k, Xlineshape, tbs, two_j,
-        Hij=RecouplingLS(two_j, Int.(2 .* ls), tbs.two_js[i], tbs.two_js[j]),
-        HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* LS), two_j, tbs.two_js[k]))
+        Hij=RecouplingLS(two_j, two_ls, tbs.two_js[i], tbs.two_js[j]),
+        HRk=RecouplingLS(tbs.two_js[4], two_LS, two_j, tbs.two_js[k]))
 end
 
 """

@@ -49,7 +49,8 @@ end
 #
 # convenient constructors
 ThreeBodySystem(ms::MassTuple) = ThreeBodySystem(ms=ms)
-ThreeBodySystem(m1, m2, m3; m0, two_js=ThreeBodySpins(0, 0, 0; two_h0=0)) = ThreeBodySystem(ThreeBodyMasses(m1, m2, m3; m0=m0), two_js)
+ThreeBodySystem(m1, m2, m3; m0, two_js=ThreeBodySpins(0, 0, 0; two_h0=0)) =
+    ThreeBodySystem(ThreeBodyMasses(m1, m2, m3; m0=m0), two_js)
 #
 two_j0(tbs::ThreeBodySystem) = tbs.two_js[4]
 two_j1(tbs::ThreeBodySystem) = tbs.two_js[1]
@@ -67,6 +68,18 @@ ThreeBodyParities(P1, P2, P3;
     P0=error("used the format ThreeBodyParities('+','-','+'; P0='±')")) =
     ParityTuple((P1, P2, P3, P0))
 # -----------------------------------------------------
+
+function ThreeBodySpinParities(jp1::SpinParity, jp2::SpinParity, jp3::SpinParity;
+    jp0::SpinParity=error("Provide jp0 as a key argument"))
+    two_js = ThreeBodySpins(jp1.two_j, jp2.two_j, jp3.two_j; two_h0=jp0.two_j)
+    Ps = ThreeBodyParities(jp1.p, jp2.p, jp3.p; P0=jp0.p)
+    return (two_js, Ps)
+end
+
+function ThreeBodySpinParities(jp1::AbstractString, jp2::AbstractString, jp3::AbstractString;
+    jp0::AbstractString=error("Provide jp0 as a key argument"))
+    ThreeBodySpinParities(str2jp(jp1), str2jp(jp2), str2jp(jp3); jp0=str2jp(jp0))
+end
 
 # Dynamic variables
 const MandestamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3),NTuple{3,T}}

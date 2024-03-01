@@ -11,8 +11,8 @@ import Base: getindex, iterate, length
 
 
 export Kallen, sqrtKallenFact, Kibble,
-	inphrange,
-	lims, lims1, lims2, lims3
+    inphrange,
+    lims, lims1, lims2, lims3
 export phase
 export ijk, ij_from_k
 # 
@@ -21,7 +21,7 @@ export cosθ12, cosθ23, cosθ31
 # 
 export σiofk, σjofk
 export σ1of2, σ2of3, σ3of1,
-	σ1of3, σ2of1, σ3of2
+    σ1of3, σ2of1, σ3of2
 include("kinematics.jl")
 
 export x_str, minusone
@@ -46,7 +46,17 @@ export cosζk1_for1, cosζk2_for2, cosζk3_for3
 include("wignerrotations.jl")
 
 
+export str2jp
+export @jp_str
+export letterL
+export ⊗
+export possible_ls, possible_lsLS
+export possible_coupling_schemes
+include("coupling_scheme.jl")
+
+
 export ThreeBodyMasses, ThreeBodySpins, ThreeBodyParities
+export SpinParity, ThreeBodySpinParities
 export MandestamTuple, SpinTuple, ParityTuple
 export ThreeBodySystem
 export DalitzPlotPoint
@@ -63,17 +73,9 @@ export unpolarized_intensity
 include("tbs_struct.jl")
 
 export change_basis_3from1,
-	change_basis_1from2,
-	change_basis_2from3
+    change_basis_1from2,
+    change_basis_2from3
 include("cross_channel_relations.jl")
-
-export jp, str2jp
-export @jp_str
-export letterL
-export ⊗
-export possible_ls, possible_lsLS
-export possible_coupling_schemes
-include("coupling_scheme.jl")
 
 export NoRecoupling, ParityRecoupling, RecouplingLS
 export AbstractDecayChain
