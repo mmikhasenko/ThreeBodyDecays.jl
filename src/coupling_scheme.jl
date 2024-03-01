@@ -10,7 +10,9 @@ length(jp1::jp) = 0
 two_j(jp::jp) = Int(2jp.j)
 # 
 # dealing with spin 1/2
-x2(v) = @. Int(2v)
+x2(v::Number) = @. Int(2v)
+x2(v::AbstractString) = Meta.parse(v) |> eval |> x2
+
 _d2(two_s::Int) = iseven(two_s) ? "$(div(two_s,2))" : "$(two_s)/2"
 d2(v) = _d2.(v)
 

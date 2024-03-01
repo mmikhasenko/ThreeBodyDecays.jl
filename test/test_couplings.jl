@@ -35,6 +35,8 @@ end
 
 @testset "x2, times 2" begin
 	@test x2(1 // 2) == 1
+    @test x2(1.5) == 3
+    @test x2("5/2") == 5
 	@test x2(3) == 6
 	@test x2((2, 3 // 2)) == (4, 3)
 end
