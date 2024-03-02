@@ -37,3 +37,23 @@ kill_dep = bw(bw0)
     @test X(0.3) ≈ ref
     @test kill_dep(4.4) == bw(1.0)
 end
+
+
+using Plots
+
+let
+    plot()
+    bw = BreitWigner(0.77, 0.15)
+    plot!(0.3, 1.3, lab="const width") do e
+        abs2(bw(e^2)) * e
+    end
+    bw = BreitWigner(0.77, 0.15, 0.14, 0.14, 1, 5.0)
+    plot!(0.3, 1.3, lab="P-wave (5/Gev)") do e
+        abs2(bw(e^2)) * e
+    end
+    bw = BreitWigner(0.77, 0.15, 0.14, 0.14, 1, 1.5)
+    plot!(0.3, 1.3, lab="P-wave (1.5/Gev)") do e
+        abs2(bw(e^2)) * e
+    end
+    plot!()
+end
