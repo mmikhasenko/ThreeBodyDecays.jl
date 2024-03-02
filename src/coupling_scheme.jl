@@ -15,16 +15,16 @@ const TwoBodyTopologySpinParity = Pair{SpinParity,Tuple{SpinParity,SpinParity}}
 possible_ls((jp, (jp1, jp2))::TwoBodyTopologySpinParity) = possible_ls(jp1, jp2; jp)
 possible_ls(jp1::AbstractString, jp2::AbstractString; jp::AbstractString) =
     possible_ls(str2jp(jp1), str2jp(jp2); jp=str2jp(jp))
-function possible_ls(jp::SpinParity, two_js::SpinTuple, Ps::ParityTuple; k::Int)
+function possible_ls_ij(jp::SpinParity, two_js::SpinTuple, Ps::ParityTuple; k::Int)
     i, j = ij_from_k(k)
     return possible_ls(SpinParity(two_js[i], Ps[i]), SpinParity(two_js[j], Ps[j]); jp)
 end
-possible_LS(jp::SpinParity, two_js::SpinTuple, Ps::ParityTuple; k::Int) =
+possible_ls_Rk(jp::SpinParity, two_js::SpinTuple, Ps::ParityTuple; k::Int) =
     possible_ls(jp, SpinParity(two_js[k], Ps[k]); jp=SpinParity(two_js[4], Ps[4]))
 
 function possible_lsLS(jp::SpinParity, two_js::SpinTuple, Ps::ParityTuple; k::Int)
-    lsv = possible_ls(jp, two_js, Ps; k)
-    LSv = possible_LS(jp, two_js, Ps; k)
+    lsv = possible_ls_ij(jp, two_js, Ps; k)
+    LSv = possible_ls_Rk(jp, two_js, Ps; k)
     return [(; two_ls, two_LS) for (two_ls, two_LS) in Iterators.product(lsv, LSv)]
 end
 

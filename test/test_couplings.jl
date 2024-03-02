@@ -29,8 +29,8 @@ let
     lsLSv = possible_lsLS(jp"1/2+", two_js, Ps; k=1)
     @test size(lsLSv) == (1, 2)
     #
-    @test length(possible_ls(jp"1+", two_js, Ps; k=1)) == 1
-    @test length(possible_LS(jp"1+", two_js, Ps; k=1)) == 2
+    @test length(possible_ls_ij(jp"1+", two_js, Ps; k=1)) == 1
+    @test length(possible_ls_Rk(jp"1+", two_js, Ps; k=1)) == 2
     lsLSv = possible_lsLS(jp"1+", two_js, Ps; k=1)
     @test size(lsLSv) == (1, 2)
 end

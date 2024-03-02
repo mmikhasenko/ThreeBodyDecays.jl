@@ -67,7 +67,7 @@ include("tbs_struct.jl")
 
 export letterL
 export ⊗
-export possible_ls, possible_LS, possible_lsLS
+export possible_ls, possible_ls_ij, possible_ls_Rk, possible_lsLS
 export possible_coupling_schemes
 include("coupling_scheme.jl")
 
