@@ -30,9 +30,6 @@ chains = let
     end
 end
 
-breakup_Rk(ms; k) = σ -> breakup(ms[4], sqrt(σ), ms[k])
-breakup_ij(ms; k) = ((i, j) = ij_from_k(k); σ -> breakup(sqrt(σ), ms[i], ms[j]))
-
 # LS + parity basis
 two_λs = possible_rehelicities()
 map(LS_all, two_λs) do two_LS, (two_λa, two_λb)

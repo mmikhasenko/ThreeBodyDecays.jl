@@ -94,4 +94,7 @@ include("integrand.jl")
 
 include("dalitzplotsrecipe.jl")
 
+include("Lineshapes.jl")
+
+
 end  # module ThreeBodyDecays
