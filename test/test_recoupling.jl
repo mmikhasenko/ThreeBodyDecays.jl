@@ -3,17 +3,21 @@ using Test
 using Parameters
 
 
+
+reaction = jp"1/2+" => (jp"1/2+", jp"0-")
+
 @testset "BasicParityRecoupling" begin
     reaction = jp"1/2+" => (jp"1/2+", jp"0-")
+    two_js_H = getproperty.(vcat(reaction[1], reaction[2]...), :two_j)
 
-    H_pc = ParityRecoupling(1, 0, jp"1/2+" => (jp"1/2+", jp"0-"))
+    H_pc = ParityRecoupling(1, 0, reaction)
     @test H_pc == ParityRecoupling(1, 0, '-')
 
-    H_ls = RecouplingLS(possible_ls(reaction)[1], reaction)
+    H_ls = RecouplingLS(possible_ls(reaction)[1])
 
     factor = -1 / sqrt(2)
-    @test amplitude(H_pc, 1, 0) * factor ≈ amplitude(H_ls, 1, 0)
-    @test amplitude(H_pc, -1, 0) * factor ≈ amplitude(H_ls, -1, 0)
+    @test amplitude(H_pc, (1, 0), two_js_H) * factor ≈ amplitude(H_ls, (1, 0), two_js_H)
+    @test amplitude(H_pc, (-1, 0), two_js_H) * factor ≈ amplitude(H_ls, (-1, 0), two_js_H)
 end
 
 

@@ -13,7 +13,7 @@ abstract type Recoupling end
     two_λb::Int
 end
 
-amplitude(cs::NoRecoupling, two_λa, two_λb) =
+amplitude(cs::NoRecoupling, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
     (cs.two_λa == two_λa) *
     (cs.two_λb == two_λb)
 
@@ -30,28 +30,18 @@ function ParityRecoupling(two_λa::Int, two_λb::Int, (jp, (jp1, jp2))::TwoBodyT
     return ParityRecoupling(two_λa, two_λb, ηηηphase == 1)
 end
 
-function amplitude(cs::ParityRecoupling, two_λa, two_λb)
+function amplitude(cs::ParityRecoupling, (two_λa, two_λb), (two_j, two_ja, two_jb))
     (cs.two_λa == two_λa) * (cs.two_λb == two_λb) && return 1
     (cs.two_λa == -two_λa) * (cs.two_λb == -two_λb) && return 2 * cs.ηηηphaseisplus - 1
     return 0
 end
 
 @with_kw struct RecouplingLS <: Recoupling
-    two_j::Int
     two_ls::Tuple{Int,Int}
-    two_ja::Int
-    two_jb::Int
 end
 
-const TwoBodyTopologySpins = Pair{Int,Tuple{Int,Int}}
-RecouplingLS(two_ls, (two_j, (two_ja, two_jb))::TwoBodyTopologySpins) =
-    RecouplingLS(two_j, two_ls, two_ja, two_jb)
-# 
-RecouplingLS(two_ls, (jp, (jpa, jpb))::TwoBodyTopologySpinParity) =
-    RecouplingLS(jp.two_j, two_ls, jpa.two_j, jpb.two_j)
-
-amplitude(cs::RecouplingLS, two_λa, two_λb) =
-    jls_coupling(cs.two_ja, two_λa, cs.two_jb, two_λb, cs.two_j, cs.two_ls[1], cs.two_ls[2])
+amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
+    jls_coupling(two_ja, two_λa, two_jb, two_λb, two_j, cs.two_ls[1], cs.two_ls[2])
 
 abstract type AbstractDecayChain end
 
@@ -96,8 +86,8 @@ function DecayChainLS(;
     #
     i, j = ij_from_k(k)
     return DecayChain(; k, Xlineshape, tbs, _jp.two_j,
-        Hij=RecouplingLS(_jp.two_j, two_ls, tbs.two_js[i], tbs.two_js[j]),
-        HRk=RecouplingLS(tbs.two_js[4], two_LS, _jp.two_j, tbs.two_js[k]))
+        Hij=RecouplingLS(two_ls),
+        HRk=RecouplingLS(two_LS))
 end
 
 """
@@ -122,8 +112,8 @@ function DecayChainsLS(;
     LSlsv = possible_lsLS(_jp, tbs.two_js, Ps; k)
     return [DecayChain(;
         k, Xlineshape, tbs, two_j,
-        Hij=RecouplingLS(_jp.two_j, two_ls, tbs.two_js[i], tbs.two_js[j]),
-        HRk=RecouplingLS(tbs.two_js[4], two_LS, _jp.two_j, tbs.two_js[k]))
+        Hij=RecouplingLS(two_ls),
+        HRk=RecouplingLS(two_LS))
             for x in LSlsv]
 end
 
@@ -135,11 +125,13 @@ wignerd_doublearg_sign(two_j, two_λ1, two_λ2, cosθ, ispositive) =
 function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
 
     @unpack k, tbs, two_j, HRk, Hij = dc
+    two_js = tbs.two_js
     # 
     i, j = ij_from_k(k)
+    two_js_Hij = (two_j, two_js[i], two_js[j])
+    two_js_HRk = (two_js[4], two_j, two_js[k])
     #
     ms² = tbs.ms^2
-    two_js = tbs.two_js
     # 
     w0 = wr(k, refζs[4], 0)
     wi = wr(k, refζs[i], i)
@@ -165,9 +157,9 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
         f +=
             wignerd_doublearg_sign(two_js[4], two_λs[4], two_λs′[4], cosζ0, ispositive(w0)) *
             # 
-            amplitude(HRk, two_λs′[4] + two_λs′[k], two_λs′[k]) * phase(two_js[k] - two_λs′[k]) * # particle-2 convention
+            amplitude(HRk, (two_λs′[4] + two_λs′[k], two_λs′[k]), two_js_HRk) * phase(two_js[k] - two_λs′[k]) * # particle-2 convention
             sqrt(two_j * T1 + 1) * wignerd_doublearg_sign(two_j, two_λs′[4] + two_λs′[k], two_λs′[i] - two_λs′[j], cosθ, true) *
-            amplitude(Hij, two_λs′[i], two_λs′[j]) * phase(two_js[j] - two_λs′[j]) * # particle-2 convention
+            amplitude(Hij, (two_λs′[i], two_λs′[j]), two_js_Hij) * phase(two_js[j] - two_λs′[j]) * # particle-2 convention
             # 
             wignerd_doublearg_sign(two_js[i], two_λs′[i], two_λs[i], cosζi, ispositive(wi)) *
             wignerd_doublearg_sign(two_js[j], two_λs′[j], two_λs[j], cosζj, ispositive(wj)) *
