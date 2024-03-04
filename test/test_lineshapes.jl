@@ -1,14 +1,18 @@
 using Test
 using ThreeBodyDecays.Lineshapes
+# using Plots
 
-# BreitWigner(; m=1.6, Γ=0.2, channels=[(gsq=0.1, ma=0.2, m2=0.14)])
+# theme(:wong2, frame=:box, grid=false, minorticks=true,
+#     guidefontvalign=:top, guidefonthalign=:right,
+#     xlim=(:auto, :auto), ylim=(:auto, :auto),
+#     lw=1.2, lab="", colorbar=false)
 
-bw = BreitWigner(; m=1.6, Γ=0.2)
-
+Γ0 = 0.2
+bw = BreitWigner(1.6, Γ0)
 @testset "BW call" begin
-    @test bw(bw.m^2) ≈ 1im / bw.m / bw.Γ
+    @test bw(bw.m^2) ≈ 1im / bw.m / Γ0
     refA = -1.2039660056657226 + 0.5665722379603404im
-    @test bw((bw.m + bw.Γ)^2) ≈ refA
+    @test bw((bw.m + Γ0)^2) ≈ refA
 end
 
 bw0 = BlattWeisskopf{0}(1.5)
@@ -24,6 +28,14 @@ bw3 = BlattWeisskopf{3}(1.5)
     @test all((bw0(3), bw1(3), bw2(3), bw3(3)) .≈ refs)
 end
 
+# let
+#     plot()
+#     map((1, 2, 3, 4, 5)) do l
+#         ff = BlattWeisskopf{l}(1.5)
+#         plot!(x -> ff(x), 0, 5.0)
+#     end
+#     plot!()
+# end
 
 bw1_of_sq = bw1(z -> z^2)
 bw0_scale = bw0 * 5.5
@@ -38,22 +50,20 @@ kill_dep = bw(bw0)
     @test kill_dep(4.4) == bw(1.0)
 end
 
-
-using Plots
-
-let
-    plot()
-    bw = BreitWigner(0.77, 0.15)
-    plot!(0.3, 1.3, lab="const width") do e
-        abs2(bw(e^2)) * e
-    end
-    bw = BreitWigner(0.77, 0.15, 0.14, 0.14, 1, 5.0)
-    plot!(0.3, 1.3, lab="P-wave (5/Gev)") do e
-        abs2(bw(e^2)) * e
-    end
-    bw = BreitWigner(0.77, 0.15, 0.14, 0.14, 1, 1.5)
-    plot!(0.3, 1.3, lab="P-wave (1.5/Gev)") do e
-        abs2(bw(e^2)) * e
-    end
-    plot!()
-end
+# let m = 0.77, Γ = 0.15
+#     ρ(e) = sqrt(e - 0.28)
+#     plot()
+#     bw = BreitWigner(m, Γ)
+#     plot!(0.28, 0.7, lab="const width") do e
+#         e * angle(bw(e^2))
+#     end
+#     bw = BreitWigner(m, Γ, 0.14, 0.14, 1, 5.0)
+#     plot!(0.28, 0.7, lab="P-wave (5/Gev)") do e
+#         e * angle(bw(e^2))
+#     end
+#     bw = BreitWigner(m, Γ, 0.14, 0.14, 1, 1.5)
+#     plot!(0.28, 0.7, lab="P-wave (1.5/Gev)") do e
+#         e * angle(bw(e^2))
+#     end
+#     vline!([m], lab="")
+# end
