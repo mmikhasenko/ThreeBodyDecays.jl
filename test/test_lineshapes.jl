@@ -67,3 +67,15 @@ end
 #     end
 #     vline!([m], lab="")
 # end
+
+# test ComposeFlexFunc AbstractFlexFunc of Function
+square(x) = abs2(x)
+bw = BreitWigner(1.6, 0.2)
+bw_e = bw(square)
+bw_square = WrapFlexFunction(square)(bw)
+@testset "ComposeFlexFunc" begin
+    @test bw_e(1.6) ≈ 1im / 1.6 / 0.2
+    @test bw_square(1.6^2) ≈ 1 / (1.6 * 0.2)^2
+end
+
+
