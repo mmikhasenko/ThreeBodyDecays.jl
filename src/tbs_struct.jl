@@ -52,11 +52,6 @@ ThreeBodySystem(ms::MassTuple) = ThreeBodySystem(ms=ms)
 ThreeBodySystem(m1, m2, m3; m0, two_js=ThreeBodySpins(0, 0, 0; two_h0=0)) =
     ThreeBodySystem(ThreeBodyMasses(m1, m2, m3; m0=m0), two_js)
 #
-two_j0(tbs::ThreeBodySystem) = tbs.two_js[4]
-two_j1(tbs::ThreeBodySystem) = tbs.two_js[1]
-two_j2(tbs::ThreeBodySystem) = tbs.two_js[2]
-two_j3(tbs::ThreeBodySystem) = tbs.two_js[3]
-
 masses(tbs::ThreeBodySystem) = tbs.ms
 spins(tbs::ThreeBodySystem) = tbs.two_js
 
@@ -68,7 +63,6 @@ spins(tbs::ThreeBodySystem) = tbs.two_js
 end
 
 SpinParity(s::String) = str2jp(s)
-SpinParity((two_j, p)::Tuple{Int,Char}) = SpinParity(two_j, p)
 
 length(jp1::SpinParity) = 0
 
