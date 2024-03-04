@@ -14,17 +14,18 @@ using Test
     @test sum(reim(amplitude(dc, dpp)) .≈ 0.0) == 0
 end
 
-@testset "LS amplitude half-integer spin" begin
-    two_js, Ps = ThreeBodySpinParities("1/2-", "0-", "0-"; jp0="1/2+")
-    tbs = ThreeBodySystem(2.0, 1.0, 1.5; m0=6.0, two_js)  # 1/2+ 0- 0- 1/2+
-    σs = randomPoint(tbs.ms)
-    dpp = DalitzPlotPoint(; σs=σs, two_λs=[1, 0, 0, 1])
-    #
-    bw(σ) = 1 / (4.1^2 - σ - 0.1im)
-    dc = DecayChainLS(; k=3, Xlineshape=bw, jp="3-", Ps, tbs)
-    @test sum(reim(amplitude(dc, dpp)) .≈ 0.0) == 0
-end
+two_js, Ps = ThreeBodySpinParities("1/2-", "0-", "0-"; jp0="1/2+")
+tbs = ThreeBodySystem(2.0, 1.0, 1.5; m0=6.0, two_js)  # 1/2+ 0- 0- 1/2+
+σs = randomPoint(tbs.ms)
+#
+bw(σ) = 1 / (4.1^2 - σ - 0.1im)
+dc = DecayChainLS(; k=3, Xlineshape=bw, jp="3-", Ps, tbs)
 
+@testset "LS amplitude half-integer spin" begin
+    dpp = DalitzPlotPoint(; σs=σs, two_λs=[1, 0, 0, 1])
+    @test sum(reim(amplitude(dc, dpp)) .≈ 0.0) == 0
+    @test length(dc) == 1
+end
 
 
 # Manual construction of the decay chains
