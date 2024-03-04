@@ -16,24 +16,24 @@ theme(:wong2)
 
 # decay Λb ⟶ Jψ p K
 constants = Dict(
-	"mJψ" => 3.09,
-	"mp" => 0.938,
-	"mK" => 0.49367,
-	"mLb" => 5.62) # masses of the particles
+    "mJψ" => 3.09,
+    "mp" => 0.938,
+    "mK" => 0.49367,
+    "mLb" => 5.62) # masses of the particles
 
 # `ThreeBodySystem` creates an immutable structure that describes the setup.
 # Two work with particles with non-integer spin, the doubled quantum numbers are stored.
 
 ms = ThreeBodyMasses(   # masses m1,m2,m3,m0
-	constants["mJψ"], constants["mp"], constants["mK"];
-	m0 = constants["mLb"])
+    constants["mJψ"], constants["mp"], constants["mK"];
+    m0=constants["mLb"])
 
 # create two-body system
 tbs = ThreeBodySystem(; ms,
-	two_js = ThreeBodySpins(2, 1, 0; two_h0 = 1)) # twice spin
+    two_js=ThreeBodySpins(2, 1, 0; two_h0=1)) # twice spin
 
-Concerving = ThreeBodyParities('-', '+', '-'; P0 = '+')
-Violating = ThreeBodyParities('-', '+', '-'; P0 = '-')
+Concerving = ThreeBodyParities('-', '+', '-'; P0='+')
+Violating = ThreeBodyParities('-', '+', '-'; P0='-')
 
 # - the invariant variables, `σs = [σ₁,σ₂,σ₃]`,
 # - helicities `two_λs = [λ₁,λ₂,λ₃,λ₀]`
@@ -48,22 +48,22 @@ Violating = ThreeBodyParities('-', '+', '-'; P0 = '-')
 # It is a simple Breit-Wigner function in this example.
 
 struct BW
-	m::Float64
-	Γ::Float64
+    m::Float64
+    Γ::Float64
 end
 (bw::BW)(σ::Number) = 1 / (bw.m^2 - σ - 1im * bw.m * bw.Γ)
 
 
 # chains-1, i.e. (2+3): Λs with the lowest ls, LS
-Λ1520 = DecayChainLS(k = 1, Xlineshape = BW(1.5195, 0.0156), two_j = 3 / 2 |> x2, parity = '+', Ps = Concerving, tbs = tbs)
-Λ1690 = DecayChainLS(k = 1, Xlineshape = BW(1.685, 0.050), two_j = 1 / 2 |> x2, parity = '+', Ps = Concerving, tbs = tbs)
-Λ1810 = DecayChainLS(k = 1, Xlineshape = BW(1.80, 0.090), two_j = 5 / 2 |> x2, parity = '+', Ps = Concerving, tbs = tbs)
+Λ1520 = DecayChainLS(k=1, Xlineshape=BW(1.5195, 0.0156), jp=jp"3/2+", Ps=Concerving, tbs=tbs)
+Λ1690 = DecayChainLS(k=1, Xlineshape=BW(1.685, 0.050), jp=jp"1/2+", Ps=Concerving, tbs=tbs)
+Λ1810 = DecayChainLS(k=1, Xlineshape=BW(1.80, 0.090), jp=jp"5/2+", Ps=Concerving, tbs=tbs)
 Λs = (Λ1520, Λ1690, Λ1810)
 
 # chains-3, i.e. (1+2): Pentaquarks with the lowest ls, LS
-Pc4312 = DecayChainLS(k = 3, Xlineshape = BW(4.312, 0.015), two_j = 1 / 2 |> x2, parity = '+', Ps = Concerving, tbs = tbs)
-Pc4440 = DecayChainLS(k = 3, Xlineshape = BW(4.440, 0.010), two_j = 1 / 2 |> x2, parity = '+', Ps = Concerving, tbs = tbs)
-Pc4457 = DecayChainLS(k = 3, Xlineshape = BW(4.457, 0.020), two_j = 3 / 2 |> x2, parity = '+', Ps = Concerving, tbs = tbs)
+Pc4312 = DecayChainLS(k=3, Xlineshape=BW(4.312, 0.015), jp=jp"1/2+", Ps=Concerving, tbs=tbs)
+Pc4440 = DecayChainLS(k=3, Xlineshape=BW(4.440, 0.010), jp=jp"1/2+", Ps=Concerving, tbs=tbs)
+Pc4457 = DecayChainLS(k=3, Xlineshape=BW(4.457, 0.020), jp=jp"3/2+", Ps=Concerving, tbs=tbs)
 Pcs = (Pc4312, Pc4440, Pc4457)
 
 # ## Unpolarized intensity
@@ -72,10 +72,10 @@ Pcs = (Pc4312, Pc4440, Pc4457)
 # couplings for each decay chain. 
 
 const model = ThreeBodyDecay(
-	["Λ1520", "Λ1690", "Λ1810", "Pc4312", "Pc4440", "Pc4457"] .=>
-		zip(
-			[2, 2.1, 1.4im, 0.4, 0.3im, -0.8im],
-			[Λ1520, Λ1690, Λ1810, Pc4312, Pc4440, Pc4457]))
+    ["Λ1520", "Λ1690", "Λ1810", "Pc4312", "Pc4440", "Pc4457"] .=>
+        zip(
+            [2, 2.1, 1.4im, 0.4, 0.3im, -0.8im],
+            [Λ1520, Λ1690, Λ1810, Pc4312, Pc4440, Pc4457]))
 
 # just a random point of the Dalitz Plot
 σs = randomPoint(tbs.ms)
@@ -94,19 +94,19 @@ two_λs = randomPoint(tbs.two_js)
 # Kinematic limits can visualized using the `border` function.
 # Plot in the σ₁σ₃ variables is obtained by
 
-plot(lab = "", grid = false, size = (600, 300),
-	plot(border31(masses(model)), xlab = "σ₁ (GeV²)", ylab = "σ₃ (GeV²)"),
-	plot(border12(masses(model)), xlab = "σ₂ (GeV²)", ylab = "σ₁ (GeV²)"))
+plot(lab="", grid=false, size=(600, 300),
+    plot(border31(masses(model)), xlab="σ₁ (GeV²)", ylab="σ₃ (GeV²)"),
+    plot(border12(masses(model)), xlab="σ₂ (GeV²)", ylab="σ₁ (GeV²)"))
 
 # The matrix element as a function of the kinematic variables
 # can be visualized by passing an amplitude function and the kinematic mass object.
 
 plot(masses(model), σs -> abs2(amplitude(Pc4312, σs, (2, -1, 0, 1))))
-plot(masses(model), Base.Fix1(unpolarized_intensity, model); iσx = 1, iσy = 3)
+plot(masses(model), Base.Fix1(unpolarized_intensity, model); iσx=1, iσy=3)
 
 # The projections of the Dalitz Plot can be computed numerically using integration routine, e.g. `QuadGK`.
 
 plot(4.2, 4.6) do e1
-	I = Base.Fix1(unpolarized_intensity, model)
-	e1 * quadgk(projection_integrand(I, masses(model), e1^2; k = 3), 0, 1)[1]
+    I = Base.Fix1(unpolarized_intensity, model)
+    e1 * quadgk(projection_integrand(I, masses(model), e1^2; k=3), 0, 1)[1]
 end
