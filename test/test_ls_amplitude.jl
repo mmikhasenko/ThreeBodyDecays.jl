@@ -62,6 +62,7 @@ sortbyLl(chains) = sort(chains,
             DecayChainsLS(; k=3, Xlineshape=identity, jp="3/2-", Ps=PV, tbs)]))
 end
 
+σs = x2σs([0.5, 0.3], tbs.ms; k=1)
 @testset "Unpol. intensity values for chains" begin
     refs = [183.0603173468474 100.20583627496791 183.0603173468474
         183.0603173468474 100.20583627496791 183.0603173468474]
