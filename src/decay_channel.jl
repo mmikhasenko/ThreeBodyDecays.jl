@@ -174,7 +174,3 @@ amplitude(dc::AbstractDecayChain, dpp) = amplitude(dc, dpp.σs, dpp.two_λs)
 summed_over_polarization(fn, two_js) = σs -> sum(fn(σs, two_λs) for two_λs in itr(two_js))
 #
 itr(two_js) = Iterators.ProductIterator(Tuple([-two_j:2:two_j for two_j in two_js]))
-
-unpolarized_intensity(chain::AbstractDecayChain, σs; kw...) =
-    sum(abs2, amplitude(chain, σs, two_λs; kw...)
-              for two_λs in itr(spins(chain)))
