@@ -16,7 +16,7 @@ end
 
 two_js, Ps = ThreeBodySpinParities("1/2-", "0-", "0-"; jp0="1/2+")
 tbs = ThreeBodySystem(2.0, 1.0, 1.5; m0=6.0, two_js)  # 1/2+ 0- 0- 1/2+
-σs = randomPoint(tbs.ms)
+σs = x2σs([0.5, 0.3], tbs.ms; k=1)
 #
 bw(σ) = 1 / (4.1^2 - σ - 0.1im)
 dc = DecayChainLS(; k=3, Xlineshape=bw, jp="3-", Ps, tbs)
@@ -33,7 +33,7 @@ ms = ThreeBodyMasses(1.1, 2.2, 3.3; m0=7.7)
 (two_js, PC), (_, PV) = map(["1/2+", "1/2-"]) do jp0
     ThreeBodySpinParities("1-", "1/2+", "0-"; jp0)
 end
-tbs = ThreeBodySystem(masses, two_js)
+tbs = ThreeBodySystem(ms, two_js)
 
 chains = let
     k = 3
@@ -62,4 +62,9 @@ sortbyLl(chains) = sort(chains,
             DecayChainsLS(; k=3, Xlineshape=identity, jp="3/2-", Ps=PV, tbs)]))
 end
 
-
+σs = x2σs([0.5, 0.3], tbs.ms; k=1)
+@testset "Unpol. intensity values for chains" begin
+    refs = [183.0603173468474 100.20583627496791 183.0603173468474
+        183.0603173468474 100.20583627496791 183.0603173468474]
+    @test all(unpolarized_intensity.(chains, Ref(σs)) .≈ refs)
+end

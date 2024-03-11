@@ -1,10 +1,10 @@
-@with_kw struct ThreeBodyDecay{N, T <: AbstractDecayChain, L <: Number}
-	chains::SVector{N, T}
-	couplings::SVector{N, L}
-	names::SVector{N, String}
+@with_kw struct ThreeBodyDecay{N,T<:AbstractDecayChain,L<:Number}
+    chains::SVector{N,T}
+    couplings::SVector{N,L}
+    names::SVector{N,String}
 end
 
-const VectPairStringChain = AbstractVector{<:Pair{<:AbstractString, <:Tuple{<:Number, <:AbstractDecayChain}}}
+const VectPairStringChain = AbstractVector{<:Pair{<:AbstractString,<:Tuple{<:Number,<:AbstractDecayChain}}}
 """
 	ThreeBodyDecay(; chains, couplings, names)
 
@@ -27,34 +27,34 @@ ThreeBodyDecay(
 ```
 """
 function ThreeBodyDecay(descriptor::VectPairStringChain)
-	N = length(descriptor)
+    N = length(descriptor)
 
-	#
-	names = first.(descriptor)
-	cd = getindex.(descriptor, 2)
-	couplings = first.(cd)
-	chains = getindex.(cd, 2)
-	# 
-	sv_chains = (SVector{N})(chains)
-	sv_couplings = SVector{N}(couplings)
-	sv_names = SVector{N, String}(names)
-	#
-	ThreeBodyDecay(sv_chains, sv_couplings, sv_names)
+    #
+    names = first.(descriptor)
+    cd = getindex.(descriptor, 2)
+    couplings = first.(cd)
+    chains = getindex.(cd, 2)
+    # 
+    sv_chains = (SVector{N})(chains)
+    sv_couplings = SVector{N}(couplings)
+    sv_names = SVector{N,String}(names)
+    #
+    ThreeBodyDecay(sv_chains, sv_couplings, sv_names)
 end
 
 amplitude(model::ThreeBodyDecay, p...; kw...) =
-	sum(c * amplitude(d, p...; kw...)
-		for (c, d) in zip(model.couplings, model.chains))
+    sum(c * amplitude(d, p...; kw...)
+        for (c, d) in zip(model.couplings, model.chains))
 
 import Base: getindex, length
 
 getindex(model::ThreeBodyDecay, key...) =
-	ThreeBodyDecay(
-		getindex(model.names, key...) .=> zip(
-			getindex(model.couplings, key...),
-			getindex(model.chains, key...)))
+    ThreeBodyDecay(
+        getindex(model.names, key...) .=> zip(
+            getindex(model.couplings, key...),
+            getindex(model.chains, key...)))
 
-length(model::ThreeBodyDecay{N}) where N = length(model.chains)
+length(model::ThreeBodyDecay{N}) where {N} = length(model.chains)
 system(model::ThreeBodyDecay) = first(model.chains).tbs
 masses(model::ThreeBodyDecay) = masses(system(model))
 spins(model::ThreeBodyDecay) = spins(system(model))
@@ -64,6 +64,6 @@ spins(model::ThreeBodyDecay) = spins(system(model))
 
 Computes squared amplitude summed over spin projections.
 """
-unpolarized_intensity(model::ThreeBodyDecay, σs; kw...) =
-	sum(abs2, amplitude(model, σs, two_λs; kw...)
-			  for two_λs in itr(spins(model)))
+unpolarized_intensity(model, σs; kw...) =
+    sum(abs2, amplitude(model, σs, two_λs; kw...)
+              for two_λs in itr(spins(model)))

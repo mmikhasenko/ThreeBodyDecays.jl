@@ -60,6 +60,8 @@ end
 
 iterate(x::AbstractDecayChain) = (x, nothing)
 length(x::AbstractDecayChain) = 1
+spins(d::DecayChain) = d.tbs.two_js
+masses(d::DecayChain) = d.tbs.ms
 
 """
 	DecayChainLS(;
