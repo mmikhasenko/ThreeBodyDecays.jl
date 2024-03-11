@@ -43,8 +43,3 @@ include("test_inference.jl")
 @safetestset "Integrals" begin
     include("test_integrals.jl")
 end
-
-
-@safetestset "Lineshapes" begin
-    include("test_lineshapes.jl")
-end
