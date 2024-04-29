@@ -14,8 +14,8 @@ end
 
 @recipe function f(intensity::Function, ms::MassTuple; iσx = 1, iσy = 2, Ngrid = 100)
 	# 
-	σxv = range(lims(iσx, ms)..., length = Ngrid)
-	σyv = range(lims(iσy, ms)..., length = Ngrid)
+	σxv = range(lims(iσx, ms)..., length = Ngrid+1) |> shift_by_half
+	σyv = range(lims(iσy, ms)..., length = Ngrid+1) |> shift_by_half
 	# 
 	# 
 	calv = [
