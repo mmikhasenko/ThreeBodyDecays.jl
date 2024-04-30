@@ -4,7 +4,6 @@
     names::SVector{N,String}
 end
 
-const VectPairStringChain = AbstractVector{<:Pair{<:AbstractString,<:Tuple{<:Number,<:AbstractDecayChain}}}
 """
 	ThreeBodyDecay(; chains, couplings, names)
 
@@ -26,20 +25,32 @@ ThreeBodyDecay(
 	names=["L1405", "L1405", "K892"])
 ```
 """
-function ThreeBodyDecay(descriptor::VectPairStringChain)
-    N = length(descriptor)
+function ThreeBodyDecay(chains::Vector{T}, couplings::Vector{L}, names::Vector{String}) where {T<:AbstractDecayChain,L<:Number}
+    N = length(chains)
+    @assert length(couplings) == N && length(names) == N "The lengths of chains, couplings, and names must be equal"
+    return ThreeBodyDecay(SVector{N,T}(chains), SVector{N,L}(couplings), SVector{N,String}(names))
+end
 
+"""
+	ThreeBodyDecay(descriptor)
+
+Constructs a `ThreeBodyDecay` object using one argument, a descriptor.
+The `descriptor` is a list of paies, `names .=> zip(couplings, chains)`.
+
+# Examples
+```julia
+ThreeBodyDecay("K892" .=> zip([1.0, -1.0, 0.2im], [chain1, chain2, chain3]))
+```
+"""
+function ThreeBodyDecay(descriptor)
+    N = length(descriptor)
     #
     names = first.(descriptor)
     cd = getindex.(descriptor, 2)
     couplings = first.(cd)
     chains = getindex.(cd, 2)
-    # 
-    sv_chains = (SVector{N})(chains)
-    sv_couplings = SVector{N}(couplings)
-    sv_names = SVector{N,String}(names)
     #
-    ThreeBodyDecay(sv_chains, sv_couplings, sv_names)
+    ThreeBodyDecay(chains, couplings, names)
 end
 
 amplitude(model::ThreeBodyDecay, p...; kw...) =
@@ -48,11 +59,13 @@ amplitude(model::ThreeBodyDecay, p...; kw...) =
 
 import Base: getindex, length
 
-getindex(model::ThreeBodyDecay, key...) =
-    ThreeBodyDecay(
-        getindex(model.names, key...) .=> zip(
-            getindex(model.couplings, key...),
-            getindex(model.chains, key...)))
+function getindex(model::ThreeBodyDecay, key...)
+    description = getindex(model.names, key...) .=> zip(
+        getindex(model.couplings, key...),
+        getindex(model.chains, key...))
+    @show length(description)
+    ThreeBodyDecay(description)
+end
 
 length(model::ThreeBodyDecay{N}) where {N} = length(model.chains)
 system(model::ThreeBodyDecay) = first(model.chains).tbs
