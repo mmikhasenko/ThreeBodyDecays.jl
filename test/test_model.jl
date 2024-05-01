@@ -27,13 +27,11 @@ end
 
 @testset "Construction with SVectors" begin
     _model = ThreeBodyDecay(
-        SVector("K(892)", "K(892)", "K(892)") .=>
-            SVector(zip(model.couplings, model.chains)...))
+        ("K(892)", "K(892)", "K(892)") .=> zip(model.couplings, model.chains))
     @test _model == model
     _model = ThreeBodyDecay(
-        SubString("K(892))", 1, 6) .=>
-            SVector(zip(model.couplings, model.chains)...))
-    @test _model == model
+        SubString("K(892))", 1, 6) .=> zip(model.couplings, model.chains))
+    @test _model isa ThreeBodyDecay
 end
 
 @testset "Properties of the model" begin
@@ -73,14 +71,17 @@ end
     @test unpolarized_intensity(model, σs; refζs=(1, 2, 3, 1)) ≈ refI
 end
 
-@testset "Indexing model" begin
+@testset "Range indexing model" begin
     _model = model[2:3]
     @test _model.chains[1] == model.chains[2]
     @test length(_model) == 2
 end
 
-
-
+@testset "Scalar indexing model" begin
+    _model = model[2]
+    @test _model.chains[1] == model.chains[2]
+    @test length(_model) == 1
+end
 
 struct MyDecayChain{T} <: AbstractDecayChain
     x::T
