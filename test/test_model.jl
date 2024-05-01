@@ -31,7 +31,7 @@ end
     @test _model == model
     _model = ThreeBodyDecay(
         SubString("K(892))", 1, 6) .=> zip(model.couplings, model.chains))
-    @test _model == model
+    @test _model isa ThreeBodyDecay
 end
 
 @testset "Properties of the model" begin

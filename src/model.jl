@@ -1,7 +1,7 @@
-@with_kw struct ThreeBodyDecay{N,T<:AbstractDecayChain,L<:Number}
+@with_kw struct ThreeBodyDecay{N,T<:AbstractDecayChain,L<:Number,S<:AbstractString}
     chains::SVector{N,T}
     couplings::SVector{N,L}
-    names::SVector{N,String}
+    names::SVector{N,S}
 end
 
 """
@@ -25,10 +25,11 @@ ThreeBodyDecay(
 	names=["L1405", "L1405", "K892"])
 ```
 """
-function ThreeBodyDecay(chains::Vector{T}, couplings::Vector{L}, names::Vector{String}) where {T<:AbstractDecayChain,L<:Number}
+function ThreeBodyDecay(
+    chains::Vector{T}, couplings::Vector{L}, names::Vector{S}) where {T<:AbstractDecayChain,L<:Number,S<:AbstractString}
     N = length(chains)
     @assert length(couplings) == N && length(names) == N "The lengths of chains, couplings, and names must be equal"
-    return ThreeBodyDecay(SVector{N,T}(chains), SVector{N,L}(couplings), SVector{N,String}(names))
+    return ThreeBodyDecay(SVector{N,T}(chains), SVector{N,L}(couplings), SVector{N,S}(names))
 end
 
 """
@@ -50,7 +51,8 @@ function ThreeBodyDecay(descriptor)
     couplings = first.(cd)
     chains = getindex.(cd, 2)
     #
-    ThreeBodyDecay(chains, couplings, names)
+    N = length(chains)
+    ThreeBodyDecay(SVector{N}(chains), SVector{N}(couplings), SVector{N}(names))
 end
 
 amplitude(model::ThreeBodyDecay, p...; kw...) =
@@ -63,7 +65,6 @@ function getindex(model::ThreeBodyDecay, key...)
     description = getindex(model.names, key...) .=> zip(
         getindex(model.couplings, key...),
         getindex(model.chains, key...))
-    @show length(description)
     ThreeBodyDecay(description)
 end
 
