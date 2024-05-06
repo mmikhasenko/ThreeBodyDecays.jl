@@ -77,6 +77,7 @@ export change_basis_3from1,
     change_basis_2from3
 include("cross_channel_relations.jl")
 
+export Recoupling
 export NoRecoupling, ParityRecoupling, RecouplingLS
 export AbstractDecayChain
 export DecayChain, DecayChainLS, DecayChainsLS
