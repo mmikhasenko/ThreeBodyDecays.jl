@@ -91,14 +91,6 @@ end
 end
 
 
-function Base.vcat(mv::ThreeBodyDecay...)
-    names = vcat(getproperty.(mv, :names)...)
-    couplings = vcat(getproperty.(mv, :couplings)...)
-    chains = vcat(getproperty.(mv, :chains)...)
-    ThreeBodyDecay(names .=> zip(couplings, chains))
-end
-
-
 struct MyDecayChain{T} <: AbstractDecayChain
     x::T
 end
