@@ -83,6 +83,22 @@ end
     @test length(_model) == 1
 end
 
+
+@testset "Vertical Concat model" begin
+    _model = vcat(model[2], model[2:3], model)
+    @test _model isa ThreeBodyDecay
+    @test length(_model) == 1 + 2 + 3
+end
+
+
+function Base.vcat(mv::ThreeBodyDecay...)
+    names = vcat(getproperty.(mv, :names)...)
+    couplings = vcat(getproperty.(mv, :couplings)...)
+    chains = vcat(getproperty.(mv, :chains)...)
+    ThreeBodyDecay(names .=> zip(couplings, chains))
+end
+
+
 struct MyDecayChain{T} <: AbstractDecayChain
     x::T
 end

@@ -81,3 +81,23 @@ Computes squared amplitude summed over spin projections.
 unpolarized_intensity(model, σs; kw...) =
     sum(abs2, amplitude(model, σs, two_λs; kw...)
               for two_λs in itr(spins(model)))
+
+
+"""
+    Base.vcat(models::ThreeBodyDecay...)
+
+Concatenates multiple `ThreeBodyDecay` objects into a single `ThreeBodyDecay`.
+Argument is variable number of `ThreeBodyDecay` objects.
+
+# An example
+```julia
+extended_model = vcat(model[2], model[2:3], model)
+```
+"""
+function vcat(models::ThreeBodyDecay...)
+    names = vcat(getproperty.(models, :names)...)
+    couplings = vcat(getproperty.(models, :couplings)...)
+    chains = vcat(getproperty.(models, :chains)...)
+    ThreeBodyDecay(names .=> zip(couplings, chains))
+end
+
