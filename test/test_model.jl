@@ -83,6 +83,14 @@ end
     @test length(_model) == 1
 end
 
+
+@testset "Vertical Concat model" begin
+    _model = vcat(model[2], model[2:3], model)
+    @test _model isa ThreeBodyDecay
+    @test length(_model) == 1 + 2 + 3
+end
+
+
 struct MyDecayChain{T} <: AbstractDecayChain
     x::T
 end
