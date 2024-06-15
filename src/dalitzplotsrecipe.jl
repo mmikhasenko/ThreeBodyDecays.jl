@@ -4,6 +4,7 @@ function invs(σx, σy; iσx, iσy, ms)
     iσx == 1 && iσy == 3 && return Invariants(ms, σ1=σx, σ3=σy)
     iσx == 3 && iσy == 1 && return Invariants(ms, σ1=σy, σ3=σx)
     iσx == 3 && iσy == 2 && return Invariants(ms, σ2=σy, σ3=σx)
+    (iσx != 2 || iσy != 3) && error("Key arguments iσx, iσy should be among 1, 2, or 3")
     return Invariants(ms, σ2=σx, σ3=σy) # σx = 2 && σy = 3
     # error()
 end
