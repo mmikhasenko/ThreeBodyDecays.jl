@@ -129,8 +129,6 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     two_js = tbs.two_js
     # 
     i, j = ij_from_k(k)
-    two_js_Hij = (two_j, two_js[i], two_js[j])
-    two_js_HRk = (two_js[4], two_j, two_js[k])
     # 
     ms² = tbs.ms^2
     # 
@@ -145,13 +143,14 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     two_λs_rev0 = collect(two_λs) .* [1, 1, 1, -1]
     d_ζs = map(zip(ws, two_λs_rev0, two_js)) do (w, _two_λ, _two_j)
         _cosζ = cosζ(w, σs, ms²)
-        [wignerd_doublearg_sign(_two_j, _two_λ′, _two_λ, _cosζ, ispositive(w))
-         for _two_λ′ in -_two_j:2:_two_j]
+        wignerd_doublearg_sign.(_two_j, -_two_j:2:_two_j, _two_λ, _cosζ, ispositive(w))
     end
     reverse!(d_ζs[4])
     #
-    d_θ = [wignerd_doublearg_sign(two_j, two_m1, two_m2, cosθ, true)
-           for two_m1 in -two_j:2:two_j, two_m2 in -two_j:2:two_j]
+    d_θ = wignerd_doublearg_sign.(two_j, -two_j:2:two_j, transpose(-two_j:2:two_j), cosθ, true)
+    # 
+    two_js_Hij = (two_j, two_js[i], two_js[j])
+    two_js_HRk = (two_js[4], two_j, two_js[k])
     # 
     VRk = [amplitude(HRk, (two_m1, two_m2), two_js_HRk) *
            phase(two_js[k] - two_m2) # particle-2 convention
