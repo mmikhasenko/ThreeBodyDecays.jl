@@ -132,7 +132,7 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     # 
     ms² = tbs.ms^2
     # 
-    ws = [wr(k, refζs[l], mod(i, 4)) for l in 1:4]
+    ws = [wr(k, refζs[l], mod(l, 4)) for l in 1:4]
     cosθ = cosθij(σs, ms²; k)
     #
     # wigner rotation for the initial state comes with opposite sign, d^{j0}_{λ0, λ0'}
