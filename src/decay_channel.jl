@@ -143,38 +143,27 @@ function aligned_amplitude(dc::DecayChain, σs)
            phase(two_js[j] - two_m2) # particle-2 convention
            for two_m1 in -two_js[i]:2:two_js[i], two_m2 in -two_js[j]:2:two_js[j]]
     #
-    Δind_zk = div(two_j - two_js[4] - two_js[k], 2) - 1
-    Δind_ij = div(two_j - two_js[i] + two_js[j], 2) + 1
+    Δ_zk = div(two_j - two_js[4] - two_js[k], 2) - 1
+    Δ_ij = div(two_j - two_js[i] + two_js[j], 2) + 1
     #
     lineshape = dc.Xlineshape(σs[k])
-    F = zeros(typeof(lineshape), (two_js[i], two_js[j], two_js[k], two_js[4]) .+ 1)
+    F0 = zeros(typeof(lineshape), Tuple(two_js) .+ 1)
+    F = permutedims(F0, (i, j, k, 4))
     # 
-    @inbounds begin
-        for ind_i′ in Base.OneTo(two_js[i] + 1)
-            for ind_j′ in Base.OneTo(two_js[j] + 1)
-                for ind_k′ in Base.OneTo(two_js[k] + 1)
-                    for ind_z′ in Base.OneTo(two_js[4] + 1)
-                        #
-                        ind_zk′ = ind_z′ + ind_k′ + Δind_zk
-                        ind_ij′ = ind_i′ - ind_j′ + Δind_ij
-                        # 
-                        !(1 <= ind_zk′ <= two_j + 1) && continue
-                        !(1 <= ind_ij′ <= two_j + 1) && continue
-                        # 
-                        F[ind_i′, ind_j′, ind_k′, ind_z′] =
-                            VRk[ind_zk′, ind_k′] *
-                            d_θ[ind_zk′, ind_ij′] *
-                            Vij[ind_i′, ind_j′]
-                    end
-                end
-            end
-        end
+    for itr in CartesianIndices(F)
+        _zk = itr[4] + itr[3] + Δ_zk
+        _ij = itr[1] - itr[2] + Δ_ij
+        # 
+        !(1 <= _zk <= two_j + 1) && continue
+        !(1 <= _ij <= two_j + 1) && continue
+        # 
+        F[itr] = VRk[_zk, itr[3]] * d_θ[_zk, _ij] * Vij[itr[1], itr[2]]
     end
+    # 
     one_T = one(typeof(two_js[1]))
     F .*= sqrt(two_j * one_T + 1) * # normalization
           lineshape # same for all amplutudes in the chain
     # 
-    F0 = zeros(typeof(lineshape), Tuple(two_js) .+ 1)
     permutedims!(F0, F, invperm((i, j, k, 4)))
     return F0
 end
@@ -198,16 +187,14 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
         wignerd_doublearg_sign.(_two_j, -_two_j:2:_two_j, transpose(-_two_j:2:_two_j), _cosζ, ispositive(w))
     end
     #
-    f = sum(F0[ind_1′, ind_2′, ind_3′, ind_z′] *
-            d_ζs[1][ind_1′, ind_1] *
-            d_ζs[2][ind_2′, ind_2] *
-            d_ζs[3][ind_3′, ind_3] *
-            d_ζs[4][ind_z, ind_z′]
-    # 
-            for ind_1′ in axes(d_ζs[1], 1),
-            ind_2′ in axes(d_ζs[2], 1),
-            ind_3′ in axes(d_ζs[3], 1),
-            ind_z′ in axes(d_ζs[4], 1)
+    f = sum(
+        d_ζs[4][ind_z, itr[4]] *
+        F0[itr] *
+        d_ζs[1][itr[1], ind_1] *
+        d_ζs[2][itr[2], ind_2] *
+        d_ζs[3][itr[3], ind_3]
+        # 
+        for itr in CartesianIndices(F0)
     )
     return f
 end
