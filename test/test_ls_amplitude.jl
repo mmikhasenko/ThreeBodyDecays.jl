@@ -94,12 +94,11 @@ const model = let
     vcat(models...)
 end
 
-
 @testset "Elapsed time" begin
     @test length(model) == 20
     σs = x2σs([0.5, 0.3], masses(model); k=1)
-    unpolarized_intensity(model, σs) == 17646.88022101494
-    # @btime 
+    @test unpolarized_intensity(model, σs) ≈ 16404.191172692605
+    # @btime unpolarized_intensity($model, $σs)
     evaltime = @elapsed unpolarized_intensity(model, σs)
     @info """Unpolarized_intensity for a model (3/2->1,1/2,0) with 20 chains is computed in $(round(1000*evaltime, digits=2)) ms
 Compare to my usual evaluation time of about 5ms
