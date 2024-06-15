@@ -131,21 +131,21 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     i, j = ij_from_k(k)
     two_js_Hij = (two_j, two_js[i], two_js[j])
     two_js_HRk = (two_js[4], two_j, two_js[k])
-    #
+    # 
     ms² = tbs.ms^2
     # 
     ws = [wr(k, refζs[l], mod(i, 4)) for l in 1:4]
-    cosζs = [cosζ(w, σs, ms²) for w in ws]
-    #
     cosθ = cosθij(σs, ms²; k)
     #
     # wigner rotation for the initial state comes with opposite sign, d^{j0}_{λ0, λ0'}
     # to treat it similar to the final state, we reverse the order of indices and their signs
-    # using d_{λ0, λ0'} (ζ) = d_{-λ0', -λ0} (ζ)
+    # using d_{λ, λ'} (ζ) = d_{-λ', -λ} (ζ)
+    # i.e. d_ζs is computed with -λ, for all λ in -j:j, then reversed
     # 
     two_λs_rev0 = collect(two_λs) .* [1, 1, 1, -1]
-    d_ζs = map(zip(ws, cosζs, two_λs_rev0, two_js)) do (w, cosζ, _two_λ, _two_j)
-        [wignerd_doublearg_sign(_two_j, _two_λ′, _two_λ, cosζ, ispositive(w))
+    d_ζs = map(zip(ws, two_λs_rev0, two_js)) do (w, _two_λ, _two_j)
+        _cosζ = cosζ(w, σs, ms²)
+        [wignerd_doublearg_sign(_two_j, _two_λ′, _two_λ, _cosζ, ispositive(w))
          for _two_λ′ in -_two_j:2:_two_j]
     end
     reverse!(d_ζs[4])
