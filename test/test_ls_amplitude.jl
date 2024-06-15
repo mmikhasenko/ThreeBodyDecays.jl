@@ -1,6 +1,9 @@
 using ThreeBodyDecays
 using Test
 
+using Parameters
+using BenchmarkTools
+
 @testset "LS amplitude scalars" begin
     tbs = ThreeBodySystem(2.0, 1.0, 1.5; m0=6.0)
     dpp = randomPoint(tbs)
@@ -44,8 +47,6 @@ chains = let
         possible_ls_Rk(jp, two_js, PV; k))
     # 
     map(Iterators.product(LS_all, ls_all)) do (two_LS, two_ls)
-        L = div(two_LS[1], 2)
-        l = div(two_ls[1], 2)
         Xlineshape = identity
         DecayChain(; k, jp.two_j, tbs, Xlineshape,
             HRk=RecouplingLS(two_LS), Hij=RecouplingLS(two_ls))
@@ -67,4 +68,40 @@ end
     refs = [183.0603173468474 100.20583627496791 183.0603173468474
         183.0603173468474 100.20583627496791 183.0603173468474]
     @test all(unpolarized_intensity.(chains, Ref(σs)) .≈ refs)
+end
+
+
+
+const model = let
+    two_js, Ps = ThreeBodySpinParities("1-", "1/2+", "0-"; jp0="3/2+")
+    tbs = ThreeBodySystem(1.1, 2.2, 3.3; m0=7.7, two_js)
+    #
+    models = map([
+        (name="R3_3h-", k=3, two_jp=jp"3/2-"),
+        (name="R1_3h-", k=1, two_jp=jp"3/2-"),
+        (name="R3_1h-", k=3, two_jp=jp"1/2-"),
+        (name="R1_1h-", k=1, two_jp=jp"1/2-"),
+        (name="R2", k=2, two_jp=jp"3-"),]) do (; k, two_jp, name)
+        #
+        chains = map(possible_lsLS(two_jp, two_js, Ps; k)) do conf
+            @unpack two_LS, two_ls = conf
+            DecayChain(; k, two_jp.two_j, tbs, Xlineshape=identity,
+                HRk=RecouplingLS(two_LS), Hij=RecouplingLS(two_ls))
+        end
+        ci = ones(Float64, length(chains))
+        ThreeBodyDecay(name .=> zip(ci, chains))
+    end
+    vcat(models...)
+end
+
+
+@testset "Elapsed time" begin
+    @test length(model) == 20
+    σs = x2σs([0.5, 0.3], masses(model); k=1)
+    unpolarized_intensity(model, σs) == 17646.88022101494
+    # @btime 
+    evaltime = @elapsed unpolarized_intensity(model, σs)
+    @info """Unpolarized_intensity for a model (3/2->1,1/2,0) with 20 chains is computed in $(round(1000*evaltime, digits=2)) ms
+Compare to my usual evaluation time of about 5ms
+"""
 end
