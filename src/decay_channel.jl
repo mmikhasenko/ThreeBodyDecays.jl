@@ -134,26 +134,21 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     #
     ms² = tbs.ms^2
     # 
-    w0 = wr(k, refζs[4], 0)
-    wi = wr(k, refζs[i], i)
-    wj = wr(k, refζs[j], j)
-    wk = wr(k, refζs[k], k)
-    # 
-    cosζ0 = cosζ(w0, σs, ms²)
-    cosζi = cosζ(wi, σs, ms²)
-    cosζj = cosζ(wj, σs, ms²)
-    cosζk = cosζ(wk, σs, ms²)
+    ws = [wr(k, refζs[l], mod(i, 4)) for l in 1:4]
+    cosζs = [cosζ(w, σs, ms²) for w in ws]
     #
     cosθ = cosθij(σs, ms²; k)
     #
-    d_ζ_for0 = [wignerd_doublearg_sign(two_js[4], two_λs[4], two_λ0′, cosζ0, ispositive(w0))
-                for two_λ0′ in -two_js[4]:2:two_js[4]]
-    d_ζ_fori = [wignerd_doublearg_sign(two_js[i], two_λi′, two_λs[i], cosζi, ispositive(wi))
-                for two_λi′ in -two_js[i]:2:two_js[i]]
-    d_ζ_forj = [wignerd_doublearg_sign(two_js[j], two_λj′, two_λs[j], cosζj, ispositive(wj))
-                for two_λj′ in -two_js[j]:2:two_js[j]]
-    d_ζ_fork = [wignerd_doublearg_sign(two_js[k], two_λk′, two_λs[k], cosζk, ispositive(wk))
-                for two_λk′ in -two_js[k]:2:two_js[k]]
+    # wigner rotation for the initial state comes with opposite sign, d^{j0}_{λ0, λ0'}
+    # to treat it similar to the final state, we reverse the order of indices and their signs
+    # using d_{λ0, λ0'} (ζ) = d_{-λ0', -λ0} (ζ)
+    # 
+    two_λs_rev0 = collect(two_λs) .* [1, 1, 1, -1]
+    d_ζs = map(zip(ws, cosζs, two_λs_rev0, two_js)) do (w, cosζ, _two_λ, _two_j)
+        [wignerd_doublearg_sign(_two_j, _two_λ′, _two_λ, cosζ, ispositive(w))
+         for _two_λ′ in -_two_j:2:_two_j]
+    end
+    reverse!(d_ζs[4])
     #
     d_θ = [wignerd_doublearg_sign(two_j, two_m1, two_m2, cosθ, true)
            for two_m1 in -two_j:2:two_j, two_m2 in -two_j:2:two_j]
@@ -177,10 +172,10 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     f = zero(lineshape)
     # 
     @inbounds begin
-        for ind_i in axes(d_ζ_fori, 1)
-            for ind_j in axes(d_ζ_forj, 1)
-                for ind_k in axes(d_ζ_fork, 1)
-                    for ind_z in axes(d_ζ_for0, 1)
+        for ind_i in axes(d_ζs[i], 1)
+            for ind_j in axes(d_ζs[j], 1)
+                for ind_k in axes(d_ζs[k], 1)
+                    for ind_z in axes(d_ζs[4], 1)
                         #
                         ind_zk = ind_z + ind_k + Δind_zk
                         ind_ij = ind_i - ind_j + Δind_ij
@@ -191,15 +186,15 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
                         f +=
                             sqrt(two_j * T1 + 1) *
                             # 
-                            d_ζ_for0[ind_z] *
+                            d_ζs[4][ind_z] *
                             # 
                             VRk[ind_zk, ind_k] *
                             d_θ[ind_zk, ind_ij] *
                             Vij[ind_i, ind_j] *
                             # 
-                            d_ζ_fori[ind_i] *
-                            d_ζ_forj[ind_j] *
-                            d_ζ_fork[ind_k]
+                            d_ζs[i][ind_i] *
+                            d_ζs[j][ind_j] *
+                            d_ζs[k][ind_k]
                     end
                 end
             end
