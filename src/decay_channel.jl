@@ -146,25 +146,64 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     #
     cosθ = cosθij(σs, ms²; k)
     #
+    d_ζ_for0 = [wignerd_doublearg_sign(two_js[4], two_λs[4], two_λ0′, cosζ0, ispositive(w0))
+                for two_λ0′ in -two_js[4]:2:two_js[4]]
+    d_ζ_fori = [wignerd_doublearg_sign(two_js[i], two_λi′, two_λs[i], cosζi, ispositive(wi))
+                for two_λi′ in -two_js[i]:2:two_js[i]]
+    d_ζ_forj = [wignerd_doublearg_sign(two_js[j], two_λj′, two_λs[j], cosζj, ispositive(wj))
+                for two_λj′ in -two_js[j]:2:two_js[j]]
+    d_ζ_fork = [wignerd_doublearg_sign(two_js[k], two_λk′, two_λs[k], cosζk, ispositive(wk))
+                for two_λk′ in -two_js[k]:2:two_js[k]]
+    #
+    d_θ = [wignerd_doublearg_sign(two_j, two_m1, two_m2, cosθ, true)
+           for two_m1 in -two_j:2:two_j, two_m2 in -two_j:2:two_j]
+    # 
+    VRk = [amplitude(HRk, (two_m1, two_m2), two_js_HRk) *
+           phase(two_js[k] - two_m2) # particle-2 convention
+           for two_m1 in -two_j:2:two_j, two_m2 in -two_js[k]:2:two_js[k]]
+    # 
+    Vij = [amplitude(Hij, (two_m1, two_m2), two_js_Hij) *
+           phase(two_js[j] - two_m2) # particle-2 convention
+           for two_m1 in -two_js[i]:2:two_js[i], two_m2 in -two_js[j]:2:two_js[j]]
+    #
+    Δind_zk = div(two_j - two_js[4] - two_js[k], 2) - 1
+    Δind_ij = div(two_j - two_js[i] + two_js[j], 2) + 1
+    # 
+    # 
     T = typeof(two_λs[1])
     T1 = one(T)
     # 
-    itr_two_λs′ = itr(SVector{4,T}(two_js[1], two_js[2], two_js[3], two_js[4]))
     lineshape = dc.Xlineshape(σs[k])
     f = zero(lineshape)
-    for two_λs′ in itr_two_λs′
-        # two_λs′[4] = two_τ - two_λs′[k]
-        # two_τ = two_λs′[4] + two_λs′[k]
-        f +=
-            wignerd_doublearg_sign(two_js[4], two_λs[4], two_λs′[4], cosζ0, ispositive(w0)) *
-            # 
-            amplitude(HRk, (two_λs′[4] + two_λs′[k], two_λs′[k]), two_js_HRk) * phase(two_js[k] - two_λs′[k]) * # particle-2 convention
-            sqrt(two_j * T1 + 1) * wignerd_doublearg_sign(two_j, two_λs′[4] + two_λs′[k], two_λs′[i] - two_λs′[j], cosθ, true) *
-            amplitude(Hij, (two_λs′[i], two_λs′[j]), two_js_Hij) * phase(two_js[j] - two_λs′[j]) * # particle-2 convention
-            # 
-            wignerd_doublearg_sign(two_js[i], two_λs′[i], two_λs[i], cosζi, ispositive(wi)) *
-            wignerd_doublearg_sign(two_js[j], two_λs′[j], two_λs[j], cosζj, ispositive(wj)) *
-            wignerd_doublearg_sign(two_js[k], two_λs′[k], two_λs[k], cosζk, ispositive(wk))
+    # 
+    @inbounds begin
+        for ind_i in axes(d_ζ_fori, 1)
+            for ind_j in axes(d_ζ_forj, 1)
+                for ind_k in axes(d_ζ_fork, 1)
+                    for ind_z in axes(d_ζ_for0, 1)
+                        #
+                        ind_zk = ind_z + ind_k + Δind_zk
+                        ind_ij = ind_i - ind_j + Δind_ij
+                        # 
+                        !(1 <= ind_zk <= two_j + 1) && continue
+                        !(1 <= ind_ij <= two_j + 1) && continue
+                        # 
+                        f +=
+                            sqrt(two_j * T1 + 1) *
+                            # 
+                            d_ζ_for0[ind_z] *
+                            # 
+                            VRk[ind_zk, ind_k] *
+                            d_θ[ind_zk, ind_ij] *
+                            Vij[ind_i, ind_j] *
+                            # 
+                            d_ζ_fori[ind_i] *
+                            d_ζ_forj[ind_j] *
+                            d_ζ_fork[ind_k]
+                    end
+                end
+            end
+        end
     end
     return f * lineshape
 end
