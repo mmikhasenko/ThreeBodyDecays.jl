@@ -68,7 +68,7 @@ function getindex(model::ThreeBodyDecay, key...)
     ThreeBodyDecay(description)
 end
 
-length(model::ThreeBodyDecay{N}) where {N} = length(model.chains)
+length(model::ThreeBodyDecay{N}) where {N} = N
 system(model::ThreeBodyDecay) = first(model.chains).tbs
 masses(model::ThreeBodyDecay) = masses(system(model))
 spins(model::ThreeBodyDecay) = spins(system(model))
