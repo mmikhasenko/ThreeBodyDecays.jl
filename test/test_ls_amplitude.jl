@@ -106,7 +106,7 @@ Compare to my usual evaluation time of about 5ms
 """
 end
 
-let
+@testset "Full amplitude components" begin
     σs = x2σs([0.5, 0.3], masses(model); k=1)
     A_2103 = amplitude(model, σs, [2, 1, 0, 3])
     A = amplitude(model, σs)
