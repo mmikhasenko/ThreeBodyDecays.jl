@@ -79,9 +79,7 @@ spins(model::ThreeBodyDecay) = spins(system(model))
 Computes squared amplitude summed over spin projections.
 """
 unpolarized_intensity(model, σs; kw...) =
-    sum(abs2, amplitude(model, σs, two_λs; kw...)
-              for two_λs in itr(spins(model)))
-
+    sum(abs2, amplitude(model, σs; kw...))
 
 """
     Base.vcat(models::ThreeBodyDecay...)

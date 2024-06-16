@@ -127,7 +127,7 @@ wignerd_doublearg_sign(two_j, cosθ, ispositive) =
     wignerd_doublearg_sign.(two_j, -two_j:2:two_j, transpose(-two_j:2:two_j), cosθ, ispositive)
 
 
-function aligned_amplitude(dc::DecayChain, σs)
+function aligned_amplitude(dc::DecayChain, σs::MandestamTuple)
     @unpack k, tbs, two_j, HRk, Hij = dc
     i, j = ij_from_k(k)
     # 
@@ -172,7 +172,7 @@ function aligned_amplitude(dc::DecayChain, σs)
     return F0
 end
 
-function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
+function amplitude(dc::DecayChain, σs::MandestamTuple, two_λs; refζs=(1, 2, 3, 1))
     @unpack k, tbs, two_j = dc
     ms² = tbs.ms^2
     two_js = tbs.two_js
@@ -202,8 +202,35 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     return f
 end
 
+function amplitude(dc::DecayChain, σs::MandestamTuple; refζs=(1, 2, 3, 1))
+    @unpack k, tbs, two_j = dc
+    ms² = tbs.ms^2
+    two_js = tbs.two_js
+
+    F0 = aligned_amplitude(dc, σs)
+    # alignment rotations
+    d_ζs = map(enumerate(zip(two_js, refζs))) do (l, (_two_j, _refζ))
+        _w = wr(k, _refζ, mod(l, 4))
+        _cosζ = cosζ(_w, σs, ms²)
+        wignerd_doublearg_sign(_two_j, _cosζ, ispositive(_w))
+    end
+    #
+    F = similar(F0)
+    for itr in CartesianIndices(F0)
+        F[itr] = sum(
+            d_ζs[4][itr[4], _itr[4]] *
+            F0[_itr] *
+            d_ζs[1][_itr[1], itr[1]] *
+            d_ζs[2][_itr[2], itr[2]] *
+            d_ζs[3][_itr[3], itr[3]]
+            # 
+            for _itr in CartesianIndices(F0))
+    end
+    return F
+end
+
 #
-amplitude(dc::AbstractDecayChain, dpp; kw...) = amplitude(dc, dpp.σs, dpp.two_λs; kw...)
+amplitude(dc::AbstractDecayChain, dpp::DalitzPlotPoint; kw...) = amplitude(dc, dpp.σs, dpp.two_λs; kw...)
 #
 summed_over_polarization(fn, two_js) = σs -> sum(fn(σs, two_λs) for two_λs in itr(two_js))
 #
