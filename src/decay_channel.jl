@@ -177,26 +177,25 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     ms² = tbs.ms^2
     two_js = tbs.two_js
 
-    F0 = aligned_amplitude(dc::DecayChain, σs)
+    F0 = aligned_amplitude(dc, σs)
 
     # alignment rotations
-    ind_1 = div(two_js[1] + two_λs[1], 2) + 1
-    ind_2 = div(two_js[2] + two_λs[2], 2) + 1
-    ind_3 = div(two_js[3] + two_λs[3], 2) + 1
-    ind_z = div(two_js[4] + two_λs[4], 2) + 1
-    # 
-    ws = [wr(k, refζs[l], mod(l, 4)) for l in 1:4]
-    d_ζs = map(zip(ws, two_js)) do (w, _two_j)
-        _cosζ = cosζ(w, σs, ms²)
-        wignerd_doublearg_sign(_two_j, _cosζ, ispositive(w))
+    d_ζs = map(enumerate(zip(two_js, refζs))) do (l, (_two_j, _refζ))
+        _w = wr(k, _refζ, mod(l, 4))
+        _cosζ = cosζ(_w, σs, ms²)
+        wignerd_doublearg_sign(_two_j, _cosζ, ispositive(_w))
     end
     #
+    ind = map(zip(two_js, two_λs)) do (_two_j, _two_λ)
+        div(_two_j + _two_λ, 2) + 1
+    end
+    # 
     f = sum(
-        d_ζs[4][ind_z, itr[4]] *
+        d_ζs[4][ind[4], itr[4]] *
         F0[itr] *
-        d_ζs[1][itr[1], ind_1] *
-        d_ζs[2][itr[2], ind_2] *
-        d_ζs[3][itr[3], ind_3]
+        d_ζs[1][itr[1], ind[1]] *
+        d_ζs[2][itr[2], ind[2]] *
+        d_ζs[3][itr[3], ind[3]]
         # 
         for itr in CartesianIndices(F0)
     )
