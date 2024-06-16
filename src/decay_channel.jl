@@ -123,13 +123,17 @@ wignerd_doublearg_sign(two_j, two_λ1, two_λ2, cosθ, ispositive) =
     (ispositive ? 1 : x"-1"^div(two_λ1 - two_λ2, 2)) *
     wignerd_doublearg(two_j, two_λ1, two_λ2, cosθ)
 
+wignerd_doublearg_sign(two_j, cosθ, ispositive) =
+    wignerd_doublearg_sign.(two_j, -two_j:2:two_j, transpose(-two_j:2:two_j), cosθ, ispositive)
+
+
 function aligned_amplitude(dc::DecayChain, σs)
     @unpack k, tbs, two_j, HRk, Hij = dc
     i, j = ij_from_k(k)
     # 
     ms² = tbs.ms^2
     cosθ = cosθij(σs, ms²; k)
-    d_θ = wignerd_doublearg_sign.(two_j, -two_j:2:two_j, transpose(-two_j:2:two_j), cosθ, true)
+    d_θ = wignerd_doublearg_sign(two_j, cosθ, true)
     # 
     two_js = tbs.two_js
     two_js_Hij = (two_j, two_js[i], two_js[j])
@@ -184,7 +188,7 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     ws = [wr(k, refζs[l], mod(l, 4)) for l in 1:4]
     d_ζs = map(zip(ws, two_js)) do (w, _two_j)
         _cosζ = cosζ(w, σs, ms²)
-        wignerd_doublearg_sign.(_two_j, -_two_j:2:_two_j, transpose(-_two_j:2:_two_j), _cosζ, ispositive(w))
+        wignerd_doublearg_sign(_two_j, _cosζ, ispositive(w))
     end
     #
     f = sum(
