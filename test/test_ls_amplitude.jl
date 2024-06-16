@@ -110,7 +110,7 @@ end
     σs = x2σs([0.5, 0.3], masses(model); k=1)
     A_2103 = amplitude(model, σs, [2, 1, 0, 3])
     A = amplitude(model, σs)
-    @test A_2103 == A[end, end, end, end] ≈ 25.650736877020776
+    @test A_2103 ≈ A[end, end, end, end] ≈ 25.650736877020776
     A_m2m103 = amplitude(model, σs, [-2, -1, 0, 3])
-    @test A_m2m103 == A[1, 1, end, end] ≈ -14.353968898544204
+    @test A_m2m103 ≈ A[1, 1, end, end] ≈ -14.353968898544204
 end

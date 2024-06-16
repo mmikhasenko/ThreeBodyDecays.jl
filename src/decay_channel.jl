@@ -147,6 +147,7 @@ function aligned_amplitude(dc::DecayChain, σs::MandestamTuple)
            phase(two_js[j] - two_m2) # particle-2 convention
            for two_m1 in -two_js[i]:2:two_js[i], two_m2 in -two_js[j]:2:two_js[j]]
     #
+    # shifts are computed from matching div(two_j+two_λ, 2)+1 for every index
     Δ_zk = div(two_j - two_js[4] - two_js[k], 2) - 1
     Δ_ij = div(two_j - two_js[i] + two_js[j], 2) + 1
     #
@@ -154,18 +155,14 @@ function aligned_amplitude(dc::DecayChain, σs::MandestamTuple)
     F0 = zeros(typeof(lineshape), Tuple(two_js) .+ 1)
     F = permutedims(F0, (i, j, k, 4))
     # 
-    for itr in CartesianIndices(F)
-        _zk = itr[4] + itr[3] + Δ_zk
-        _ij = itr[1] - itr[2] + Δ_ij
-        # 
-        !(1 <= _zk <= two_j + 1) && continue
-        !(1 <= _ij <= two_j + 1) && continue
-        # 
-        F[itr] = VRk[_zk, itr[3]] * d_θ[_zk, _ij] * Vij[itr[1], itr[2]]
-    end
+    @tullio F[_i, _j, _k, _z] =
+        VRk[pad(_z + _k + $Δ_zk, two_j + 1), _k] *
+        d_θ[pad(_z + _k + $Δ_zk, two_j + 1), pad(_i - _j + $Δ_ij, two_j + 1)] *
+        Vij[_i, _j]
     # 
     one_T = one(typeof(two_js[1]))
-    F .*= sqrt(two_j * one_T + 1) * # normalization
+    d_norm = sqrt(two_j * one_T + 1)
+    F .*= d_norm * # normalization
           lineshape # same for all amplutudes in the chain
     # 
     permutedims!(F0, F, invperm((i, j, k, 4)))
@@ -189,7 +186,7 @@ function amplitude(dc::DecayChain, σs::MandestamTuple, two_λs; refζs=(1, 2, 3
     ind = map(zip(two_js, two_λs)) do (_two_j, _two_λ)
         div(_two_j + _two_λ, 2) + 1
     end
-    # 
+    #
     f = sum(
         d_ζs[4][ind[4], itr[4]] *
         F0[itr] *
@@ -215,17 +212,15 @@ function amplitude(dc::DecayChain, σs::MandestamTuple; refζs=(1, 2, 3, 1))
         wignerd_doublearg_sign(_two_j, _cosζ, ispositive(_w))
     end
     #
+    D1, D2, D3, D0 = d_ζs
+    # 
     F = similar(F0)
-    for itr in CartesianIndices(F0)
-        F[itr] = sum(
-            d_ζs[4][itr[4], _itr[4]] *
-            F0[_itr] *
-            d_ζs[1][_itr[1], itr[1]] *
-            d_ζs[2][_itr[2], itr[2]] *
-            d_ζs[3][_itr[3], itr[3]]
-            # 
-            for _itr in CartesianIndices(F0))
-    end
+    @tullio F[_i, _j, _k, _z] =
+        D0[_z, _z′] *
+        F0[_i′, _j′, _k′, _z′] *
+        D1[_i′, _i] *
+        D2[_j′, _j] *
+        D3[_k′, _k]
     return F
 end
 

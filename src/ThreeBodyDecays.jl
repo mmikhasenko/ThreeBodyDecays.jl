@@ -6,6 +6,7 @@ using Parameters
 using RecipesBase
 using Polynomials
 using PolynomialRoots
+using Tullio
 
 import Base: getindex, iterate, length, vcat
 
