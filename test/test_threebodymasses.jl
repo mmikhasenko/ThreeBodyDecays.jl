@@ -41,7 +41,7 @@ let
     @test lims2(ms)[2] == (m0 - m2)^2
     @test lims3(ms)[2] == (m0 - m3)^2
     #
-    @test lims1(ms) == lims(1, ms)
-    @test lims2(ms) == lims(2, ms)
-    @test lims3(ms) == lims(3, ms)
+    @test lims1(ms) == lims(1, ms) == lims(ms; k=1)
+    @test lims2(ms) == lims(2, ms) == lims(ms; k=2)
+    @test lims3(ms) == lims(3, ms) == lims(ms; k=3)
 end
