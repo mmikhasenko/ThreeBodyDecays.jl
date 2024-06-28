@@ -6,7 +6,7 @@ and mass tuple `ms`. The key argument `k` specifies the mapping: `σk->[0,1]`, z
 It returns an integrand function of x, x ∈ [0,1]x[0,1] domain to pass to a numerical integrator.
 
 # Arguments
-- `function_σs`: A function that takes a MandelstamTuple and returns a scalar.
+- `function_σs`: A function that takes a MandestamTuple and returns a scalar.
 - `ms`: A scalar representing the mass.
 - `k`: An integer represending the mapping index.
 
@@ -45,7 +45,7 @@ mass tuple `ms`, and Mandelstam variable `σk`, with `k` specified by a keyword 
 It returns an integrand function of x, x ∈ [0,1] to pass to a numerical integrator.
 
 # Arguments
-- `function_σs`: A function that takes a MandelstamTuple and returns a scalar.
+- `function_σs`: A function that takes a MandestamTuple and returns a scalar.
 - `ms`: A scalar representing the mass.
 - `σk`: A scalar representing the Mandelstam variable.
 - `k`: A scalar representing the momentum transfer (optional).
