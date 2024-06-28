@@ -141,11 +141,20 @@ Invariants(σ1, σ2, σ3) = MandestamTuple{typeof(σ1)}((σ1, σ2, σ3))
 
 circleorigin(k, t) = (t[mod(k, 3)+1], t[mod(k + 1, 3)+1], t[mod(k - 1, 3)+1])
 
+fitin(y, (a, b)) = a + y * (b - a)
 function x2σs(x, ms::MassTuple; k::Int)
-    l, h = lims(k, ms)
-    σk = l + x[1] * (h - l)
+    σk = fitin(x[1], lims(ms; k))
     σj = σjofk(2x[2] - 1, σk, ms^2; k)
     σi = sum(ms^2) - σk - σj
+    σt = circleorigin(-k, (σi, σj, σk))
+    return MandestamTuple{typeof(ms.m0)}(σt)
+end
+
+function y2σs(y, ms::MassTuple; k::Int=last(findmin(Tuple(ms))))
+    i, j = ij_from_k(k)
+    σi = fitin(y[1], lims(ms; k=i))
+    σj = fitin(y[2], lims(ms; k=j))
+    σk = sum(ms^2) - σi - σj
     σt = circleorigin(-k, (σi, σj, σk))
     return MandestamTuple{typeof(ms.m0)}(σt)
 end
