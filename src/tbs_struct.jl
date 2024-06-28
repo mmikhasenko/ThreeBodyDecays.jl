@@ -15,10 +15,14 @@ end
 # 
 ThreeBodyMasses(; m1, m2, m3, m0) = ThreeBodyMasses(m1, m2, m3; m0)
 
-lims(k::Int, ms::MassTuple) = k == 1 ? lims1(ms) : ((k == 2) ? lims2(ms) : lims3(ms))
-lims1(ms::MassTuple) = ((ms.m2 + ms.m3)^2, (ms.m0 - ms.m1)^2)
-lims2(ms::MassTuple) = ((ms.m3 + ms.m1)^2, (ms.m0 - ms.m2)^2)
-lims3(ms::MassTuple) = ((ms.m1 + ms.m2)^2, (ms.m0 - ms.m3)^2)
+function lims(ms::MassTuple; k::Int)
+    i, j = ij_from_k(k)
+    ((ms[i] + ms[j])^2, (ms[4] - ms[k])^2)
+end
+lims(k::Int, ms::MassTuple) = lims(ms; k)
+lims1(ms::MassTuple) = lims(ms; k=1)
+lims2(ms::MassTuple) = lims(ms; k=2)
+lims3(ms::MassTuple) = lims(ms; k=3)
 #
 import Base: getindex, ^, length, iterate
 ^(ms::MassTuple, i::Int) = Tuple(ms) .^ i
