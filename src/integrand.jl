@@ -24,7 +24,7 @@ function phase_space_integrand(function_σs, ms; k::Int)
     mssq = ms^2
     i, j = ij_from_k(k)
     misq, mjsq, mksq, m0sq = mssq[i], mssq[j], mssq[k], mssq[4]
-    σkmin, σkmax = lims(k, ms)
+    σkmin, σkmax = lims(ms; k)
     # 
     function integrand(x)
         σs = x2σs(x, ms; k)
@@ -60,7 +60,7 @@ end
 ```
 """
 function projection_integrand(function_σs, ms, σk; k)
-    l, h = lims(k, ms)
+    l, h = lims(ms; k)
     !(l < σk < h) && return x -> 0.0
     σjlims = σjofk.([-1, 1], Ref(σk), Ref(ms^2); k)
     function integrand(x)
