@@ -13,7 +13,7 @@ Decays with three particles is the main application of the approach, however, it
 transitions can be factorized to a product of sequential decays with $≤3$ products. Particles can have arbitrary spin.
 
 The implementation is based on a research paper,
-"Dalitz-plot decomposition for three-body decays" by JPAC Collaboration (M Mikhasenko at al.) [(inspire reference)](http://inspirehep.net/record/1758460).
+"Dalitz-plot decomposition for three-body decays" by JPAC Collaboration (M. Mikhasenko at al.) [(inspire reference)](http://inspirehep.net/record/1758460).
 The code mostly inherits notations of the paper:
 
 - Particles are numbered 1,2,3, and 0 for the decay products and the mother particle, respectively.
