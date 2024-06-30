@@ -119,7 +119,7 @@ function ThreeBodySpinParities(jp1::AbstractString, jp2::AbstractString, jp3::Ab
 end
 
 # Dynamic variables
-const MandestamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3),NTuple{3,T}}
+const MandelstamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3),NTuple{3,T}}
 
 """
 	Invariants(ms::MassTuple{T}; σ1, σ2)
@@ -134,12 +134,12 @@ function Invariants(ms::MassTuple{T};
     !((σ1 == -one(ms.m0)) || (σ2 == -one(ms.m0)) || (σ3 == -one(ms.m0))) &&
         error("the method works with TWO invariants given: $((σ1,σ2,σ3))")
     # 
-    σ3 == -one(ms.m0) && return MandestamTuple{T}((σ1, σ2, σ3=sum(ms^2) - σ1 - σ2))
-    σ1 == -one(ms.m0) && return MandestamTuple{T}((sum(ms^2) - σ2 - σ3, σ2, σ3))
-    return MandestamTuple{T}((σ1=σ1, σ2=sum(ms^2) - σ3 - σ1, σ3=σ3))
+    σ3 == -one(ms.m0) && return MandelstamTuple{T}((σ1, σ2, σ3=sum(ms^2) - σ1 - σ2))
+    σ1 == -one(ms.m0) && return MandelstamTuple{T}((sum(ms^2) - σ2 - σ3, σ2, σ3))
+    return MandelstamTuple{T}((σ1=σ1, σ2=sum(ms^2) - σ3 - σ1, σ3=σ3))
 end
-Invariants(; σ1, σ2, σ3) = MandestamTuple{typeof(σ1)}((σ1, σ2, σ3))
-Invariants(σ1, σ2, σ3) = MandestamTuple{typeof(σ1)}((σ1, σ2, σ3))
+Invariants(; σ1, σ2, σ3) = MandelstamTuple{typeof(σ1)}((σ1, σ2, σ3))
+Invariants(σ1, σ2, σ3) = MandelstamTuple{typeof(σ1)}((σ1, σ2, σ3))
 
 # -----------------------------------------------------
 
@@ -151,7 +151,7 @@ function x2σs(x, ms::MassTuple; k::Int)
     σj = σjofk(2x[2] - 1, σk, ms^2; k)
     σi = sum(ms^2) - σk - σj
     σt = circleorigin(-k, (σi, σj, σk))
-    return MandestamTuple{typeof(ms.m0)}(σt)
+    return MandelstamTuple{typeof(ms.m0)}(σt)
 end
 
 function y2σs(y, ms::MassTuple; k::Int=last(findmin(Tuple(ms))))
@@ -160,7 +160,7 @@ function y2σs(y, ms::MassTuple; k::Int=last(findmin(Tuple(ms))))
     σj = fitin(y[2], lims(ms; k=j))
     σk = sum(ms^2) - σi - σj
     σt = circleorigin(-k, (σi, σj, σk))
-    return MandestamTuple{typeof(ms.m0)}(σt)
+    return MandelstamTuple{typeof(ms.m0)}(σt)
 end
 
 randomPoint(ms::MassTuple) = x2σs(rand(2), ms; k=3)
@@ -222,7 +222,7 @@ function border(ms::MassTuple{T}; Nx::Int=300) where {T}
     end
     θs = range(-π / 9, 2π - π / 9, length=Nx)
     σs_tuple = σsborder.(θs)
-    return MandestamTuple{T}.(σs_tuple)
+    return MandelstamTuple{T}.(σs_tuple)
 end
 
 # border13, border12, border21, border23, border32
@@ -235,7 +235,7 @@ end
 
 #
 inrange(x, r) = r[1] < x < r[2]
-inphrange(σs::MandestamTuple, ms::MassTuple) = Kibble(σs, ms^2) < 0 &&
-                                               inrange(σs[1], lims1(ms)) && inrange(σs[2], lims2(ms)) && inrange(σs[3], lims3(ms))
+inphrange(σs::MandelstamTuple, ms::MassTuple) = Kibble(σs, ms^2) < 0 &&
+                                                inrange(σs[1], lims1(ms)) && inrange(σs[2], lims2(ms)) && inrange(σs[3], lims3(ms))
 
 

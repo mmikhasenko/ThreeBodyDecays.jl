@@ -51,7 +51,7 @@ export str2jp
 export @jp_str
 export ThreeBodyMasses, ThreeBodySpins, ThreeBodyParities
 export SpinParity, ThreeBodySpinParities
-export MandestamTuple, SpinTuple, ParityTuple
+export MandelstamTuple, SpinTuple, ParityTuple
 export ThreeBodySystem
 export DalitzPlotPoint
 export Invariants
