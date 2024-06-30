@@ -41,7 +41,7 @@ function amplitude(cs::ParityRecoupling, (two_λa, two_λb), (two_j, two_ja, two
 end
 
 @with_kw struct RecouplingLS <: Recoupling
-    two_ls::Tuple{Int, Int}
+    two_ls::Tuple{Int,Int}
 end
 
 amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
@@ -49,7 +49,7 @@ amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
 
 abstract type AbstractDecayChain end
 
-@with_kw struct DecayChain{X, T} <: AbstractDecayChain
+@with_kw struct DecayChain{X,T} <: AbstractDecayChain
     k::Int
     #
     two_j::Int # isobar spin
@@ -141,28 +141,36 @@ wignerd_doublearg_sign(two_j, two_λ1, two_λ2, cosθ, ispositive) =
     wignerd_doublearg(two_j, two_λ1, two_λ2, cosθ)
 
 wignerd_doublearg_sign(two_j, cosθ, ispositive) =
-    wignerd_doublearg_sign.(two_j, -two_j:2:two_j, transpose(-two_j:2:two_j), cosθ, ispositive)
+    wignerd_doublearg_sign.(
+        two_j,
+        -two_j:2:two_j,
+        transpose(-two_j:2:two_j),
+        cosθ,
+        ispositive,
+    )
 
 
 function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     @unpack k, tbs, two_j, HRk, Hij = dc
     i, j = ij_from_k(k)
-    # 
+    #
     ms² = tbs.ms^2
     cosθ = cosθij(σs, ms²; k)
     d_θ = wignerd_doublearg_sign(two_j, cosθ, true)
-    # 
+    #
     two_js = tbs.two_js
     two_js_Hij = (two_j, two_js[i], two_js[j])
     two_js_HRk = (two_js[4], two_j, two_js[k])
-    # 
-    VRk = [amplitude(HRk, (two_m1, two_m2), two_js_HRk) *
-           phase(two_js[k] - two_m2) # particle-2 convention
-           for two_m1 in -two_j:2:two_j, two_m2 in -two_js[k]:2:two_js[k]]
-    # 
-    Vij = [amplitude(Hij, (two_m1, two_m2), two_js_Hij) *
-           phase(two_js[j] - two_m2) # particle-2 convention
-           for two_m1 in -two_js[i]:2:two_js[i], two_m2 in -two_js[j]:2:two_js[j]]
+    #
+    VRk = [
+        amplitude(HRk, (two_m1, two_m2), two_js_HRk) * phase(two_js[k] - two_m2) # particle-2 convention
+        for two_m1 ∈ -two_j:2:two_j, two_m2 ∈ -two_js[k]:2:two_js[k]
+    ]
+    #
+    Vij = [
+        amplitude(Hij, (two_m1, two_m2), two_js_Hij) * phase(two_js[j] - two_m2) # particle-2 convention
+        for two_m1 ∈ -two_js[i]:2:two_js[i], two_m2 ∈ -two_js[j]:2:two_js[j]
+    ]
     #
     # shifts are computed from matching div(two_j+two_λ, 2)+1 for every index
     Δ_zk = div(two_j - two_js[4] - two_js[k], 2) - 1
@@ -171,17 +179,18 @@ function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     lineshape = dc.Xlineshape(σs[k])
     F0 = zeros(typeof(lineshape), Tuple(two_js) .+ 1)
     F = permutedims(F0, (i, j, k, 4))
-    # 
+    #
     @tullio F[_i, _j, _k, _z] =
         VRk[pad(_z + _k + $Δ_zk, two_j + 1), _k] *
         d_θ[pad(_z + _k + $Δ_zk, two_j + 1), pad(_i - _j + $Δ_ij, two_j + 1)] *
         Vij[_i, _j]
-    # 
+    #
     one_T = one(typeof(two_js[1]))
     d_norm = sqrt(two_j * one_T + 1)
-    F .*= d_norm * # normalization
-          lineshape # same for all amplutudes in the chain
-    # 
+    F .*=
+        d_norm * # normalization
+        lineshape # same for all amplitudes in the chain
+    #
     permutedims!(F0, F, invperm((i, j, k, 4)))
     return F0
 end
@@ -210,7 +219,7 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2
         d_ζs[1][itr[1], ind[1]] *
         d_ζs[2][itr[2], ind[2]] *
         d_ζs[3][itr[3], ind[3]]
-        # 
+        #
         for itr in CartesianIndices(F0)
     )
     return f
@@ -230,19 +239,16 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple; refζs = (1, 2, 3, 1))
     end
     #
     D1, D2, D3, D0 = d_ζs
-    # 
+    #
     F = similar(F0)
     @tullio F[_i, _j, _k, _z] =
-        D0[_z, _z′] *
-        F0[_i′, _j′, _k′, _z′] *
-        D1[_i′, _i] *
-        D2[_j′, _j] *
-        D3[_k′, _k]
+        D0[_z, _z′] * F0[_i′, _j′, _k′, _z′] * D1[_i′, _i] * D2[_j′, _j] * D3[_k′, _k]
     return F
 end
 
 #
-amplitude(dc::AbstractDecayChain, dpp::DalitzPlotPoint; kw...) = amplitude(dc, dpp.σs, dpp.two_λs; kw...)
+amplitude(dc::AbstractDecayChain, dpp::DalitzPlotPoint; kw...) =
+    amplitude(dc, dpp.σs, dpp.two_λs; kw...)
 #
 summed_over_polarization(fn, two_js) = σs -> sum(fn(σs, two_λs) for two_λs in itr(two_js))
 #

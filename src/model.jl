@@ -1,7 +1,7 @@
-@with_kw struct ThreeBodyDecay{N, T <: AbstractDecayChain, L <: Number, S <: AbstractString}
-    chains::SVector{N, T}
-    couplings::SVector{N, L}
-    names::SVector{N, S}
+@with_kw struct ThreeBodyDecay{N,T<:AbstractDecayChain,L<:Number,S<:AbstractString}
+    chains::SVector{N,T}
+    couplings::SVector{N,L}
+    names::SVector{N,S}
 end
 
 """
@@ -29,13 +29,13 @@ function ThreeBodyDecay(
     chains::Vector{T},
     couplings::Vector{L},
     names::Vector{S},
-) where {T <: AbstractDecayChain, L <: Number, S <: AbstractString}
+) where {T<:AbstractDecayChain,L<:Number,S<:AbstractString}
     N = length(chains)
     @assert length(couplings) == N && length(names) == N "The lengths of chains, couplings, and names must be equal"
     return ThreeBodyDecay(
-        SVector{N, T}(chains),
-        SVector{N, L}(couplings),
-        SVector{N, S}(names),
+        SVector{N,T}(chains),
+        SVector{N,L}(couplings),
+        SVector{N,S}(names),
     )
 end
 
@@ -84,8 +84,7 @@ unpolarized_intensity(model::ThreeBodyDecay, σs; kw...)
 
 Computes squared amplitude summed over spin projections.
 """
-unpolarized_intensity(model, σs; kw...) =
-    sum(abs2, amplitude(model, σs; kw...))
+unpolarized_intensity(model, σs; kw...) = sum(abs2, amplitude(model, σs; kw...))
 
 """
     Base.vcat(models::ThreeBodyDecay...)
