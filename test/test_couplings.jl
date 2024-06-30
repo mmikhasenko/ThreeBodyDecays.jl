@@ -13,13 +13,13 @@ end
 
 
 @testset "jp ⊗ jp" begin
-    Swave = SpinParity("1/2+") ⊗ SpinParity("1-")
-    Pwave = [sw ⊗ SpinParity("1-") for sw in Swave]
-    Dwave = [sw ⊗ SpinParity("2+") for sw in Swave]
+    S_wave = SpinParity("1/2+") ⊗ SpinParity("1-")
+    P_wave = [sw ⊗ SpinParity("1-") for sw in S_wave]
+    D_wave = [sw ⊗ SpinParity("2+") for sw in S_wave]
     #
-    @test length(Swave) == 2
-    @test length(vcat(Pwave...)) == 5
-    @test length(Set(vcat(Pwave...))) == 3
+    @test length(S_wave) == 2
+    @test length(vcat(P_wave...)) == 5
+    @test length(Set(vcat(P_wave...))) == 3
 end
 
 let

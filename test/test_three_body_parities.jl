@@ -14,6 +14,6 @@ Ps = ThreeBodyParities('+', '-', '+'; P0 = '+')
 	@test_throws ErrorException ThreeBodyParities('+', '+', '+')
 end
 
-@testset "operations and interate" begin
+@testset "operations and integrate" begin
 	@test sum(i == '+' for i in Ps) == 3
 end

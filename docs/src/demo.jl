@@ -3,7 +3,7 @@
 #jl # # ThreeBodyDecays.jl Tutorial
 
 # This tutorial guides the user through the basic example of
-# building a model for a cascade decay of a picticle into three particles.
+# building a model for a cascade decay of a particle into three particles.
 # The chosen example is the decay of Λb ⟶ Jψ p K,
 # where the pentaquarks candidates has been seen for the first time in 2015.
 # The tutorial shows how to build a decay chain object,
@@ -32,7 +32,7 @@ ms = ThreeBodyMasses(   # masses m1,m2,m3,m0
 tbs = ThreeBodySystem(; ms,
     two_js=ThreeBodySpins(2, 1, 0; two_h0=1)) # twice spin
 
-Concerving = ThreeBodyParities('-', '+', '-'; P0='+')
+Conserving = ThreeBodyParities('-', '+', '-'; P0='+')
 Violating = ThreeBodyParities('-', '+', '-'; P0='-')
 
 # - the invariant variables, `σs = [σ₁,σ₂,σ₃]`,
@@ -55,15 +55,15 @@ end
 
 
 # chains-1, i.e. (2+3): Λs with the lowest ls, LS
-Λ1520 = DecayChainLS(k=1, Xlineshape=BW(1.5195, 0.0156), jp=jp"3/2+", Ps=Concerving, tbs=tbs)
-Λ1690 = DecayChainLS(k=1, Xlineshape=BW(1.685, 0.050), jp=jp"1/2+", Ps=Concerving, tbs=tbs)
-Λ1810 = DecayChainLS(k=1, Xlineshape=BW(1.80, 0.090), jp=jp"5/2+", Ps=Concerving, tbs=tbs)
+Λ1520 = DecayChainLS(k=1, Xlineshape=BW(1.5195, 0.0156), jp=jp"3/2+", Ps=Conserving, tbs=tbs)
+Λ1690 = DecayChainLS(k=1, Xlineshape=BW(1.685, 0.050), jp=jp"1/2+", Ps=Conserving, tbs=tbs)
+Λ1810 = DecayChainLS(k=1, Xlineshape=BW(1.80, 0.090), jp=jp"5/2+", Ps=Conserving, tbs=tbs)
 Λs = (Λ1520, Λ1690, Λ1810)
 
 # chains-3, i.e. (1+2): Pentaquarks with the lowest ls, LS
-Pc4312 = DecayChainLS(k=3, Xlineshape=BW(4.312, 0.015), jp=jp"1/2+", Ps=Concerving, tbs=tbs)
-Pc4440 = DecayChainLS(k=3, Xlineshape=BW(4.440, 0.010), jp=jp"1/2+", Ps=Concerving, tbs=tbs)
-Pc4457 = DecayChainLS(k=3, Xlineshape=BW(4.457, 0.020), jp=jp"3/2+", Ps=Concerving, tbs=tbs)
+Pc4312 = DecayChainLS(k=3, Xlineshape=BW(4.312, 0.015), jp=jp"1/2+", Ps=Conserving, tbs=tbs)
+Pc4440 = DecayChainLS(k=3, Xlineshape=BW(4.440, 0.010), jp=jp"1/2+", Ps=Conserving, tbs=tbs)
+Pc4457 = DecayChainLS(k=3, Xlineshape=BW(4.457, 0.020), jp=jp"3/2+", Ps=Conserving, tbs=tbs)
 Pcs = (Pc4312, Pc4440, Pc4457)
 
 # ## Unpolarized intensity

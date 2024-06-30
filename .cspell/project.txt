@@ -20,9 +20,11 @@ minorticks
 minusone
 Misha
 multibody
+pentaquarks
 quadgk
 Recoupling
 refζs
+subchannel
 sumrules
 typeof
 vcat

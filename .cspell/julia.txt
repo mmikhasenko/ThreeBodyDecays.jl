@@ -33,6 +33,7 @@ testset
 Testsets
 textrm
 tonumber
+warntype
 σiofk
 σjofk
 σkmax
