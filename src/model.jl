@@ -36,7 +36,7 @@ end
 	ThreeBodyDecay(descriptor)
 
 Constructs a `ThreeBodyDecay` object using one argument, a descriptor.
-The `descriptor` is a list of paies, `names .=> zip(couplings, chains)`.
+The `descriptor` is a list of pairs, `names .=> zip(couplings, chains)`.
 
 # Examples
 ```julia
@@ -94,7 +94,7 @@ Argument is variable number of `ThreeBodyDecay` objects.
 extended_model = vcat(model[2], model[2:3], model)
 ```
 """
-function vcat(models::ThreeBodyDecay...)
+function Base.vcat(models::ThreeBodyDecay...)
     names = vcat(getproperty.(models, :names)...)
     couplings = vcat(getproperty.(models, :couplings)...)
     chains = vcat(getproperty.(models, :chains)...)

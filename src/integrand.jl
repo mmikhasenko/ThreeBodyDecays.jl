@@ -8,7 +8,7 @@ It returns an integrand function of x, x ∈ [0,1]x[0,1] domain to pass to a num
 # Arguments
 - `function_σs`: A function that takes a MandelstamTuple and returns a scalar.
 - `ms`: A scalar representing the mass.
-- `k`: An integer represending the mapping index.
+- `k`: An integer representing the mapping index.
 
 # Usage
 ```julia
@@ -24,13 +24,13 @@ function phase_space_integrand(function_σs, ms; k::Int)
     mssq = ms^2
     i, j = ij_from_k(k)
     misq, mjsq, mksq, m0sq = mssq[i], mssq[j], mssq[k], mssq[4]
-    σkmin, σkmax = lims(ms; k)
+    σk_min, σk_max = lims(ms; k)
     # 
     function integrand(x)
         σs = x2σs(x, ms; k)
         σk = σs[k]
         jac_z = sqrt(Kallen(m0sq, σk, mksq) * Kallen(σk, misq, mjsq)) / σk
-        jac_σk = (σkmax - σkmin)
+        jac_σk = (σk_max - σk_min)
         value = function_σs(σs) * jac_σk * jac_z / m0sq
         return value
     end
@@ -62,13 +62,13 @@ end
 function projection_integrand(function_σs, ms, σk; k)
     l, h = lims(ms; k)
     !(l < σk < h) && return x -> 0.0
-    σjlims = σjofk.([-1, 1], Ref(σk), Ref(ms^2); k)
+    σj_lims = σjofk.([-1, 1], Ref(σk), Ref(ms^2); k)
     function integrand(x)
-        σj = σjlims[1] + x[1] * (σjlims[2] - σjlims[1])
+        σj = σj_lims[1] + x[1] * (σj_lims[2] - σj_lims[1])
         σi = sum(ms^2) - σk - σj
         σt = circleorigin(-k, (σi, σj, σk))
         σs = MandelstamTuple{typeof(ms.m0)}(σt)
-        return function_σs(σs) * (σjlims[2] - σjlims[1])
+        return function_σs(σs) * (σj_lims[2] - σj_lims[1])
     end
     return integrand
 end

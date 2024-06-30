@@ -14,7 +14,7 @@ given the mass of the system m(i,j)² = σk
 
 Explicit forms: `σ3of1`, `σ1of2`, `σ2of3`.
 
-See also `σkofj(k,z,σj,msq)`
+See also `σiofk(z,σj,msq; k)`
 """
 function σjofk(z, σk, msq; k::Int)
     i, j = ij_from_k(k)
@@ -41,7 +41,7 @@ given the mass of the system m(i,j)² = σk
 
 Explicit forms: `σ3of2`, `σ1of3`, `σ2of1`.
  
-See also `σjofj(k,z,σk,msq)`
+See also `σjofk(z,σk,msq; k)`
 """
 function σiofk(z, σk, msq; k::Int)
     σj = σjofk(z, σk, msq; k)

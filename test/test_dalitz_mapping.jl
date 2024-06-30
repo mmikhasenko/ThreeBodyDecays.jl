@@ -9,6 +9,7 @@ N = 100_000
 randsample = eachslice(rand(2, N); dims=2)
 presample = y2σs.(randsample, Ref(ms))
 physical_sample = filter(Base.Fix2(inphrange, ms), presample)
+physical_sample = filter(Base.Fix2(isphysical, ms), presample)
 @testset "Generated flat sample" begin
     @test length(physical_sample) / N == 0.70207
 end

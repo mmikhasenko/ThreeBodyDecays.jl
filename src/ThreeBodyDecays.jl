@@ -11,7 +11,7 @@ import Base: getindex, iterate, length, vcat
 
 
 export Kallen, sqrtKallenFact, Kibble,
-    inphrange,
+    inphrange, isphysical,
     lims, lims1, lims2, lims3
 export phase
 export ijk, ij_from_k

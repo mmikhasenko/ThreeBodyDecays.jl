@@ -216,12 +216,12 @@ function border(ms::MassTuple{T}; Nx::Int=300) where {T}
             (abs(imag(r)) < 1e-10) && real(r) > 0.0
         end |> real |> minimum
     end
-    function σsborder(θ) # evaluate the polynomials
+    function σs_border(θ) # evaluate the polynomials
         r = rborder(θ)
         return map(P -> P(r), σs(θ))
     end
     θs = range(-π / 9, 2π - π / 9, length=Nx)
-    σs_tuple = σsborder.(θs)
+    σs_tuple = σs_border.(θs)
     return MandelstamTuple{T}.(σs_tuple)
 end
 
@@ -235,7 +235,8 @@ end
 
 #
 inrange(x, r) = r[1] < x < r[2]
-inphrange(σs::MandelstamTuple, ms::MassTuple) = Kibble(σs, ms^2) < 0 &&
-                                                inrange(σs[1], lims1(ms)) && inrange(σs[2], lims2(ms)) && inrange(σs[3], lims3(ms))
+inphrange(σs::MandelstamTuple, ms::MassTuple) = isphysical(σs, ms)
+isphysical(σs::MandelstamTuple, ms::MassTuple) = Kibble(σs, ms^2) < 0 &&
+                                                 inrange(σs[1], lims1(ms)) && inrange(σs[2], lims2(ms)) && inrange(σs[3], lims3(ms))
 
 
