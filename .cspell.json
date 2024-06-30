@@ -20,7 +20,6 @@
     ".github/workflows",
     ".gitignore",
     ".pre-commit-config.yaml",
-    ".prettierignore",
     ".vscode/*.json",
     "Manifest.toml",
     "Project.toml"
