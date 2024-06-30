@@ -68,14 +68,14 @@ spins(d::DecayChain) = d.tbs.two_js
 masses(d::DecayChain) = d.tbs.ms
 
 """
-	DecayChainLS(;
-		k, # chain is specified by the spectator index k
-		Xlineshape, # lambda function for lineshape
-		jp, # the spin-parity of the resonance, e.g. jp"1/2-"
-		Ps, # need parities, e.g. Ps=ThreeBodyParities('+','+','+'; P0='+')
-		tbs) # give three-body-system structure
+DecayChainLS(;
+k, # chain is specified by the spectator index k
+Xlineshape, # lambda function for lineshape
+jp, # the spin-parity of the resonance, e.g. jp"1/2-"
+Ps, # need parities, e.g. Ps=ThreeBodyParities('+','+','+'; P0='+')
+tbs) # give three-body-system structure
 
-	Returns the decay chain with the smallest LS, ls
+Returns the decay chain with the smallest LS, ls
 """
 function DecayChainLS(;
     k,
@@ -104,14 +104,14 @@ function DecayChainLS(;
 end
 
 """
-	DecayChainsLS(;
-		k, # chain is specified by the spectator index k
-		Xlineshape, # lambda function for lineshape
-		jp, # the spin-parity of the resonance, e.g. jp"1/2-"
-		Ps, # need parities, e.g. Ps=ThreeBodyParities('+','+','+'; P0='+')
-		tbs) # give three-body-system structure
+DecayChainsLS(;
+k, # chain is specified by the spectator index k
+Xlineshape, # lambda function for lineshape
+jp, # the spin-parity of the resonance, e.g. jp"1/2-"
+Ps, # need parities, e.g. Ps=ThreeBodyParities('+','+','+'; P0='+')
+tbs) # give three-body-system structure
 
-	Returns an array of the decay chains with all possible couplings
+Returns an array of the decay chains with all possible couplings
 """
 function DecayChainsLS(;
     k,
@@ -140,80 +140,115 @@ wignerd_doublearg_sign(two_j, two_λ1, two_λ2, cosθ, ispositive) =
     (ispositive ? 1 : x"-1"^div(two_λ1 - two_λ2, 2)) *
     wignerd_doublearg(two_j, two_λ1, two_λ2, cosθ)
 
-function amplitude(dc::DecayChain, σs, two_λs; refζs = (1, 2, 3, 1))
+wignerd_doublearg_sign(two_j, cosθ, ispositive) =
+    wignerd_doublearg_sign.(
+        two_j,
+        -two_j:2:two_j,
+        transpose(-two_j:2:two_j),
+        cosθ,
+        ispositive,
+    )
 
+
+function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     @unpack k, tbs, two_j, HRk, Hij = dc
-    two_js = tbs.two_js
-    #
     i, j = ij_from_k(k)
+    #
+    ms² = tbs.ms^2
+    cosθ = cosθij(σs, ms²; k)
+    d_θ = wignerd_doublearg_sign(two_j, cosθ, true)
+    #
+    two_js = tbs.two_js
     two_js_Hij = (two_j, two_js[i], two_js[j])
     two_js_HRk = (two_js[4], two_j, two_js[k])
     #
-    ms² = tbs.ms^2
+    VRk = [
+        amplitude(HRk, (two_m1, two_m2), two_js_HRk) * phase(two_js[k] - two_m2) # particle-2 convention
+        for two_m1 ∈ -two_j:2:two_j, two_m2 ∈ -two_js[k]:2:two_js[k]
+    ]
     #
-    w0 = wr(k, refζs[4], 0)
-    wi = wr(k, refζs[i], i)
-    wj = wr(k, refζs[j], j)
-    wk = wr(k, refζs[k], k)
+    Vij = [
+        amplitude(Hij, (two_m1, two_m2), two_js_Hij) * phase(two_js[j] - two_m2) # particle-2 convention
+        for two_m1 ∈ -two_js[i]:2:two_js[i], two_m2 ∈ -two_js[j]:2:two_js[j]
+    ]
     #
-    cosζ0 = cosζ(w0, σs, ms²)
-    cosζi = cosζ(wi, σs, ms²)
-    cosζj = cosζ(wj, σs, ms²)
-    cosζk = cosζ(wk, σs, ms²)
+    # shifts are computed from matching div(two_j+two_λ, 2)+1 for every index
+    Δ_zk = div(two_j - two_js[4] - two_js[k], 2) - 1
+    Δ_ij = div(two_j - two_js[i] + two_js[j], 2) + 1
     #
-    cosθ = cosθij(σs, ms²; k)
-    #
-    T = typeof(two_λs[1])
-    T1 = one(T)
-    #
-    itr_two_λs′ = itr(SVector{4,T}(two_js[1], two_js[2], two_js[3], two_js[4]))
     lineshape = dc.Xlineshape(σs[k])
-    f = zero(lineshape)
-    for two_λs′ in itr_two_λs′
-        # two_λs′[4] = two_τ - two_λs′[k]
-        # two_τ = two_λs′[4] + two_λs′[k]
-        f +=
-            wignerd_doublearg_sign(
-                two_js[4],
-                two_λs[4],
-                two_λs′[4],
-                cosζ0,
-                ispositive(w0),
-            ) *
-            #
-            amplitude(HRk, (two_λs′[4] + two_λs′[k], two_λs′[k]), two_js_HRk) *
-            phase(two_js[k] - two_λs′[k]) * # particle-2 convention
-            sqrt(two_j * T1 + 1) *
-            wignerd_doublearg_sign(
-                two_j,
-                two_λs′[4] + two_λs′[k],
-                two_λs′[i] - two_λs′[j],
-                cosθ,
-                true,
-            ) *
-            amplitude(Hij, (two_λs′[i], two_λs′[j]), two_js_Hij) *
-            phase(two_js[j] - two_λs′[j]) * # particle-2 convention
-            #
-            wignerd_doublearg_sign(
-                two_js[i],
-                two_λs′[i],
-                two_λs[i],
-                cosζi,
-                ispositive(wi),
-            ) *
-            wignerd_doublearg_sign(
-                two_js[j],
-                two_λs′[j],
-                two_λs[j],
-                cosζj,
-                ispositive(wj),
-            ) *
-            wignerd_doublearg_sign(two_js[k], two_λs′[k], two_λs[k], cosζk, ispositive(wk))
-    end
-    return f * lineshape
+    F0 = zeros(typeof(lineshape), Tuple(two_js) .+ 1)
+    F = permutedims(F0, (i, j, k, 4))
+    #
+    @tullio F[_i, _j, _k, _z] =
+        VRk[pad(_z + _k + $Δ_zk, two_j + 1), _k] *
+        d_θ[pad(_z + _k + $Δ_zk, two_j + 1), pad(_i - _j + $Δ_ij, two_j + 1)] *
+        Vij[_i, _j]
+    #
+    one_T = one(typeof(two_js[1]))
+    d_norm = sqrt(two_j * one_T + 1)
+    F .*=
+        d_norm * # normalization
+        lineshape # same for all amplitudes in the chain
+    #
+    permutedims!(F0, F, invperm((i, j, k, 4)))
+    return F0
 end
+
+function amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2, 3, 1))
+    @unpack k, tbs, two_j = dc
+    ms² = tbs.ms^2
+    two_js = tbs.two_js
+
+    F0 = aligned_amplitude(dc, σs)
+
+    # alignment rotations
+    d_ζs = map(enumerate(zip(two_js, refζs))) do (l, (_two_j, _refζ))
+        _w = wr(k, _refζ, mod(l, 4))
+        _cosζ = cosζ(_w, σs, ms²)
+        wignerd_doublearg_sign(_two_j, _cosζ, ispositive(_w))
+    end
+    #
+    ind = map(zip(two_js, two_λs)) do (_two_j, _two_λ)
+        div(_two_j + _two_λ, 2) + 1
+    end
+    #
+    f = sum(
+        d_ζs[4][ind[4], itr[4]] *
+        F0[itr] *
+        d_ζs[1][itr[1], ind[1]] *
+        d_ζs[2][itr[2], ind[2]] *
+        d_ζs[3][itr[3], ind[3]]
+        #
+        for itr in CartesianIndices(F0)
+    )
+    return f
+end
+
+function amplitude(dc::DecayChain, σs::MandelstamTuple; refζs = (1, 2, 3, 1))
+    @unpack k, tbs, two_j = dc
+    ms² = tbs.ms^2
+    two_js = tbs.two_js
+
+    F0 = aligned_amplitude(dc, σs)
+    # alignment rotations
+    d_ζs = map(enumerate(zip(two_js, refζs))) do (l, (_two_j, _refζ))
+        _w = wr(k, _refζ, mod(l, 4))
+        _cosζ = cosζ(_w, σs, ms²)
+        wignerd_doublearg_sign(_two_j, _cosζ, ispositive(_w))
+    end
+    #
+    D1, D2, D3, D0 = d_ζs
+    #
+    F = similar(F0)
+    @tullio F[_i, _j, _k, _z] =
+        D0[_z, _z′] * F0[_i′, _j′, _k′, _z′] * D1[_i′, _i] * D2[_j′, _j] * D3[_k′, _k]
+    return F
+end
+
 #
-amplitude(dc::AbstractDecayChain, dpp) = amplitude(dc, dpp.σs, dpp.two_λs)
+amplitude(dc::AbstractDecayChain, dpp::DalitzPlotPoint; kw...) =
+    amplitude(dc, dpp.σs, dpp.two_λs; kw...)
 #
 summed_over_polarization(fn, two_js) = σs -> sum(fn(σs, two_λs) for two_λs in itr(two_js))
 #

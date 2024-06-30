@@ -1,3 +1,4 @@
+btime
 circleorigin
 coeffs
 cosζi
@@ -8,6 +9,7 @@ Dalitz
 fitin
 inphrange
 inrange
+invperm
 isapprox
 iseven
 isodd
@@ -21,6 +23,7 @@ mjsq
 mksq
 mssq
 nonpole
+permutedims
 polardalitz
 println
 rborder
@@ -33,6 +36,7 @@ testset
 Testsets
 textrm
 tonumber
+tullio
 warntype
 σiofk
 σjofk

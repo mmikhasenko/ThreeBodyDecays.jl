@@ -1,3 +1,4 @@
+Breit
 colorbar
 compat
 cosζ
@@ -11,19 +12,21 @@ getindex
 getproperty
 guidefonthalign
 guidefontvalign
+helicities
 imag
 issequential
 JPAC
 latexstring
 lims
+Mikhasenko
 minorticks
 minusone
 Misha
-Mikhasenko
 multibody
 pentaquarks
 quadgk
 Recoupling
+refζ
 refζs
 subchannel
 sumrules
@@ -38,5 +41,3 @@ ylim
 ηηηphase
 ηηηphaseisplus
 ηηηphasesign
-helicities
-Breit

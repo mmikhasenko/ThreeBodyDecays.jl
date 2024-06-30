@@ -87,7 +87,7 @@ d2(v) = _d2.(v)
 ⊗(p1::Char, p2::Char) = p1 == p2 ? '+' : '-'
 ⊗(jp1::SpinParity, jp2::SpinParity) = [
     SpinParity(two_j, ⊗(jp1.p, jp2.p)) for
-    two_j = abs(jp1.two_j - jp2.two_j):2:abs(jp1.two_j + jp2.two_j)
+    two_j ∈ abs(jp1.two_j - jp2.two_j):2:abs(jp1.two_j + jp2.two_j)
 ]
 
 function str2jp(pin::AbstractString)
@@ -140,9 +140,9 @@ end
 const MandelstamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3),NTuple{3,T}}
 
 """
-	Invariants(ms::MassTuple{T}; σ1, σ2)
-	Invariants(ms::MassTuple{T}; σ1, σ3)
-	Invariants(ms::MassTuple{T}; σ2, σ3)
+Invariants(ms::MassTuple{T}; σ1, σ2)
+Invariants(ms::MassTuple{T}; σ1, σ3)
+Invariants(ms::MassTuple{T}; σ2, σ3)
 
 Construct a tuple of (σ1, σ2, σ3) from just two invariants and the mass tuple.
 """
@@ -206,7 +206,7 @@ end
 #    _|_|
 
 """
-	polardalitz2invariants(θ, expansion_point)
+polardalitz2invariants(θ, expansion_point)
 
 For given polar angle θ, it returns an (σ1,σ2,σ3) Tuple of polynomials of radius r(θ) around the expansion point.
 The polynomial works as a function of the r coordinate.

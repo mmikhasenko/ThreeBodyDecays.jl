@@ -5,7 +5,7 @@
 end
 
 """
-	ThreeBodyDecay(; chains, couplings, names)
+ThreeBodyDecay(; chains, couplings, names)
 
 Constructs a `ThreeBodyDecay` object with the given parameters.
 
@@ -20,9 +20,9 @@ Constructs a `ThreeBodyDecay` object with the given parameters.
 # Examples
 ```julia
 ThreeBodyDecay(
-	chains=[chain1, chain2, chain3],
-	couplings=[1.0, -1.0, 0.2im],
-	names=["L1405", "L1405", "K892"])
+chains=[chain1, chain2, chain3],
+couplings=[1.0, -1.0, 0.2im],
+names=["L1405", "L1405", "K892"])
 ```
 """
 function ThreeBodyDecay(
@@ -40,7 +40,7 @@ function ThreeBodyDecay(
 end
 
 """
-	ThreeBodyDecay(descriptor)
+ThreeBodyDecay(descriptor)
 
 Constructs a `ThreeBodyDecay` object using one argument, a descriptor.
 The `descriptor` is a list of pairs, `names .=> zip(couplings, chains)`.
@@ -74,19 +74,17 @@ function getindex(model::ThreeBodyDecay, key...)
     ThreeBodyDecay(description)
 end
 
-length(model::ThreeBodyDecay{N}) where {N} = length(model.chains)
+length(model::ThreeBodyDecay{N}) where {N} = N
 system(model::ThreeBodyDecay) = first(model.chains).tbs
 masses(model::ThreeBodyDecay) = masses(system(model))
 spins(model::ThreeBodyDecay) = spins(system(model))
 
 """
-	unpolarized_intensity(model::ThreeBodyDecay, σs; kw...)
+unpolarized_intensity(model::ThreeBodyDecay, σs; kw...)
 
 Computes squared amplitude summed over spin projections.
 """
-unpolarized_intensity(model, σs; kw...) =
-    sum(abs2, amplitude(model, σs, two_λs; kw...) for two_λs in itr(spins(model)))
-
+unpolarized_intensity(model, σs; kw...) = sum(abs2, amplitude(model, σs; kw...))
 
 """
     Base.vcat(models::ThreeBodyDecay...)
