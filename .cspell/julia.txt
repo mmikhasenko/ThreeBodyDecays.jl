@@ -1,6 +1,8 @@
 circleorigin
 coeffs
+cosζi
 cosθ
+cosθij
 Dalitz
 fitin
 inphrange
@@ -8,15 +10,19 @@ inrange
 iseven
 isodd
 isphysical
+ispositive
 joinpath
 Kallen
+lineshape
 misq
 mjsq
 mksq
 mssq
 nonpole
 polardalitz
+println
 rborder
+seriestype
 struct
 testset
 textrm
@@ -25,5 +31,3 @@ tonumber
 σjofk
 σkmax
 σkmin
-cosθij
-lineshape

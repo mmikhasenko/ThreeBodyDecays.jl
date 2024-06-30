@@ -110,12 +110,12 @@ function DecayChainsLS(;
     tbs=error("give three-body-system structure, tbs=..."))
     #
     _jp = SpinParity(jp)
-    LSlsv = possible_lsLS(_jp, tbs.two_js, Ps; k)
+    LS_ls_matrix = possible_lsLS(_jp, tbs.two_js, Ps; k)
     return [DecayChain(;
         k, Xlineshape, tbs, _jp.two_j,
         Hij=RecouplingLS(two_ls),
         HRk=RecouplingLS(two_LS))
-            for (two_ls, two_LS) in LSlsv]
+            for (two_ls, two_LS) in LS_ls_matrix]
 end
 
 

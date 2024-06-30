@@ -1,8 +1,8 @@
-struct minusone end
+struct minus_one end
 import Base: ^
-^(x::minusone, n::Number) = isodd(n) ? -1 : 1
+^(x::minus_one, n::Number) = isodd(n) ? -1 : 1
 macro x_str(s::String)
-    minusone()
+    minus_one()
 end
 
 function letterL(l::Int)

@@ -3,7 +3,7 @@ using ThreeBodyDecays
 using StaticArrays
 
 
-# test model constraction
+# test model contraction
 model = let
     tbs = ThreeBodySystem(
         ms=ThreeBodyMasses(0.141, 0.142, 0.143; m0=3.09),
@@ -84,7 +84,7 @@ end
 end
 
 
-@testset "Vertical Concat model" begin
+@testset "Vertical concatenation of model" begin
     _model = vcat(model[2], model[2:3], model)
     @test _model isa ThreeBodyDecay
     @test length(_model) == 1 + 2 + 3
@@ -96,7 +96,7 @@ struct MyDecayChain{T} <: AbstractDecayChain
 end
 ThreeBodyDecays.amplitude(::MyDecayChain, σs, spins) = 1.5
 
-@testset "amplutude for AbstractDecayChain" begin
+@testset "amplitude for AbstractDecayChain" begin
     @test amplitude(MyDecayChain(1.0), [1, 2, 3], [1, 2, 3, 4]) == 1.5
     @test amplitude(MyDecayChain(1.0), randomPoint(system(model))) == 1.5
 end
