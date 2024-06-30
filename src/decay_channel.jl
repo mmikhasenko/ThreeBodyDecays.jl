@@ -144,7 +144,7 @@ wignerd_doublearg_sign(two_j, cosθ, ispositive) =
     wignerd_doublearg_sign.(two_j, -two_j:2:two_j, transpose(-two_j:2:two_j), cosθ, ispositive)
 
 
-function aligned_amplitude(dc::DecayChain, σs::MandestamTuple)
+function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     @unpack k, tbs, two_j, HRk, Hij = dc
     i, j = ij_from_k(k)
     # 
@@ -186,7 +186,7 @@ function aligned_amplitude(dc::DecayChain, σs::MandestamTuple)
     return F0
 end
 
-function amplitude(dc::DecayChain, σs::MandestamTuple, two_λs; refζs = (1, 2, 3, 1))
+function amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2, 3, 1))
     @unpack k, tbs, two_j = dc
     ms² = tbs.ms^2
     two_js = tbs.two_js
@@ -216,7 +216,7 @@ function amplitude(dc::DecayChain, σs::MandestamTuple, two_λs; refζs = (1, 2,
     return f
 end
 
-function amplitude(dc::DecayChain, σs::MandestamTuple; refζs = (1, 2, 3, 1))
+function amplitude(dc::DecayChain, σs::MandelstamTuple; refζs = (1, 2, 3, 1))
     @unpack k, tbs, two_j = dc
     ms² = tbs.ms^2
     two_js = tbs.two_js
