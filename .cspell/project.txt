@@ -11,6 +11,7 @@ getproperty
 guidefonthalign
 guidefontvalign
 imag
+issequential
 latexstring
 lims
 minorticks

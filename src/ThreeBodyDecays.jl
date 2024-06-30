@@ -25,11 +25,11 @@ export σ1of2, σ2of3, σ3of1,
 export breakup, breakup_Rk, breakup_ij
 include("kinematics.jl")
 
-export x_str, minusone, shift_by_half
+export x_str, shift_by_half
 include("utils.jl")
 
 export ispositive
-export TriavialWignerRotation
+export TrivialWignerRotation
 export wr
 export cosζ
 #
@@ -41,10 +41,9 @@ export cosζ32_for3, cosζ32_for2
 #
 export cosζ12_for3, cosζ23_for1, cosζ31_for2
 #
-export cosθhatk1, cosθhatk2, cosθhatk3
 export cosζk1_for1, cosζk2_for2, cosζk3_for3
 #
-include("wignerrotations.jl")
+include("wigner_rotations.jl")
 
 
 export str2jp
@@ -93,6 +92,6 @@ export phase_space_integrand
 export projection_integrand
 include("integrand.jl")
 
-include("dalitzplotsrecipe.jl")
+include("dalitz_plot_recipe.jl")
 
 end  # module ThreeBodyDecays

@@ -52,18 +52,18 @@ chains = let
     end
 end
 
-sortbyLl(chains) = sort(chains,
+sort_by_Ll(chains) = sort(chains,
     by=x -> x.Hij.two_ls[1] * 10 + x.HRk.two_ls[1])
 
 @testset "DecayChainsLS: all decay chains" begin
-    @test sortbyLl(vec(chains)) ==
-          sortbyLl(vec(
+    @test sort_by_Ll(vec(chains)) ==
+          sort_by_Ll(vec(
         [DecayChainsLS(; k=3, Xlineshape=identity, jp="3/2-", Ps=PC, tbs);
             DecayChainsLS(; k=3, Xlineshape=identity, jp="3/2-", Ps=PV, tbs)]))
 end
 
 σs = x2σs([0.5, 0.3], tbs.ms; k=1)
-@testset "Unpol. intensity values for chains" begin
+@testset "Unpolarized intensity values for chains" begin
     refs = [183.0603173468474 100.20583627496791 183.0603173468474
         183.0603173468474 100.20583627496791 183.0603173468474]
     @test all(unpolarized_intensity.(chains, Ref(σs)) .≈ refs)

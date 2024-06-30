@@ -2,9 +2,9 @@
 using ThreeBodyDecays
 using Test
 
-@testset "correct typearg" begin
-	@test typeof(wr(1, 1, 2)) <: TriavialWignerRotation
-	@test typeof(wr(2, 2)) <: TriavialWignerRotation
+@testset "correct type arg" begin
+	@test typeof(wr(1, 1, 2)) <: TrivialWignerRotation
+	@test typeof(wr(2, 2)) <: TrivialWignerRotation
 	#
 	@test ispositive(wr(1, 1, 2)) == true
 	@test ispositive(wr(3, 3)) == true
