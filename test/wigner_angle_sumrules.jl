@@ -25,4 +25,3 @@ let
 	just_13 = [wignerd(1, ν, 0, cosζ13_for1_) for ν ∈ -1:1]
 	@test sum(prod_13 .≈ just_13) == 3
 end
-

@@ -15,10 +15,10 @@ export Kallen, sqrtKallenFact, Kibble,
     lims, lims1, lims2, lims3
 export phase
 export ijk, ij_from_k
-# 
+#
 export cosθij
 export cosθ12, cosθ23, cosθ31
-# 
+#
 export σiofk, σjofk
 export σ1of2, σ2of3, σ3of1,
     σ1of3, σ2of1, σ3of2
@@ -32,18 +32,18 @@ export ispositive
 export TriavialWignerRotation
 export wr
 export cosζ
-# 
+#
 export cosζ12_for0, cosζ23_for0, cosζ31_for0
-# 
+#
 export cosζ21_for1, cosζ21_for2
 export cosζ13_for1, cosζ13_for3
 export cosζ32_for3, cosζ32_for2
-# 
+#
 export cosζ12_for3, cosζ23_for1, cosζ31_for2
-# 
+#
 export cosθhatk1, cosθhatk2, cosθhatk3
 export cosζk1_for1, cosζk2_for2, cosζk3_for3
-# 
+#
 include("wignerrotations.jl")
 
 

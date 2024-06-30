@@ -16,7 +16,7 @@ end
     Swave = SpinParity("1/2+") ⊗ SpinParity("1-")
     Pwave = [sw ⊗ SpinParity("1-") for sw in Swave]
     Dwave = [sw ⊗ SpinParity("2+") for sw in Swave]
-    # 
+    #
     @test length(Swave) == 2
     @test length(vcat(Pwave...)) == 5
     @test length(Set(vcat(Pwave...))) == 3

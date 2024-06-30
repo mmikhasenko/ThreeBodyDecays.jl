@@ -41,7 +41,7 @@ function change_basis_3from1(σ1, cosθ1, ϕ1, cosθ23, ϕ23,
         -st1 * p3_b[2] + 0 * p3_b[3] + ct1 * p3_b[4]]
 
     cosθ3 = -p3_rot[4] / sqrt(p3_b[2]^2 + p3_b[3]^2 + p3_b[4]^2)
-    # 
+    #
     ARBITRARY = 0.5
     ϕ3 = (p3_rot[2] != zero(p3_rot[2])) ? atan(-p3_rot[3], -p3_rot[2]) : ARBITRARY * one(p3_rot[2])
 

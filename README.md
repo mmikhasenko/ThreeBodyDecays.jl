@@ -27,16 +27,20 @@ The code mostly inherits notations of the paper:
 See [example](docs/src/demo.jl) for a demomostration case.
 
 ## Installation
+
 ```julia
 using Pkg
 Pkg.add("ThreeBodyDecays")
 ```
 
 ## Contributing
+
 We welcome contributions! Please submit an issue to start a discussion.
 
 ## License
+
 This project is licensed under the [MIT License](LICENSE.md).
 
 ## Contact
+
 For more information, please contact [mikhail.mikhasenko@cern.ch](mailto:mikhail.mikhasenko@cern.ch).

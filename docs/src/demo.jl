@@ -39,7 +39,7 @@ Violating = ThreeBodyParities('-', '+', '-'; P0='-')
 # - helicities `two_λs = [λ₁,λ₂,λ₃,λ₀]`
 # - and complex couplings `cs = [c₁,c₂,...]`
 
-# ## Decay chains 
+# ## Decay chains
 
 # The following code creates six possible decay channels.
 
@@ -68,8 +68,8 @@ Pcs = (Pc4312, Pc4440, Pc4457)
 
 # ## Unpolarized intensity
 
-# The full model is the vector of decay chains, and 
-# couplings for each decay chain. 
+# The full model is the vector of decay chains, and
+# couplings for each decay chain.
 
 const model = ThreeBodyDecay(
     ["Λ1520", "Λ1690", "Λ1810", "Pc4312", "Pc4440", "Pc4457"] .=>
@@ -88,7 +88,7 @@ two_λs = randomPoint(tbs.two_js)
 @show unpolarized_intensity(model, σs)
 
 # ## Plotting API
-# 
+#
 # A natural way to visualize the three-body decay with two degrees of freedom
 # is a correlation plot of the subchannel invariant masses squared.
 # Kinematic limits can visualized using the `border` function.

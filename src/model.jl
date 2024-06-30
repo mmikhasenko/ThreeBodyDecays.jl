@@ -100,4 +100,3 @@ function Base.vcat(models::ThreeBodyDecay...)
     chains = vcat(getproperty.(models, :chains)...)
     ThreeBodyDecay(names .=> zip(couplings, chains))
 end
-

@@ -78,11 +78,11 @@ function DecayChainLS(;
     tbs=error("give three-body-system structure"),
     jp=error("give spin-parity quantum numbers of the resonance"),
     Ps=error("need parities"))
-    # 
+    #
     _jp = SpinParity(jp)
     two_lsLS = vcat(possible_lsLS(_jp, tbs.two_js, Ps; k)...)
     length(two_lsLS) == 0 && error("there are no possible LS couplings")
-    # 
+    #
     two_lsLS_sorted = sort(two_lsLS, by=x -> x.two_LS[1])
     @unpack two_ls, two_LS = two_lsLS_sorted[1]
     #
@@ -108,7 +108,7 @@ function DecayChainsLS(;
     jp=error("give spin-parity quantum numbers of the resonance"),
     Ps=error("need parities"),
     tbs=error("give three-body-system structure, tbs=..."))
-    # 
+    #
     _jp = SpinParity(jp)
     LSlsv = possible_lsLS(_jp, tbs.two_js, Ps; k)
     return [DecayChain(;
@@ -127,18 +127,18 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
 
     @unpack k, tbs, two_j, HRk, Hij = dc
     two_js = tbs.two_js
-    # 
+    #
     i, j = ij_from_k(k)
     two_js_Hij = (two_j, two_js[i], two_js[j])
     two_js_HRk = (two_js[4], two_j, two_js[k])
     #
     ms² = tbs.ms^2
-    # 
+    #
     w0 = wr(k, refζs[4], 0)
     wi = wr(k, refζs[i], i)
     wj = wr(k, refζs[j], j)
     wk = wr(k, refζs[k], k)
-    # 
+    #
     cosζ0 = cosζ(w0, σs, ms²)
     cosζi = cosζ(wi, σs, ms²)
     cosζj = cosζ(wj, σs, ms²)
@@ -148,7 +148,7 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     #
     T = typeof(two_λs[1])
     T1 = one(T)
-    # 
+    #
     itr_two_λs′ = itr(SVector{4,T}(two_js[1], two_js[2], two_js[3], two_js[4]))
     lineshape = dc.Xlineshape(σs[k])
     f = zero(lineshape)
@@ -157,11 +157,11 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
         # two_τ = two_λs′[4] + two_λs′[k]
         f +=
             wignerd_doublearg_sign(two_js[4], two_λs[4], two_λs′[4], cosζ0, ispositive(w0)) *
-            # 
+            #
             amplitude(HRk, (two_λs′[4] + two_λs′[k], two_λs′[k]), two_js_HRk) * phase(two_js[k] - two_λs′[k]) * # particle-2 convention
             sqrt(two_j * T1 + 1) * wignerd_doublearg_sign(two_j, two_λs′[4] + two_λs′[k], two_λs′[i] - two_λs′[j], cosθ, true) *
             amplitude(Hij, (two_λs′[i], two_λs′[j]), two_js_Hij) * phase(two_js[j] - two_λs′[j]) * # particle-2 convention
-            # 
+            #
             wignerd_doublearg_sign(two_js[i], two_λs′[i], two_λs[i], cosζi, ispositive(wi)) *
             wignerd_doublearg_sign(two_js[j], two_λs′[j], two_λs[j], cosζj, ispositive(wj)) *
             wignerd_doublearg_sign(two_js[k], two_λs′[k], two_λs[k], cosζk, ispositive(wk))

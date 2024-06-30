@@ -42,7 +42,7 @@ chains = let
     LS_all = vcat(
         possible_ls_Rk(jp, two_js, PC; k),
         possible_ls_Rk(jp, two_js, PV; k))
-    # 
+    #
     map(Iterators.product(LS_all, ls_all)) do (two_LS, two_ls)
         L = div(two_LS[1], 2)
         l = div(two_ls[1], 2)

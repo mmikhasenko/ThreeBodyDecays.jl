@@ -40,7 +40,7 @@ the scattering angle z=cosθij in the rest from of (i,j),
 given the mass of the system m(i,j)² = σk
 
 Explicit forms: `σ3of2`, `σ1of3`, `σ2of1`.
- 
+
 See also `σjofk(z,σk,msq; k)`
 """
 function σiofk(z, σk, msq; k::Int)
@@ -57,7 +57,7 @@ end
 """
 	cosθij(k,σs,msq)
 
-Isobar decay angle for the chain-k, i.e. 
+Isobar decay angle for the chain-k, i.e.
 an angle of between vectors pi and -pk in the (ij) rest frame.
 
 Explicit forms: `cosθ23`, `cosθ31`, `cosθ12`.

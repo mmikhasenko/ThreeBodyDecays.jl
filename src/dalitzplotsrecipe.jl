@@ -13,11 +13,11 @@ end
 end
 
 @recipe function f(intensity::Function, ms::MassTuple; iσx=1, iσy=2, Ngrid=100)
-    # 
+    #
     σxv = range(lims(iσx, ms)..., length=Ngrid + 1) |> shift_by_half
     σyv = range(lims(iσy, ms)..., length=Ngrid + 1) |> shift_by_half
-    # 
-    # 
+    #
+    #
     calv = [
         (Kibble(invs(σx, σy; iσx=iσx, iσy=iσy, ms=ms), ms^2) > 0 ?
          NaN :

@@ -12,7 +12,7 @@ function ThreeBodyMasses(m1, m2, m3; m0)
     tm0 <: Number && (m0 < m1 + m2 + m3) && error("m₀ should be bigger than m₁+m₂+m₃")
     MassTuple{tm0}((m1, m2, m3, m0))
 end
-# 
+#
 ThreeBodyMasses(; m1, m2, m3, m0) = ThreeBodyMasses(m1, m2, m3; m0)
 
 function lims(ms::MassTuple; k::Int)
@@ -38,14 +38,14 @@ function ThreeBodySpins(two_h1_or_h1, two_h2_or_h2, two_h3_or_h3;
     two_hs = (h0 == -1 && two_h0 != -1) ?
              SpinTuple(Tuple(Int[two_h1_or_h1, two_h2_or_h2, two_h3_or_h3, two_h0])) :
              SpinTuple(Tuple([two_h1_or_h1, two_h2_or_h2, two_h3_or_h3, h0] .|> x2))
-    # 
+    #
     @unpack two_h1, two_h2, two_h3 = two_hs
     isodd(two_h1 + two_h2 + two_h3 + two_hs.two_h0) ?
     error("baryon number is not conserved") :
     return two_hs
 end
-# 
-# 
+#
+#
 @with_kw struct ThreeBodySystem{T,K}
     ms::T
     two_js::K = ThreeBodySpins(0, 0, 0; two_h0=0)
@@ -130,10 +130,10 @@ Construct a tuple of (σ1, σ2, σ3) from just two invariants and the mass tuple
 """
 function Invariants(ms::MassTuple{T};
     σ1=-one(ms.m0), σ2=-one(ms.m0), σ3=-one(ms.m0)) where {T}
-    # 
+    #
     !((σ1 == -one(ms.m0)) || (σ2 == -one(ms.m0)) || (σ3 == -one(ms.m0))) &&
         error("the method works with TWO invariants given: $((σ1,σ2,σ3))")
-    # 
+    #
     σ3 == -one(ms.m0) && return MandelstamTuple{T}((σ1, σ2, σ3=sum(ms^2) - σ1 - σ2))
     σ1 == -one(ms.m0) && return MandelstamTuple{T}((sum(ms^2) - σ2 - σ3, σ2, σ3))
     return MandelstamTuple{T}((σ1=σ1, σ2=sum(ms^2) - σ3 - σ1, σ3=σ3))
@@ -197,7 +197,7 @@ polardalitz2invariants(θ, expansion_point::Tuple) =
         Polynomial([0, cos(θ - π / 3)])) .+ expansion_point
 
 function border(ms::MassTuple{T}; Nx::Int=300) where {T}
-    # 
+    #
     expansion_point = let
         f = 0.5
         z = 0.0
@@ -205,11 +205,11 @@ function border(ms::MassTuple{T}; Nx::Int=300) where {T}
         σ3 = σ3of1(z, σ1, ms^2)
         Invariants(ms; σ1, σ3)
     end
-    # 
+    #
     σs(θ) = polardalitz2invariants(θ, expansion_point |> Tuple)
     ϕ0 = Kibble(expansion_point, ms^2)
     ϕ(σs) = Kibble(σs, ms^2)
-    # 
+    #
     function rborder(θ)
         _roots = PolynomialRoots.roots(coeffs(ϕ(σs(θ))))
         filter(_roots) do r
@@ -238,5 +238,3 @@ inrange(x, r) = r[1] < x < r[2]
 inphrange(σs::MandelstamTuple, ms::MassTuple) = isphysical(σs, ms)
 isphysical(σs::MandelstamTuple, ms::MassTuple) = Kibble(σs, ms^2) < 0 &&
                                                  inrange(σs[1], lims1(ms)) && inrange(σs[2], lims2(ms)) && inrange(σs[3], lims3(ms))
-
-

@@ -44,14 +44,14 @@ end
         tbs=tbs, two_j=1,
         Hij=ParityRecoupling(1, 0, '-'),
         HRk=ParityRecoupling(1, 0, '-'))
-    # 
+    #
     σs = randomPoint(tbs.ms)
-    # 
+    #
     @test amplitude(dc_pc, σs, [0, 1, 0, 1]) != 0
     @test amplitude(dc_pc, σs, [0, 1, 0, -1]) != 0
     @test amplitude(dc_pc, σs, [0, -1, 0, 1]) != 0
     @test amplitude(dc_pc, σs, [0, -1, 0, -1]) != 0
-    # 
+    #
     dc_pv = DecayChain(
         k=1,
         Xlineshape=bw,
@@ -63,7 +63,7 @@ end
     @test amplitude(dc_pv, σs, [0, -1, 0, 1]) != 0
     @test amplitude(dc_pv, σs, [0, -1, 0, -1]) == 0im
     @test amplitude(dc_pv, σs, [0, -1, 0, -1]) == 0im
-    # 
+    #
     dc_pv = DecayChain(
         k=1,
         Xlineshape=bw,

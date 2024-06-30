@@ -20,7 +20,7 @@ model = let
         tbs)
     ch2 = DecayChain(ch1; k=2)
     ch3 = DecayChain(ch1; k=3)
-    # 
+    #
     ThreeBodyDecay(
         "K(892)" .=> [(4.0, ch1), (2.0, ch2), (3.0, ch3)])
 end
@@ -40,12 +40,12 @@ end
 
 @testset "system, masses, spins with ThreeBodySystem" begin
     @test system(model) == model.chains[1].tbs
-    # 
+    #
     @test masses(model)[1] == 0.141
     @test masses(model)[2] == 0.142
     @test masses(model)[3] == 0.143
     @test masses(model).m0 == 3.09
-    # 
+    #
     @test spins(model)[1] == 0
     @test spins(model)[2] == 0
     @test spins(model)[3] == 0
