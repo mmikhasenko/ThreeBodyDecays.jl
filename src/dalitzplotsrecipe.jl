@@ -1,4 +1,4 @@
-function invs(σx, σy; iσx, iσy, ms)
+function invariants(σx, σy; iσx, iσy, ms)
     iσx == 1 && iσy == 2 && return Invariants(ms, σ1=σx, σ2=σy)
     iσx == 2 && iσy == 1 && return Invariants(ms, σ1=σy, σ2=σx)
     iσx == 1 && iσy == 3 && return Invariants(ms, σ1=σx, σ3=σy)
@@ -12,19 +12,19 @@ end
     return (intensity, ms)
 end
 
-@recipe function f(intensity::Function, ms::MassTuple; iσx=1, iσy=2, Ngrid=100)
+@recipe function f(intensity::Function, ms::MassTuple; iσx=1, iσy=2, grid_size=100)
     #
-    σxv = range(lims(iσx, ms)..., length=Ngrid + 1) |> shift_by_half
-    σyv = range(lims(iσy, ms)..., length=Ngrid + 1) |> shift_by_half
+    σxv = range(lims(iσx, ms)..., length=grid_size+1) |> shift_by_half
+    σyv = range(lims(iσy, ms)..., length=grid_size+1) |> shift_by_half
     #
     #
-    calv = [
-        (Kibble(invs(σx, σy; iσx=iσx, iσy=iσy, ms=ms), ms^2) > 0 ?
+    values = [
+        (Kibble(invariants(σx, σy; iσx=iσx, iσy=iσy, ms=ms), ms^2) > 0 ?
          NaN :
-         intensity(invs(σx, σy; iσx=iσx, iσy=iσy, ms=ms))) for σy in σyv, σx in σxv]
+         intensity(invariants(σx, σy; iσx=iσx, iσy=iσy, ms=ms))) for σy in σyv, σx in σxv]
 
     seriestype := :heatmap
     colorbar --> false
     #
-    σxv, σyv, calv
+    σxv, σyv, values
 end
