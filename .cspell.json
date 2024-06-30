@@ -22,7 +22,6 @@
       ".pre-commit-config.yaml",
       ".prettierignore",
       ".vscode/*.json",
-      "json_options.jl",
       "Manifest.toml",
       "Project.toml"
     ],
