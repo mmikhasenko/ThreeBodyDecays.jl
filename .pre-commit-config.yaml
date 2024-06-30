@@ -29,3 +29,8 @@ repos:
     rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
+
+  - repo: https://github.com/domluna/JuliaFormatter.jl
+    rev: v1.0.56
+    hooks:
+      - id: julia-formatter
