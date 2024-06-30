@@ -15,10 +15,14 @@ end
 # 
 ThreeBodyMasses(; m1, m2, m3, m0) = ThreeBodyMasses(m1, m2, m3; m0)
 
-lims(k::Int, ms::MassTuple) = k == 1 ? lims1(ms) : ((k == 2) ? lims2(ms) : lims3(ms))
-lims1(ms::MassTuple) = ((ms.m2 + ms.m3)^2, (ms.m0 - ms.m1)^2)
-lims2(ms::MassTuple) = ((ms.m3 + ms.m1)^2, (ms.m0 - ms.m2)^2)
-lims3(ms::MassTuple) = ((ms.m1 + ms.m2)^2, (ms.m0 - ms.m3)^2)
+function lims(ms::MassTuple; k::Int)
+    i, j = ij_from_k(k)
+    ((ms[i] + ms[j])^2, (ms[4] - ms[k])^2)
+end
+lims(k::Int, ms::MassTuple) = lims(ms; k)
+lims1(ms::MassTuple) = lims(ms; k=1)
+lims2(ms::MassTuple) = lims(ms; k=2)
+lims3(ms::MassTuple) = lims(ms; k=3)
 #
 import Base: getindex, ^, length, iterate
 ^(ms::MassTuple, i::Int) = Tuple(ms) .^ i
@@ -141,11 +145,20 @@ Invariants(σ1, σ2, σ3) = MandestamTuple{typeof(σ1)}((σ1, σ2, σ3))
 
 circleorigin(k, t) = (t[mod(k, 3)+1], t[mod(k + 1, 3)+1], t[mod(k - 1, 3)+1])
 
+fitin(y, (a, b)) = a + y * (b - a)
 function x2σs(x, ms::MassTuple; k::Int)
-    l, h = lims(k, ms)
-    σk = l + x[1] * (h - l)
+    σk = fitin(x[1], lims(ms; k))
     σj = σjofk(2x[2] - 1, σk, ms^2; k)
     σi = sum(ms^2) - σk - σj
+    σt = circleorigin(-k, (σi, σj, σk))
+    return MandestamTuple{typeof(ms.m0)}(σt)
+end
+
+function y2σs(y, ms::MassTuple; k::Int=last(findmin(Tuple(ms))))
+    i, j = ij_from_k(k)
+    σi = fitin(y[1], lims(ms; k=i))
+    σj = fitin(y[2], lims(ms; k=j))
+    σk = sum(ms^2) - σi - σj
     σt = circleorigin(-k, (σi, σj, σk))
     return MandestamTuple{typeof(ms.m0)}(σt)
 end
