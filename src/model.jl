@@ -26,17 +26,24 @@ ThreeBodyDecay(
 ```
 """
 function ThreeBodyDecay(
-    chains::Vector{T}, couplings::Vector{L}, names::Vector{S}) where {T<:AbstractDecayChain,L<:Number,S<:AbstractString}
+    chains::Vector{T},
+    couplings::Vector{L},
+    names::Vector{S},
+) where {T<:AbstractDecayChain,L<:Number,S<:AbstractString}
     N = length(chains)
     @assert length(couplings) == N && length(names) == N "The lengths of chains, couplings, and names must be equal"
-    return ThreeBodyDecay(SVector{N,T}(chains), SVector{N,L}(couplings), SVector{N,S}(names))
+    return ThreeBodyDecay(
+        SVector{N,T}(chains),
+        SVector{N,L}(couplings),
+        SVector{N,S}(names),
+    )
 end
 
 """
 	ThreeBodyDecay(descriptor)
 
 Constructs a `ThreeBodyDecay` object using one argument, a descriptor.
-The `descriptor` is a list of paies, `names .=> zip(couplings, chains)`.
+The `descriptor` is a list of pairs, `names .=> zip(couplings, chains)`.
 
 # Examples
 ```julia
@@ -56,15 +63,14 @@ function ThreeBodyDecay(descriptor)
 end
 
 amplitude(model::ThreeBodyDecay, p...; kw...) =
-    sum(c * amplitude(d, p...; kw...)
-        for (c, d) in zip(model.couplings, model.chains))
+    sum(c * amplitude(d, p...; kw...) for (c, d) in zip(model.couplings, model.chains))
 
 import Base: getindex, length
 
 function getindex(model::ThreeBodyDecay, key...)
-    description = getindex(model.names, key...) .=> zip(
-        getindex(model.couplings, key...),
-        getindex(model.chains, key...))
+    description =
+        getindex(model.names, key...) .=>
+            zip(getindex(model.couplings, key...), getindex(model.chains, key...))
     ThreeBodyDecay(description)
 end
 
@@ -79,8 +85,7 @@ spins(model::ThreeBodyDecay) = spins(system(model))
 Computes squared amplitude summed over spin projections.
 """
 unpolarized_intensity(model, σs; kw...) =
-    sum(abs2, amplitude(model, σs, two_λs; kw...)
-              for two_λs in itr(spins(model)))
+    sum(abs2, amplitude(model, σs, two_λs; kw...) for two_λs in itr(spins(model)))
 
 
 """
@@ -94,10 +99,9 @@ Argument is variable number of `ThreeBodyDecay` objects.
 extended_model = vcat(model[2], model[2:3], model)
 ```
 """
-function vcat(models::ThreeBodyDecay...)
+function Base.vcat(models::ThreeBodyDecay...)
     names = vcat(getproperty.(models, :names)...)
     couplings = vcat(getproperty.(models, :couplings)...)
     chains = vcat(getproperty.(models, :chains)...)
     ThreeBodyDecay(names .=> zip(couplings, chains))
 end
-

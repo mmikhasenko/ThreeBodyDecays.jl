@@ -1,9 +1,12 @@
 
 Kallen(x, y, z) = x^2 + y^2 + z^2 - 2x * y - 2y * z - 2z * x
-sqrtKallenFact(a, b, c) = sqrt(a - (b + c)) * sqrt(a - (b - c)) * sqrt(a + (b + c)) * sqrt(a + (b - c))
-Kibble(σs, msq) = Kallen(Kallen(msq[4], msq[1], σs[1]),
+sqrtKallenFact(a, b, c) =
+    sqrt(a - (b + c)) * sqrt(a - (b - c)) * sqrt(a + (b + c)) * sqrt(a + (b - c))
+Kibble(σs, msq) = Kallen(
+    Kallen(msq[4], msq[1], σs[1]),
     Kallen(msq[4], msq[2], σs[2]),
-    Kallen(msq[4], msq[3], σs[3]))
+    Kallen(msq[4], msq[3], σs[3]),
+)
 #
 """
 	σjofk(z,σi,msq; k::Int)
@@ -14,7 +17,7 @@ given the mass of the system m(i,j)² = σk
 
 Explicit forms: `σ3of1`, `σ1of2`, `σ2of3`.
 
-See also `σkofj(k,z,σj,msq)`
+See also `σiofk(z,σj,msq; k)`
 """
 function σjofk(z, σk, msq; k::Int)
     i, j = ij_from_k(k)
@@ -27,9 +30,9 @@ function σjofk(z, σk, msq; k::Int)
     σi = s + msq[j] - (EE4σ - sqrt(p²q²4σ) * z) / (2σk)
     return σi
 end
-σ3of1(z, σ1, msq) = σjofk(z, σ1, msq; k=1)
-σ1of2(z, σ2, msq) = σjofk(z, σ2, msq; k=2)
-σ2of3(z, σ3, msq) = σjofk(z, σ3, msq; k=3)
+σ3of1(z, σ1, msq) = σjofk(z, σ1, msq; k = 1)
+σ1of2(z, σ2, msq) = σjofk(z, σ2, msq; k = 2)
+σ2of3(z, σ3, msq) = σjofk(z, σ3, msq; k = 3)
 
 
 """
@@ -40,16 +43,16 @@ the scattering angle z=cosθij in the rest from of (i,j),
 given the mass of the system m(i,j)² = σk
 
 Explicit forms: `σ3of2`, `σ1of3`, `σ2of1`.
- 
-See also `σjofj(k,z,σk,msq)`
+
+See also `σjofk(z,σk,msq; k)`
 """
 function σiofk(z, σk, msq; k::Int)
     σj = σjofk(z, σk, msq; k)
     sum(msq) - σj - σk
 end
-σ3of2(z, σ2, msq) = σiofk(z, σ2, msq; k=2)
-σ1of3(z, σ3, msq) = σiofk(z, σ3, msq; k=3)
-σ2of1(z, σ1, msq) = σiofk(z, σ1, msq; k=1)
+σ3of2(z, σ2, msq) = σiofk(z, σ2, msq; k = 2)
+σ1of3(z, σ3, msq) = σiofk(z, σ3, msq; k = 3)
+σ2of1(z, σ1, msq) = σiofk(z, σ1, msq; k = 1)
 
 
 # Scattering angle
@@ -57,7 +60,7 @@ end
 """
 	cosθij(k,σs,msq)
 
-Isobar decay angle for the chain-k, i.e. 
+Isobar decay angle for the chain-k, i.e.
 an angle of between vectors pi and -pk in the (ij) rest frame.
 
 Explicit forms: `cosθ23`, `cosθ31`, `cosθ12`.
@@ -71,13 +74,14 @@ function cosθij(σs, msq; k::Int)
     rest = σs[j] - msq[k] - msq[i]
     return (2σs[k] * rest - EE4σ) / pp4σ
 end
-cosθ23(σs, msq) = cosθij(σs, msq; k=1)
-cosθ31(σs, msq) = cosθij(σs, msq; k=2)
-cosθ12(σs, msq) = cosθij(σs, msq; k=3)
+cosθ23(σs, msq) = cosθij(σs, msq; k = 1)
+cosθ31(σs, msq) = cosθij(σs, msq; k = 2)
+cosθ12(σs, msq) = cosθij(σs, msq; k = 3)
 
 
 # momentum
-breakup(m, m1, m2) = sqrt((m - (m1 + m2)) * (m + (m1 + m2)) * (m - (m1 - m2)) * (m + (m1 - m2))) / 2m
+breakup(m, m1, m2) =
+    sqrt((m - (m1 + m2)) * (m + (m1 + m2)) * (m - (m1 - m2)) * (m + (m1 - m2))) / 2m
 breakup_Rk(σk, ms; k) = breakup(ms[4], sqrt(σk), ms[k])
 function breakup_ij(σk, ms; k)
     (i, j) = ij_from_k(k)
