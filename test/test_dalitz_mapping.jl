@@ -2,11 +2,11 @@ using ThreeBodyDecays
 using Test
 using Random
 
-ms = ThreeBodyMasses(1.1, 1.3, 1.5; m0=6.0)
+ms = ThreeBodyMasses(1.1, 1.3, 1.5; m0 = 6.0)
 
 Random.seed!(1234)
 N = 100_000
-rand_sample = eachslice(rand(2, N); dims=2)
+rand_sample = eachslice(rand(2, N); dims = 2)
 pre_sample = y2σs.(rand_sample, Ref(ms))
 physical_sample = filter(Base.Fix2(inphrange, ms), pre_sample)
 physical_sample = filter(Base.Fix2(isphysical, ms), pre_sample)

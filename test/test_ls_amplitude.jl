@@ -10,7 +10,8 @@ using Test
         Xlineshape = σ -> 1 / (4.1^2 - σ - 0.1im),
         jp = "2+",
         Ps = ThreeBodyParities('+', '+', '+', P0 = '+'),
-        tbs = tbs)
+        tbs = tbs,
+    )
     @test sum(reim(amplitude(dc, dpp)) .≈ 0.0) == 0
 end
 
@@ -39,32 +40,41 @@ chains = let
     k = 3
     jp = jp"3/2-"
     ls_all = possible_ls_ij(jp, two_js, PC; k)
-    LS_all = vcat(
-        possible_ls_Rk(jp, two_js, PC; k),
-        possible_ls_Rk(jp, two_js, PV; k))
+    LS_all = vcat(possible_ls_Rk(jp, two_js, PC; k), possible_ls_Rk(jp, two_js, PV; k))
     #
     map(Iterators.product(LS_all, ls_all)) do (two_LS, two_ls)
         L = div(two_LS[1], 2)
         l = div(two_ls[1], 2)
         Xlineshape = identity
-        DecayChain(; k, jp.two_j, tbs, Xlineshape,
-            HRk = RecouplingLS(two_LS), Hij = RecouplingLS(two_ls))
+        DecayChain(;
+            k,
+            jp.two_j,
+            tbs,
+            Xlineshape,
+            HRk = RecouplingLS(two_LS),
+            Hij = RecouplingLS(two_ls),
+        )
     end
 end
 
-sort_by_Ll(chains) = sort(chains,
-    by = x -> x.Hij.two_ls[1] * 10 + x.HRk.two_ls[1])
+sort_by_Ll(chains) = sort(chains, by = x -> x.Hij.two_ls[1] * 10 + x.HRk.two_ls[1])
 
 @testset "DecayChainsLS: all decay chains" begin
-    @test sort_by_Ll(vec(chains)) ==
-          sort_by_Ll(vec(
-        [DecayChainsLS(; k = 3, Xlineshape = identity, jp = "3/2-", Ps = PC, tbs);
-            DecayChainsLS(; k = 3, Xlineshape = identity, jp = "3/2-", Ps = PV, tbs)]))
+    @test sort_by_Ll(vec(chains)) == sort_by_Ll(
+        vec(
+            [
+                DecayChainsLS(; k = 3, Xlineshape = identity, jp = "3/2-", Ps = PC, tbs)
+                DecayChainsLS(; k = 3, Xlineshape = identity, jp = "3/2-", Ps = PV, tbs)
+            ],
+        ),
+    )
 end
 
 σs = x2σs([0.5, 0.3], tbs.ms; k = 1)
 @testset "Unpolarized intensity values for chains" begin
-    refs = [    183.0603173468474 100.20583627496791 183.0603173468474
-        183.0603173468474 100.20583627496791 183.0603173468474]
+    refs = [
+        183.0603173468474 100.20583627496791 183.0603173468474
+        183.0603173468474 100.20583627496791 183.0603173468474
+    ]
     @test all(unpolarized_intensity.(chains, Ref(σs)) .≈ refs)
 end

@@ -71,12 +71,15 @@ end
 tbs = ThreeBodySystem(ms)
 
 @testset "Three-body system" begin
-    @test tbs == ThreeBodySystem(ms = ms,
-        two_js = ThreeBodySpins(0, 0, 0; two_h0 = 0))
-    @test tbs == ThreeBodySystem(ms,
-        ThreeBodySpins(0, 0, 0; two_h0 = 0))
-    @test tbs == ThreeBodySystem(ms.m1, ms.m2, ms.m3; m0 = ms.m0,
-        two_js = ThreeBodySpins(0, 0, 0; two_h0 = 0))
+    @test tbs == ThreeBodySystem(ms = ms, two_js = ThreeBodySpins(0, 0, 0; two_h0 = 0))
+    @test tbs == ThreeBodySystem(ms, ThreeBodySpins(0, 0, 0; two_h0 = 0))
+    @test tbs == ThreeBodySystem(
+        ms.m1,
+        ms.m2,
+        ms.m3;
+        m0 = ms.m0,
+        two_js = ThreeBodySpins(0, 0, 0; two_h0 = 0),
+    )
 end
 
 tbsS = ThreeBodySystem(ms, ThreeBodySpins(1, 3, 5; two_h0 = 1))

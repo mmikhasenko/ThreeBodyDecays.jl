@@ -7,7 +7,8 @@ using StaticArrays
 model = let
     tbs = ThreeBodySystem(
         ms = ThreeBodyMasses(0.141, 0.142, 0.143; m0 = 3.09),
-        two_js = ThreeBodySpins(0, 0, 0; two_h0 = 2))
+        two_js = ThreeBodySpins(0, 0, 0; two_h0 = 2),
+    )
     dpp = randomPoint(tbs)
     #
     two_j = 2
@@ -17,20 +18,21 @@ model = let
         Xlineshape = σ -> 1 / (4.1^2 - σ - 0.1im),
         Hij = RecouplingLS((two_j, 0)),
         HRk = RecouplingLS((two_j, two_j)),
-        tbs)
+        tbs,
+    )
     ch2 = DecayChain(ch1; k = 2)
     ch3 = DecayChain(ch1; k = 3)
     #
-    ThreeBodyDecay(
-        "K(892)" .=> [(4.0, ch1), (2.0, ch2), (3.0, ch3)])
+    ThreeBodyDecay("K(892)" .=> [(4.0, ch1), (2.0, ch2), (3.0, ch3)])
 end
 
 @testset "Construction with SVectors" begin
     _model = ThreeBodyDecay(
-        ("K(892)", "K(892)", "K(892)") .=> zip(model.couplings, model.chains))
+        ("K(892)", "K(892)", "K(892)") .=> zip(model.couplings, model.chains),
+    )
     @test _model == model
-    _model = ThreeBodyDecay(
-        SubString("K(892))", 1, 6) .=> zip(model.couplings, model.chains))
+    _model =
+        ThreeBodyDecay(SubString("K(892))", 1, 6) .=> zip(model.couplings, model.chains))
     @test _model isa ThreeBodyDecay
 end
 
@@ -102,8 +104,8 @@ ThreeBodyDecays.amplitude(::MyDecayChain, σs, spins) = 1.5
 end
 
 model3 = ThreeBodyDecay(
-    "MyResonance" .=>
-        zip([3.3, 4.4], [MyDecayChain(1.0), MyDecayChain(2.2)]))
+    "MyResonance" .=> zip([3.3, 4.4], [MyDecayChain(1.0), MyDecayChain(2.2)]),
+)
 
 @testset "Customary model" begin
     @test model3 isa ThreeBodyDecay

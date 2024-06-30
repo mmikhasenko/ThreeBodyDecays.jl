@@ -35,15 +35,22 @@ end
 
     bw(σ) = 1 / (mΣb^2 - σ - 1im * mΣb * ΓΣb)
 
-    tbs = ThreeBodySystem(mπ, mΛb, mπ; m0=mΛb2S,
-        two_js=ThreeBodySpins(0, 1, 0; two_h0=1))  # (0- 1/2+ 0- | 1/2+)
+    tbs = ThreeBodySystem(
+        mπ,
+        mΛb,
+        mπ;
+        m0 = mΛb2S,
+        two_js = ThreeBodySpins(0, 1, 0; two_h0 = 1),
+    )  # (0- 1/2+ 0- | 1/2+)
 
     dc_pc = DecayChain(
-        k=1,
-        Xlineshape=bw,
-        tbs=tbs, two_j=1,
-        Hij=ParityRecoupling(1, 0, '-'),
-        HRk=ParityRecoupling(1, 0, '-'))
+        k = 1,
+        Xlineshape = bw,
+        tbs = tbs,
+        two_j = 1,
+        Hij = ParityRecoupling(1, 0, '-'),
+        HRk = ParityRecoupling(1, 0, '-'),
+    )
     #
     σs = randomPoint(tbs.ms)
     #
@@ -53,11 +60,13 @@ end
     @test amplitude(dc_pc, σs, [0, -1, 0, -1]) != 0
     #
     dc_pv = DecayChain(
-        k=1,
-        Xlineshape=bw,
-        tbs=tbs, two_j=1,
-        Hij=ParityRecoupling(1, 0, '-'),
-        HRk=NoRecoupling(1, 0))
+        k = 1,
+        Xlineshape = bw,
+        tbs = tbs,
+        two_j = 1,
+        Hij = ParityRecoupling(1, 0, '-'),
+        HRk = NoRecoupling(1, 0),
+    )
     #
     @test amplitude(dc_pv, σs, [0, 1, 0, 1]) != 0
     @test amplitude(dc_pv, σs, [0, -1, 0, 1]) != 0
@@ -65,11 +74,13 @@ end
     @test amplitude(dc_pv, σs, [0, -1, 0, -1]) == 0im
     #
     dc_pv = DecayChain(
-        k=1,
-        Xlineshape=bw,
-        tbs=tbs, two_j=1,
-        Hij=ParityRecoupling(1, 0, '-'),
-        HRk=NoRecoupling(1, 0))
+        k = 1,
+        Xlineshape = bw,
+        tbs = tbs,
+        two_j = 1,
+        Hij = ParityRecoupling(1, 0, '-'),
+        HRk = NoRecoupling(1, 0),
+    )
     #
     @test amplitude(dc_pv, σs, [0, 1, 0, 1]) != 0
     @test amplitude(dc_pv, σs, [0, -1, 0, 1]) != 0

@@ -6,10 +6,10 @@ ms = let
     meta = 0.547862
     mp = 0.938
     #
-    ThreeBodyMasses(mpi, meta, mp; m0=19.0)
+    ThreeBodyMasses(mpi, meta, mp; m0 = 19.0)
 end
 
-σs_b = border(ms, Nx=10)
+σs_b = border(ms, Nx = 10)
 
 Kibble(σs_b[1], ms^2)
 Kibble.(σs_b, Ref(ms^2))
@@ -27,13 +27,14 @@ const m_large = 10.0
 
 @testset "Border for unbalanced masses" begin
     for ms in [
-        ThreeBodyMasses(m_small, m_small, m_large; m0=11.0),
-        ThreeBodyMasses(m_small, m_large, m_small; m0=11.0),
-        ThreeBodyMasses(m_large, m_small, m_small; m0=11.0),
+        ThreeBodyMasses(m_small, m_small, m_large; m0 = 11.0),
+        ThreeBodyMasses(m_small, m_large, m_small; m0 = 11.0),
+        ThreeBodyMasses(m_large, m_small, m_small; m0 = 11.0),
         #
-        ThreeBodyMasses(m_small, m_large, m_large; m0=21.0),
-        ThreeBodyMasses(m_large, m_small, m_large; m0=21.0),
-        ThreeBodyMasses(m_large, m_large, m_small; m0=21.0)]
+        ThreeBodyMasses(m_small, m_large, m_large; m0 = 21.0),
+        ThreeBodyMasses(m_large, m_small, m_large; m0 = 21.0),
+        ThreeBodyMasses(m_large, m_large, m_small; m0 = 21.0),
+    ]
         #
         σs_b = border(ms)
         extremaKibble = Kibble.(σs_b, Ref(ms^2)) |> extrema
