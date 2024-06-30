@@ -44,7 +44,7 @@ The daughter particles are numbered 1,2,3, the mother particle is 0.
 For `system_a` and `reference_b` the spectator notations are used, i.e.
 1 for the system (2,3), 2 for the system (3,1), and 3 for the system (1,2).
 """
-function wr(system_a, reference_b, particle_c=0)
+function wr(system_a, reference_b, particle_c = 0)
     system_a == reference_b && return TrivialWignerRotation(particle_c)
     S = issequential(system_a, reference_b)
     A, B = S ? (system_a, reference_b) : (reference_b, system_a)
@@ -124,5 +124,6 @@ cosζk3_for3(k, σs, ms²) = cosζ(wr(k, 3, 3), σs, ms²)
 """
 	Phase for wigner d-functions for clockwise rotations
 """
-phase(two_λ1_minus_λ2) = (abs(two_λ1_minus_λ2) % 4 == 2 ? -one(two_λ1_minus_λ2) : one(two_λ1_minus_λ2))
+phase(two_λ1_minus_λ2) =
+    (abs(two_λ1_minus_λ2) % 4 == 2 ? -one(two_λ1_minus_λ2) : one(two_λ1_minus_λ2))
 phase(two_λ1, two_λ2) = phase(two_λ1 - two_λ2)

@@ -20,9 +20,9 @@ function lims(ms::MassTuple; k::Int)
     ((ms[i] + ms[j])^2, (ms[4] - ms[k])^2)
 end
 lims(k::Int, ms::MassTuple) = lims(ms; k)
-lims1(ms::MassTuple) = lims(ms; k=1)
-lims2(ms::MassTuple) = lims(ms; k=2)
-lims3(ms::MassTuple) = lims(ms; k=3)
+lims1(ms::MassTuple) = lims(ms; k = 1)
+lims2(ms::MassTuple) = lims(ms; k = 2)
+lims3(ms::MassTuple) = lims(ms; k = 3)
 #
 import Base: getindex, ^, length, iterate
 ^(ms::MassTuple, i::Int) = Tuple(ms) .^ i
@@ -30,31 +30,37 @@ import Base: getindex, ^, length, iterate
 # -----------------------------------------------------
 const SpinTuple = NamedTuple{(:two_h1, :two_h2, :two_h3, :two_h0),NTuple{4,Int}}
 
-function ThreeBodySpins(two_h1_or_h1, two_h2_or_h2, two_h3_or_h3;
-    h0=-1, # unrealistic by default
-    two_h0=-1) # unrealistic by default
+function ThreeBodySpins(
+    two_h1_or_h1,
+    two_h2_or_h2,
+    two_h3_or_h3;
+    h0 = -1, # unrealistic by default
+    two_h0 = -1,
+) # unrealistic by default
 
-    two_h0 == -1 && h0 == -1 && return error("Use either two_h0=..., or h0=... key word argument.")
-    two_hs = (h0 == -1 && two_h0 != -1) ?
-             SpinTuple(Tuple(Int[two_h1_or_h1, two_h2_or_h2, two_h3_or_h3, two_h0])) :
-             SpinTuple(Tuple([two_h1_or_h1, two_h2_or_h2, two_h3_or_h3, h0] .|> x2))
+    two_h0 == -1 &&
+        h0 == -1 &&
+        return error("Use either two_h0=..., or h0=... key word argument.")
+    two_hs =
+        (h0 == -1 && two_h0 != -1) ?
+        SpinTuple(Tuple(Int[two_h1_or_h1, two_h2_or_h2, two_h3_or_h3, two_h0])) :
+        SpinTuple(Tuple([two_h1_or_h1, two_h2_or_h2, two_h3_or_h3, h0] .|> x2))
     #
     @unpack two_h1, two_h2, two_h3 = two_hs
     isodd(two_h1 + two_h2 + two_h3 + two_hs.two_h0) ?
-    error("baryon number is not conserved") :
-    return two_hs
+    error("baryon number is not conserved") : return two_hs
 end
 #
 #
 @with_kw struct ThreeBodySystem{T,K}
     ms::T
-    two_js::K = ThreeBodySpins(0, 0, 0; two_h0=0)
+    two_js::K = ThreeBodySpins(0, 0, 0; two_h0 = 0)
 end
 #
 # convenient constructors
-ThreeBodySystem(ms::MassTuple) = ThreeBodySystem(ms=ms)
-ThreeBodySystem(m1, m2, m3; m0, two_js=ThreeBodySpins(0, 0, 0; two_h0=0)) =
-    ThreeBodySystem(ThreeBodyMasses(m1, m2, m3; m0=m0), two_js)
+ThreeBodySystem(ms::MassTuple) = ThreeBodySystem(ms = ms)
+ThreeBodySystem(m1, m2, m3; m0, two_js = ThreeBodySpins(0, 0, 0; two_h0 = 0)) =
+    ThreeBodySystem(ThreeBodyMasses(m1, m2, m3; m0 = m0), two_js)
 #
 masses(tbs::ThreeBodySystem) = tbs.ms
 spins(tbs::ThreeBodySystem) = tbs.two_js
@@ -79,9 +85,10 @@ d2(v) = _d2.(v)
 
 
 ⊗(p1::Char, p2::Char) = p1 == p2 ? '+' : '-'
-⊗(jp1::SpinParity, jp2::SpinParity) =
-    [SpinParity(two_j, ⊗(jp1.p, jp2.p))
-     for two_j in abs(jp1.two_j - jp2.two_j):2:abs(jp1.two_j + jp2.two_j)]
+⊗(jp1::SpinParity, jp2::SpinParity) = [
+    SpinParity(two_j, ⊗(jp1.p, jp2.p)) for
+    two_j = abs(jp1.two_j - jp2.two_j):2:abs(jp1.two_j + jp2.two_j)
+]
 
 function str2jp(pin::AbstractString)
     p = filter(x -> x != '^', pin)
@@ -100,22 +107,33 @@ end
 
 const ParityTuple = NamedTuple{(:P1, :P2, :P3, :P0),NTuple{4,Char}}
 #
-ThreeBodyParities(P1, P2, P3;
-    P0=error("used the format ThreeBodyParities('+','-','+'; P0='±')")) =
-    ParityTuple((P1, P2, P3, P0))
+ThreeBodyParities(
+    P1,
+    P2,
+    P3;
+    P0 = error("used the format ThreeBodyParities('+','-','+'; P0='±')"),
+) = ParityTuple((P1, P2, P3, P0))
 
 # -----------------------------------------------------
 
-function ThreeBodySpinParities(jp1::SpinParity, jp2::SpinParity, jp3::SpinParity;
-    jp0::SpinParity=error("Provide jp0 as a key argument"))
-    two_js = ThreeBodySpins(jp1.two_j, jp2.two_j, jp3.two_j; two_h0=jp0.two_j)
-    Ps = ThreeBodyParities(jp1.p, jp2.p, jp3.p; P0=jp0.p)
+function ThreeBodySpinParities(
+    jp1::SpinParity,
+    jp2::SpinParity,
+    jp3::SpinParity;
+    jp0::SpinParity = error("Provide jp0 as a key argument"),
+)
+    two_js = ThreeBodySpins(jp1.two_j, jp2.two_j, jp3.two_j; two_h0 = jp0.two_j)
+    Ps = ThreeBodyParities(jp1.p, jp2.p, jp3.p; P0 = jp0.p)
     return (two_js, Ps)
 end
 
-function ThreeBodySpinParities(jp1::AbstractString, jp2::AbstractString, jp3::AbstractString;
-    jp0::AbstractString=error("Provide jp0 as a key argument"))
-    ThreeBodySpinParities(str2jp(jp1), str2jp(jp2), str2jp(jp3); jp0=str2jp(jp0))
+function ThreeBodySpinParities(
+    jp1::AbstractString,
+    jp2::AbstractString,
+    jp3::AbstractString;
+    jp0::AbstractString = error("Provide jp0 as a key argument"),
+)
+    ThreeBodySpinParities(str2jp(jp1), str2jp(jp2), str2jp(jp3); jp0 = str2jp(jp0))
 end
 
 # Dynamic variables
@@ -128,15 +146,19 @@ const MandelstamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3),NTuple{3,T}}
 
 Construct a tuple of (σ1, σ2, σ3) from just two invariants and the mass tuple.
 """
-function Invariants(ms::MassTuple{T};
-    σ1=-one(ms.m0), σ2=-one(ms.m0), σ3=-one(ms.m0)) where {T}
+function Invariants(
+    ms::MassTuple{T};
+    σ1 = -one(ms.m0),
+    σ2 = -one(ms.m0),
+    σ3 = -one(ms.m0),
+) where {T}
     #
     !((σ1 == -one(ms.m0)) || (σ2 == -one(ms.m0)) || (σ3 == -one(ms.m0))) &&
         error("the method works with TWO invariants given: $((σ1,σ2,σ3))")
     #
-    σ3 == -one(ms.m0) && return MandelstamTuple{T}((σ1, σ2, σ3=sum(ms^2) - σ1 - σ2))
+    σ3 == -one(ms.m0) && return MandelstamTuple{T}((σ1, σ2, σ3 = sum(ms^2) - σ1 - σ2))
     σ1 == -one(ms.m0) && return MandelstamTuple{T}((sum(ms^2) - σ2 - σ3, σ2, σ3))
-    return MandelstamTuple{T}((σ1=σ1, σ2=sum(ms^2) - σ3 - σ1, σ3=σ3))
+    return MandelstamTuple{T}((σ1 = σ1, σ2 = sum(ms^2) - σ3 - σ1, σ3 = σ3))
 end
 Invariants(; σ1, σ2, σ3) = MandelstamTuple{typeof(σ1)}((σ1, σ2, σ3))
 Invariants(σ1, σ2, σ3) = MandelstamTuple{typeof(σ1)}((σ1, σ2, σ3))
@@ -154,16 +176,16 @@ function x2σs(x, ms::MassTuple; k::Int)
     return MandelstamTuple{typeof(ms.m0)}(σt)
 end
 
-function y2σs(y, ms::MassTuple; k::Int=last(findmin(Tuple(ms))))
+function y2σs(y, ms::MassTuple; k::Int = last(findmin(Tuple(ms))))
     i, j = ij_from_k(k)
-    σi = fitin(y[1], lims(ms; k=i))
-    σj = fitin(y[2], lims(ms; k=j))
+    σi = fitin(y[1], lims(ms; k = i))
+    σj = fitin(y[2], lims(ms; k = j))
     σk = sum(ms^2) - σi - σj
     σt = circleorigin(-k, (σi, σj, σk))
     return MandelstamTuple{typeof(ms.m0)}(σt)
 end
 
-randomPoint(ms::MassTuple) = x2σs(rand(2), ms; k=3)
+randomPoint(ms::MassTuple) = x2σs(rand(2), ms; k = 3)
 randomPoint(two_js::SpinTuple) = SpinTuple([rand(-j:2:j) for j in two_js])
 
 @with_kw struct DalitzPlotPoint{I,S}
@@ -172,9 +194,7 @@ randomPoint(two_js::SpinTuple) = SpinTuple([rand(-j:2:j) for j in two_js])
 end
 
 function randomPoint(tbs::ThreeBodySystem)
-    DalitzPlotPoint(
-        σs=randomPoint(tbs.ms),
-        two_λs=randomPoint(tbs.two_js))
+    DalitzPlotPoint(σs = randomPoint(tbs.ms), two_λs = randomPoint(tbs.two_js))
 end
 
 #                                                                _|
@@ -192,11 +212,13 @@ For given polar angle θ, it returns an (σ1,σ2,σ3) Tuple of polynomials of ra
 The polynomial works as a function of the r coordinate.
 """
 polardalitz2invariants(θ, expansion_point::Tuple) =
-    (Polynomial([0, -cos(θ)]),
+    (
+        Polynomial([0, -cos(θ)]),
         Polynomial([0, cos(θ + π / 3)]),
-        Polynomial([0, cos(θ - π / 3)])) .+ expansion_point
+        Polynomial([0, cos(θ - π / 3)]),
+    ) .+ expansion_point
 
-function border(ms::MassTuple{T}; Nx::Int=300) where {T}
+function border(ms::MassTuple{T}; Nx::Int = 300) where {T}
     #
     expansion_point = let
         f = 0.5
@@ -220,21 +242,26 @@ function border(ms::MassTuple{T}; Nx::Int=300) where {T}
         r = rborder(θ)
         return map(P -> P(r), σs(θ))
     end
-    θs = range(-π / 9, 2π - π / 9, length=Nx)
+    θs = range(-π / 9, 2π - π / 9, length = Nx)
     σs_tuple = σs_border.(θs)
     return MandelstamTuple{T}.(σs_tuple)
 end
 
 # border13, border12, border21, border23, border32
 for (i, j) in ((1, 2), (2, 1), (2, 3), (3, 2), (3, 1), (1, 3))
-    eval(quote
-        $(Symbol(:border, i, j))(ms; Nx::Int=300) =
-            NamedTuple{$(Symbol(:σ, i), Symbol(:σ, j))}.(border(ms; Nx))
-    end)
+    eval(
+        quote
+            $(Symbol(:border, i, j))(ms; Nx::Int = 300) =
+                NamedTuple{$(Symbol(:σ, i), Symbol(:σ, j))}.(border(ms; Nx))
+        end,
+    )
 end
 
 #
 inrange(x, r) = r[1] < x < r[2]
 inphrange(σs::MandelstamTuple, ms::MassTuple) = isphysical(σs, ms)
-isphysical(σs::MandelstamTuple, ms::MassTuple) = Kibble(σs, ms^2) < 0 &&
-                                                 inrange(σs[1], lims1(ms)) && inrange(σs[2], lims2(ms)) && inrange(σs[3], lims3(ms))
+isphysical(σs::MandelstamTuple, ms::MassTuple) =
+    Kibble(σs, ms^2) < 0 &&
+    inrange(σs[1], lims1(ms)) &&
+    inrange(σs[2], lims2(ms)) &&
+    inrange(σs[3], lims3(ms))

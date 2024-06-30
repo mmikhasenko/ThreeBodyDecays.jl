@@ -10,9 +10,7 @@ using PolynomialRoots
 import Base: getindex, iterate, length, vcat
 
 
-export Kallen, sqrtKallenFact, Kibble,
-    inphrange, isphysical,
-    lims, lims1, lims2, lims3
+export Kallen, sqrtKallenFact, Kibble, inphrange, isphysical, lims, lims1, lims2, lims3
 export phase
 export ijk, ij_from_k
 #
@@ -20,8 +18,7 @@ export cosθij
 export cosθ12, cosθ23, cosθ31
 #
 export σiofk, σjofk
-export σ1of2, σ2of3, σ3of1,
-    σ1of3, σ2of1, σ3of2
+export σ1of2, σ2of3, σ3of1, σ1of3, σ2of1, σ3of2
 export breakup, breakup_Rk, breakup_ij
 include("kinematics.jl")
 
@@ -72,9 +69,7 @@ export possible_ls, possible_ls_ij, possible_ls_Rk, possible_lsLS
 export possible_coupling_schemes
 include("coupling_scheme.jl")
 
-export change_basis_3from1,
-    change_basis_1from2,
-    change_basis_2from3
+export change_basis_3from1, change_basis_1from2, change_basis_2from3
 include("cross_channel_relations.jl")
 
 export Recoupling
