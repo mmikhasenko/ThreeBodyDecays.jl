@@ -1,7 +1,6 @@
 # ThreeBodyDecays.jl
 
 ![Build Status](https://github.com/mmikhasenko/ThreeBodyDecays.jl/actions/workflows/ci.yaml/badge.svg)
-[![Codecov](https://codecov.io/gh/mmikhasenko/ThreeBodyDecays.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/mmikhasenko/ThreeBodyDecays.jl)
 [![arXiv article](https://img.shields.io/badge/article-PRD%20101%2C%20034033-yellowgreen)](https://arxiv.org/abs/1910.04566)
 
 ## Description
@@ -14,7 +13,7 @@ Decays with three particles is the main application of the approach, however, it
 transitions can be factorized to a product of sequential decays with $≤3$ products. Particles can have arbitrary spin.
 
 The implementation is based on a research paper,
-"Dalitz-plot decomposition for three-body decays" by JPAC Collaboration (M Mikhasenko at al.) [(arxiv)](http://inspirehep.net/record/1758460).
+"Dalitz-plot decomposition for three-body decays" by JPAC Collaboration (M Mikhasenko at al.) [(inspire reference)](http://inspirehep.net/record/1758460).
 The code mostly inherits notations of the paper:
 
 - Particles are numbered 1,2,3, and 0 for the decay products and the mother particle, respectively.
@@ -24,7 +23,7 @@ The code mostly inherits notations of the paper:
 - `ζ⁰ₖ₍ⱼ₎` is the Wigner angle of the 0-particle, an angle of `vec pⱼ+pⱼ` with respect the the chain `j`.
 - `ζᵏᵢ₍ⱼ₎` is the Wigner angle for the particle `k` (the angle in the rest frame of particle `k`) that is mismatched for the chain `i` with respect to the chain `j`.
 
-See [example](docs/src/demo.jl) for a demomostration case.
+See [example](docs/src/demo.jl) for a demonstration case.
 
 ## Installation
 

@@ -15,7 +15,7 @@ ms = ThreeBodyMasses(1.0, 2.0, 3.0; m0=120.0)
     @test_throws UndefKeywordError ThreeBodyMasses(0, 1, 1)
 end
 
-@testset "operations and interate" begin
+@testset "operations and integrate" begin
     ms² = ms^2
     @test sum(ms²) == sum(abs2, ms)
     #

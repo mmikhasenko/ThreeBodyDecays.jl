@@ -16,7 +16,7 @@ ms = ThreeBodyMasses(1.1, 3.3, 5.5; m0=20.0)
     @test σs == Invariants(σs.σ1, σs.σ2, σs.σ3)
 end
 
-@testset "operations and interate" begin
+@testset "operations and integrate" begin
     @test sum(σs) == sum(ms^2)
     @test length(σs) == 3
 end
@@ -32,7 +32,7 @@ end
 end
 
 
-@testset "consistency of cosθij and σkofj, σkofj functions" begin
+@testset "consistency of cosθij and σiofk, σjofk functions" begin
     z23 = cosθ23(σs, ms^2)
     @test σs.σ3 ≈ σ3of1(z23, σs.σ1, ms^2)
     @test σs.σ2 ≈ σ2of1(z23, σs.σ1, ms^2)

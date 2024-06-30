@@ -3,10 +3,12 @@ coeffs
 cosζi
 cosθ
 cosθij
+cuhre
 Dalitz
 fitin
 inphrange
 inrange
+isapprox
 iseven
 isodd
 isphysical
@@ -23,9 +25,12 @@ polardalitz
 println
 rborder
 reim
+rtol
+safetestset
 seriestype
 struct
 testset
+Testsets
 textrm
 tonumber
 σiofk

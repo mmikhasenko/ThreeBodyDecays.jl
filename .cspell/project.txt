@@ -3,6 +3,7 @@ compat
 cosζ
 cosζj
 cosζk
+Dalitz
 doublearg
 eachslice
 findmin
@@ -12,12 +13,17 @@ guidefonthalign
 guidefontvalign
 imag
 issequential
+JPAC
 latexstring
 lims
 minorticks
+minusone
+Misha
+multibody
 quadgk
 Recoupling
 refζs
+sumrules
 typeof
 vcat
 wignerd

@@ -2,7 +2,7 @@ using ThreeBodyDecays
 using ThreeBodyDecays.PartialWaveFunctions
 using Test
 
-@testset "Representaiton property" begin
+@testset "Representation property" begin
 	ms = ThreeBodyMasses(m1 = 0.938, m2 = 0.49367, m3 = 0.13957, m0 = 2.46867)
 	#
 	τ1 = (sum(lims1(ms)) / 2.0, 0.3, 0.3, 0.3, 0.3)

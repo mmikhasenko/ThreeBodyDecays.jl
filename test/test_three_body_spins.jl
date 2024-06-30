@@ -41,7 +41,7 @@ end
         ThreeBodyParities('-', '+', '-'; P0='-')]
 end
 
-@testset "operations and interate" begin
+@testset "operations and integrate" begin
     @test iseven(sum(two_js))
     @test div(sum(Tuple(two_js) .|> x2), 2) == sum(two_js)
 end

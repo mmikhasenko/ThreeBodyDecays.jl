@@ -25,6 +25,7 @@ export σ1of2, σ2of3, σ3of1,
 export breakup, breakup_Rk, breakup_ij
 include("kinematics.jl")
 
+export minusone
 export x_str, shift_by_half
 include("utils.jl")
 
