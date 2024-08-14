@@ -35,7 +35,7 @@ function ThreeBodySpins(
     two_h2_or_h2,
     two_h3_or_h3;
     h0 = nothing,  # default to nothing
-    two_h0 = nothing # default to nothing
+    two_h0 = nothing, # default to nothing
 )
     if isnothing(h0) && isnothing(two_h0)
         error("Use either `two_h0=...`, or `h0=...` keyword argument.")
