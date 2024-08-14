@@ -12,6 +12,7 @@ inrange
 invperm
 isapprox
 iseven
+isnothing
 isodd
 isphysical
 ispositive
