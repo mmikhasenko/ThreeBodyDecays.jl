@@ -20,6 +20,8 @@ end
     @test ThreeBodySpins("1", "1/2", "0"; h0 = "1/2") == ThreeBodySpins(2, 1, 0; two_h0 = 1)
     #
     @test ThreeBodySpins(1, 1 / 2, 0; h0 = 1 / 2) == ThreeBodySpins(2, 1, 0; two_h0 = 1)
+    @test all(ThreeBodySpins(1, 1, 0; h0 = i) isa SpinTuple for i in -10:10)
+    @test all(ThreeBodySpins(1, 2, 0; two_h0 = i) isa SpinTuple for i in -11:2:11)
     #
     @test_throws ErrorException ThreeBodySpins("0", "1/2", "1/2"; h0 = "1/2")
 end
