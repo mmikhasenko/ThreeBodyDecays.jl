@@ -16,10 +16,22 @@ function fix_literate_output(content)
     return content
 end
 
-gen_content_dir = joinpath(@__DIR__, "src")
-name = "10-tutorial"
-tutorial_src = joinpath(@__DIR__, "src", "$(name).jl")
-Literate.markdown(tutorial_src, gen_content_dir; name, documenter=true, credit=true, postprocess=fix_literate_output)
+docs_src_dir = joinpath(@__DIR__, "src")
+#
+files = readdir(docs_src_dir)
+filter!(file -> splitext(file)[2] == ".jl", files)
+map(files) do file
+    name = splitext(file)[1]
+    tutorial_src = joinpath(@__DIR__, "src", "$(name).jl")
+    Literate.markdown(
+        tutorial_src,
+        docs_src_dir;
+        name,
+        documenter = true,
+        credit = true,
+        postprocess = fix_literate_output,
+    )
+end
 
 makedocs(;
     modules = [ThreeBodyDecays],
@@ -33,7 +45,7 @@ makedocs(;
     pages = [
         "index.md"
         [
-            file for file in readdir(joinpath(@__DIR__, "src")) if
+            file for file in readdir(docs_src_dir) if
             file != "index.md" && splitext(file)[2] == ".md"
         ]
     ],
