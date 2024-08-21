@@ -1,5 +1,6 @@
 using ThreeBodyDecays
 using Documenter
+using Literate
 
 DocMeta.setdocmeta!(
     ThreeBodyDecays,
@@ -9,6 +10,16 @@ DocMeta.setdocmeta!(
 )
 
 const page_rename = Dict("developer.md" => "Developer docs") # Without the numbers
+
+function fix_literate_output(content)
+    content = replace(content, "EditURL = \"@__REPO_ROOT_URL__/\"" => "")
+    return content
+end
+
+gen_content_dir = joinpath(@__DIR__, "src")
+name = "10-tutorial"
+tutorial_src = joinpath(@__DIR__, "src", "$(name).jl")
+Literate.markdown(tutorial_src, gen_content_dir; name, documenter=true, credit=true, postprocess=fix_literate_output)
 
 makedocs(;
     modules = [ThreeBodyDecays],

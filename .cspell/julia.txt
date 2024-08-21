@@ -1,3 +1,4 @@
+autodocs
 btime
 circleorigin
 coeffs
@@ -28,6 +29,7 @@ mssq
 nonpole
 permutedims
 polardalitz
+postprocess
 println
 rborder
 reim
@@ -49,4 +51,3 @@ warntype
 σjofk
 σkmax
 σkmin
-autodocs

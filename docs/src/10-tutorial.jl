@@ -74,7 +74,7 @@ end
     Ps = Conserving,
     tbs = tbs,
 )
-Λs = (Λ1520, Λ1690, Λ1810)
+Λs = (Λ1520, Λ1690, Λ1810);
 
 # chains-3, i.e. (1+2): Pentaquarks with the lowest ls, LS
 Pc4312 = DecayChainLS(
@@ -98,7 +98,7 @@ Pc4457 = DecayChainLS(
     Ps = Conserving,
     tbs = tbs,
 )
-Pcs = (Pc4312, Pc4440, Pc4457)
+Pcs = (Pc4312, Pc4440, Pc4457);
 
 # ## Unpolarized intensity
 
