@@ -8,7 +8,6 @@
 [![Docs workflow Status](https://github.com/mmikhasenko/ThreeBodyDecays.jl/actions/workflows/Docs.yml/badge.svg?branch=main)](https://github.com/mmikhasenko/ThreeBodyDecays.jl/actions/workflows/Docs.yml?query=branch%3Amain)
 
 [![Coverage](https://codecov.io/gh/mmikhasenko/ThreeBodyDecays.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/mmikhasenko/ThreeBodyDecays.jl)
-[![DOI](https://zenodo.org/badge/DOI/FIXME)](https://doi.org/FIXME)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 [![All Contributors](https://img.shields.io/github/all-contributors/mmikhasenko/ThreeBodyDecays.jl?labelColor=5e1ec7&color=c0ffee&style=flat-square)](#contributors)
 
