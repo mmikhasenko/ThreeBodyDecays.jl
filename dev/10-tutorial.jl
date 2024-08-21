@@ -21,7 +21,7 @@ theme(
     guidefontvalign = :top,
     guidefonthalign = :right,
     xlim = (:auto, :auto),
-    ylim = (0, :auto),
+    ylim = (:auto, :auto),
     grid = false,
 )
 
