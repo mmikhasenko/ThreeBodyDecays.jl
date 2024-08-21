@@ -6,6 +6,7 @@ cosθ
 cosθij
 cuhre
 Dalitz
+deploydocs
 fitin
 inphrange
 inrange
@@ -19,6 +20,7 @@ ispositive
 joinpath
 Kallen
 lineshape
+makedocs
 misq
 mjsq
 mksq
@@ -33,6 +35,9 @@ repolink
 rtol
 safetestset
 seriestype
+setdocmeta
+sitename
+splitext
 struct
 testset
 Testsets
@@ -44,3 +49,4 @@ warntype
 σjofk
 σkmax
 σkmin
+autodocs
