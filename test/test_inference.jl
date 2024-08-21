@@ -1,6 +1,6 @@
 using ThreeBodyDecays
 using Test
-using Parameters
+using ThreeBodyDecays.Parameters
 
 @testset "Inferred type" begin
     tbs = ThreeBodySystem(

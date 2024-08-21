@@ -1,2 +1,7 @@
+*.jl.*.cov
+*.jl.cov
+*.jl.mem
 Manifest.toml
-node_modules/
+docs/build/
+*.rej
+node_modules

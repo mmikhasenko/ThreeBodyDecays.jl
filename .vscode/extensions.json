@@ -1,12 +1,12 @@
 {
-  "recommendations": [
-    "eamodio.gitlens",
-    "editorconfig.editorconfig",
-    "esbenp.prettier-vscode",
-    "github.vscode-pull-request-github",
-    "julialang.language-julia",
-    "quarto.quarto",
-    "tamasfe.even-better-toml",
-    "yzhang.markdown-all-in-one"
-  ]
+    "recommendations": [
+        "eamodio.gitlens",
+        "editorconfig.editorconfig",
+        "esbenp.prettier-vscode",
+        "github.vscode-pull-request-github",
+        "julialang.language-julia",
+        "quarto.quarto",
+        "tamasfe.even-better-toml",
+        "yzhang.markdown-all-in-one"
+    ]
 }
