@@ -1,9 +1,9 @@
 # Changes here will be overwritten by Copier
 AnswerStrategy: recommended
-AuthorEmail: mikhail.mikhasenko@gmail.com
+AuthorEmail: mikhail.mikhasenko@cern.ch
 AuthorName: Misha Mikhasenko
 Indentation: 4
-JuliaMinVersion: "1.6"
+JuliaMinVersion: "1.7"
 License: MIT
 PackageName: ThreeBodyDecays
 PackageOwner: mmikhasenko

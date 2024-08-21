@@ -22,9 +22,11 @@ Mikhasenko
 minorticks
 minusone
 Misha
+mmikhasenko
 multibody
 pentaquarks
 quadgk
+readdir
 Recoupling
 refζ
 refζs
@@ -41,3 +43,13 @@ ylim
 ηηηphase
 ηηηphaseisplus
 ηηηphasesign
+
+markdownlint
+cffinit
+orcid
+helicity
+pipx
+Utopic
+servedocs
+Registrator
+zenodo
