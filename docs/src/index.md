@@ -18,4 +18,3 @@ Documentation for [ThreeBodyDecays](https://github.com/mmikhasenko/ThreeBodyDeca
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 ```
-

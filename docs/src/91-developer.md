@@ -28,7 +28,6 @@ You will create branches and push to `origin`, and you will fetch and update you
 Install a plugin on your editor to use [EditorConfig](https://editorconfig.org).
 This will ensure that your editor is configured with important formatting settings.
 
-
 We use [https://pre-commit.com](https://pre-commit.com) to run the linters and formatters.
 In particular, the Julia code is formatted using [JuliaFormatter.jl](https://github.com/domluna/JuliaFormatter.jl), so please install it globally first:
 
@@ -58,7 +57,6 @@ pre-commit run -a
 ```
 
 **Now, you can only commit if all the pre-commit tests pass**.
-
 
 ## Testing
 
@@ -146,10 +144,10 @@ To create a new release, you can follow these simple steps:
 - Create a branch `release-x.y.z`
 - Update `version` in `Project.toml`
 - Update the `CHANGELOG.md`:
-  - Rename the section "Unreleased" to "[x.y.z] - yyyy-mm-dd" (i.e., version under brackets, dash, and date in ISO format)
-  - Add a new section on top of it named "Unreleased"
-  - Add a new link in the bottom for version "x.y.z"
-  - Change the "[unreleased]" link to use the latest version - end of line, `vx.y.z ... HEAD`.
+    - Rename the section "Unreleased" to "[x.y.z] - yyyy-mm-dd" (i.e., version under brackets, dash, and date in ISO format)
+    - Add a new section on top of it named "Unreleased"
+    - Add a new link in the bottom for version "x.y.z"
+    - Change the "[unreleased]" link to use the latest version - end of line, `vx.y.z ... HEAD`.
 - Create a commit "Release vx.y.z", push, create a PR, wait for it to pass, merge the PR.
 - Go back to main screen and click on the latest commit (link: <https://github.com/mmikhasenko/ThreeBodyDecays.jl/commit/main>)
 - At the bottom, write `@JuliaRegistrator register`
