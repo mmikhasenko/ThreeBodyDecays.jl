@@ -17,6 +17,7 @@ makedocs(;
     sitename = "ThreeBodyDecays.jl",
     format = Documenter.HTML(;
         canonical = "https://mmikhasenko.github.io/ThreeBodyDecays.jl",
+        repolink = "https://github.com/mmikhasenko/ThreeBodyDecays.jl",
     ),
     pages = [
         "index.md"
