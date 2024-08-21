@@ -20,8 +20,6 @@ repos:
           - id: mixed-line-ending
             args: [--fix=lf]
           - id: no-commit-to-branch
-          - id: pretty-format-json
-            args: [--autofix, --indent=4]
           - id: trailing-whitespace
           - id: check-merge-conflict
             args: [--assume-in-merge]

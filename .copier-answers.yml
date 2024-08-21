@@ -3,7 +3,7 @@ AnswerStrategy: recommended
 AuthorEmail: mikhail.mikhasenko@gmail.com
 AuthorName: Misha Mikhasenko
 Indentation: 4
-JuliaMinVersion: '1.6'
+JuliaMinVersion: "1.6"
 License: MIT
 PackageName: ThreeBodyDecays
 PackageOwner: mmikhasenko
