@@ -1,6 +1,6 @@
 name = "ThreeBodyDecays"
 uuid = "e6563dab-9ca1-5843-bde3-2ccf38d63843"
-authors = ["Misha Mikhasenko <mikhail.mikhasenko@gmail.com>"]
+authors = ["Misha Mikhasenko <mikhail.mikhasenko@cern.ch>"]
 version = "0.12.2"
 
 [deps]
