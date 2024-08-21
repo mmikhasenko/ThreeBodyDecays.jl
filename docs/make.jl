@@ -1,5 +1,6 @@
 using ThreeBodyDecays
 using Documenter
+using Literate
 
 DocMeta.setdocmeta!(
     ThreeBodyDecays,
@@ -9,6 +10,28 @@ DocMeta.setdocmeta!(
 )
 
 const page_rename = Dict("developer.md" => "Developer docs") # Without the numbers
+
+function fix_literate_output(content)
+    content = replace(content, "EditURL = \"@__REPO_ROOT_URL__/\"" => "")
+    return content
+end
+
+docs_src_dir = joinpath(@__DIR__, "src")
+#
+files = readdir(docs_src_dir)
+filter!(file -> splitext(file)[2] == ".jl", files)
+map(files) do file
+    name = splitext(file)[1]
+    tutorial_src = joinpath(@__DIR__, "src", "$(name).jl")
+    Literate.markdown(
+        tutorial_src,
+        docs_src_dir;
+        name,
+        documenter = true,
+        credit = true,
+        postprocess = fix_literate_output,
+    )
+end
 
 makedocs(;
     modules = [ThreeBodyDecays],
@@ -22,7 +45,7 @@ makedocs(;
     pages = [
         "index.md"
         [
-            file for file in readdir(joinpath(@__DIR__, "src")) if
+            file for file in readdir(docs_src_dir) if
             file != "index.md" && splitext(file)[2] == ".md"
         ]
     ],

@@ -27,8 +27,6 @@ The code mostly inherits notations of the paper:
 - `ζ_kj_for_0` is the Wigner angle of the 0-particle, an angle of `vec pⱼ+pⱼ` with respect the the chain `j`.
 - `ζ_ij_for_k` is the Wigner angle for the particle `k` (the angle in the rest frame of particle `k`) that is mismatched for the chain `i` with respect to the chain `j`.
 
-See [example](docs/src/demo.jl) for a demonstration case.
-
 ## Installation
 
 ```julia

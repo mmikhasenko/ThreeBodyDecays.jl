@@ -12,7 +12,18 @@
 using ThreeBodyDecays # import the module
 using Plots
 using QuadGK
-theme(:wong2)
+#
+theme(
+    :wong,
+    frame = :box,
+    lab = "",
+    minorticks = true,
+    guidefontvalign = :top,
+    guidefonthalign = :right,
+    xlim = (:auto, :auto),
+    ylim = (0, :auto),
+    grid = false,
+)
 
 # decay Λb ⟶ Jψ p K
 constants = Dict("mJψ" => 3.09, "mp" => 0.938, "mK" => 0.49367, "mLb" => 5.62) # masses of the particles
@@ -74,7 +85,7 @@ end
     Ps = Conserving,
     tbs = tbs,
 )
-Λs = (Λ1520, Λ1690, Λ1810)
+Λs = (Λ1520, Λ1690, Λ1810);
 
 # chains-3, i.e. (1+2): Pentaquarks with the lowest ls, LS
 Pc4312 = DecayChainLS(
@@ -98,7 +109,7 @@ Pc4457 = DecayChainLS(
     Ps = Conserving,
     tbs = tbs,
 )
-Pcs = (Pc4312, Pc4440, Pc4457)
+Pcs = (Pc4312, Pc4440, Pc4457);
 
 # ## Unpolarized intensity
 
