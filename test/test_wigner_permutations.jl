@@ -1,5 +1,5 @@
 using ThreeBodyDecays
-using Parameters
+using ThreeBodyDecays.Parameters
 using Test
 
 @testset "Wigner angle permutations" begin

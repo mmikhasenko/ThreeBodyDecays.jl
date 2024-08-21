@@ -1,6 +1,6 @@
 using Test
 using ThreeBodyDecays
-using StaticArrays
+using ThreeBodyDecays.StaticArrays
 
 
 # test model contraction
