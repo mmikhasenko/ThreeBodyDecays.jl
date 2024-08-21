@@ -8,5 +8,5 @@ License: MIT
 PackageName: ThreeBodyDecays
 PackageOwner: mmikhasenko
 PackageUUID: e6563dab-9ca1-5843-bde3-2ccf38d63843
-_commit: v0.9.0
+_commit: v0.9.1
 _src_path: https://github.com/abelsiqueira/BestieTemplate.jl
