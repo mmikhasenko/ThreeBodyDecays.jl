@@ -28,7 +28,7 @@ repos:
       hooks:
           - id: markdownlint-fix
     - repo: https://github.com/streetsidesoftware/cspell-cli
-      rev: v8.9.0
+      rev: v8.13.3
       hooks:
           - id: cspell
     - repo: https://github.com/citation-file-format/cffconvert
@@ -46,6 +46,6 @@ repos:
       hooks:
           - id: yamllint
     - repo: https://github.com/domluna/JuliaFormatter.jl
-      rev: v1.0.58
+      rev: v1.0.59
       hooks:
           - id: julia-formatter
