@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Tutorial · ThreeBodyDecays.jl</title><meta name="title" content="Tutorial · ThreeBodyDecays.jl"/><meta property="og:title" content="Tutorial · ThreeBodyDecays.jl"/><meta property="twitter:title" content="Tutorial · ThreeBodyDecays.jl"/><meta name="description" content="Documentation for ThreeBodyDecays.jl."/><meta property="og:description" content="Documentation for ThreeBodyDecays.jl."/><meta property="twitter:description" content="Documentation for ThreeBodyDecays.jl."/><meta property="og:url" content="https://mmikhasenko.github.io/ThreeBodyDecays.jl/10-tutorial/"/><meta property="twitter:url" content="https://mmikhasenko.github.io/ThreeBodyDecays.jl/10-tutorial/"/><link rel="canonical" href="https://mmikhasenko.github.io/ThreeBodyDecays.jl/10-tutorial/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">ThreeBodyDecays.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">ThreeBodyDecays</a></li><li class="is-active"><a class="tocitem" href>Tutorial</a><ul class="internal"><li><a class="tocitem" href="#Decay-chains"><span>Decay chains</span></a></li><li><a class="tocitem" href="#Unpolarized-intensity"><span>Unpolarized intensity</span></a></li><li><a class="tocitem" href="#Plotting-API"><span>Plotting API</span></a></li></ul></li><li><a class="tocitem" href="../90-contributing/">Contributing guidelines</a></li><li><a class="tocitem" href="../91-developer/">Developer documentation</a></li><li><a class="tocitem" href="../95-reference/">Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Tutorial</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Tutorial</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/mmikhasenko/ThreeBodyDecays.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/mmikhasenko/ThreeBodyDecays.jl/blob/main/docs/src/10-tutorial.jl#" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Tutorial"><a class="docs-heading-anchor" href="#Tutorial">Tutorial</a><a id="Tutorial-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial" title="Permalink"></a></h1><p>This tutorial guides the user through the basic example of building a model for a cascade decay of a particle into three particles. The chosen example is the decay of Λb ⟶ Jψ p K, where the pentaquarks candidates has been seen for the first time in 2015. The tutorial shows how to build a decay chain object, and how to calculate the amplitude, the matrix element of the transition.</p><pre><code class="language-julia hljs">using ThreeBodyDecays # import the module
+using Plots
+using QuadGK</code></pre><pre><code class="language-julia hljs">theme(
+    :wong,
+    frame = :box,
+    lab = &quot;&quot;,
+    minorticks = true,
+    guidefontvalign = :top,
+    guidefonthalign = :right,
+    xlim = (:auto, :auto),
+    ylim = (:auto, :auto),
+    grid = false,
+)</code></pre><p>decay Λb ⟶ Jψ p K</p><pre><code class="language-julia hljs">constants = Dict(&quot;mJψ&quot; =&gt; 3.09, &quot;mp&quot; =&gt; 0.938, &quot;mK&quot; =&gt; 0.49367, &quot;mLb&quot; =&gt; 5.62) # masses of the particles</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Dict{String, Float64} with 4 entries:
+  &quot;mp&quot;  =&gt; 0.938
+  &quot;mLb&quot; =&gt; 5.62
+  &quot;mK&quot;  =&gt; 0.49367
+  &quot;mJψ&quot; =&gt; 3.09</code></pre><p><code>ThreeBodySystem</code> creates an immutable structure that describes the setup. Two work with particles with non-integer spin, the doubled quantum numbers are stored.</p><pre><code class="language-julia hljs">ms = ThreeBodyMasses(   # masses m1,m2,m3,m0
+    constants[&quot;mJψ&quot;],
+    constants[&quot;mp&quot;],
+    constants[&quot;mK&quot;];
+    m0 = constants[&quot;mLb&quot;],
+)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(m1 = 3.09, m2 = 0.938, m3 = 0.49367, m0 = 5.62)</code></pre><p>create two-body system</p><pre><code class="language-julia hljs">tbs = ThreeBodySystem(; ms, two_js = ThreeBodySpins(2, 1, 0; two_h0 = 1)) # twice spin
+
+Conserving = ThreeBodyParities(&#39;-&#39;, &#39;+&#39;, &#39;-&#39;; P0 = &#39;+&#39;)
+Violating = ThreeBodyParities(&#39;-&#39;, &#39;+&#39;, &#39;-&#39;; P0 = &#39;-&#39;)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(P1 = &#39;-&#39;, P2 = &#39;+&#39;, P3 = &#39;-&#39;, P0 = &#39;-&#39;)</code></pre><ul><li>the invariant variables, <code>σs = [σ₁,σ₂,σ₃]</code>,</li><li>helicities <code>two_λs = [λ₁,λ₂,λ₃,λ₀]</code></li><li>and complex couplings <code>cs = [c₁,c₂,...]</code></li></ul><h2 id="Decay-chains"><a class="docs-heading-anchor" href="#Decay-chains">Decay chains</a><a id="Decay-chains-1"></a><a class="docs-heading-anchor-permalink" href="#Decay-chains" title="Permalink"></a></h2><p>The following code creates six possible decay channels.</p><p>The lineshape of the intermediate resonances is specified by the second argument. It is a simple Breit-Wigner function in this example.</p><pre><code class="language-julia hljs">struct BW
+    m::Float64
+    Γ::Float64
+end
+(bw::BW)(σ::Number) = 1 / (bw.m^2 - σ - 1im * bw.m * bw.Γ)</code></pre><p>chains-1, i.e. (2+3): Λs with the lowest ls, LS</p><pre><code class="language-julia hljs">Λ1520 = DecayChainLS(
+    k = 1,
+    Xlineshape = BW(1.5195, 0.0156),
+    jp = jp&quot;3/2+&quot;,
+    Ps = Conserving,
+    tbs = tbs,
+)
+Λ1690 = DecayChainLS(
+    k = 1,
+    Xlineshape = BW(1.685, 0.050),
+    jp = jp&quot;1/2+&quot;,
+    Ps = Conserving,
+    tbs = tbs,
+)
+Λ1810 = DecayChainLS(
+    k = 1,
+    Xlineshape = BW(1.80, 0.090),
+    jp = jp&quot;5/2+&quot;,
+    Ps = Conserving,
+    tbs = tbs,
+)
+Λs = (Λ1520, Λ1690, Λ1810);</code></pre><p>chains-3, i.e. (1+2): Pentaquarks with the lowest ls, LS</p><pre><code class="language-julia hljs">Pc4312 = DecayChainLS(
+    k = 3,
+    Xlineshape = BW(4.312, 0.015),
+    jp = jp&quot;1/2+&quot;,
+    Ps = Conserving,
+    tbs = tbs,
+)
+Pc4440 = DecayChainLS(
+    k = 3,
+    Xlineshape = BW(4.440, 0.010),
+    jp = jp&quot;1/2+&quot;,
+    Ps = Conserving,
+    tbs = tbs,
+)
+Pc4457 = DecayChainLS(
+    k = 3,
+    Xlineshape = BW(4.457, 0.020),
+    jp = jp&quot;3/2+&quot;,
+    Ps = Conserving,
+    tbs = tbs,
+)
+Pcs = (Pc4312, Pc4440, Pc4457);</code></pre><h2 id="Unpolarized-intensity"><a class="docs-heading-anchor" href="#Unpolarized-intensity">Unpolarized intensity</a><a id="Unpolarized-intensity-1"></a><a class="docs-heading-anchor-permalink" href="#Unpolarized-intensity" title="Permalink"></a></h2><p>The full model is the vector of decay chains, and couplings for each decay chain.</p><pre><code class="language-julia hljs">const model = ThreeBodyDecay(
+    [&quot;Λ1520&quot;, &quot;Λ1690&quot;, &quot;Λ1810&quot;, &quot;Pc4312&quot;, &quot;Pc4440&quot;, &quot;Pc4457&quot;] .=&gt; zip(
+        [2, 2.1, 1.4im, 0.4, 0.3im, -0.8im],
+        [Λ1520, Λ1690, Λ1810, Pc4312, Pc4440, Pc4457],
+    ),
+)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">ThreeBodyDecay{6, DecayChain{Main.var&quot;Main&quot;.BW, ThreeBodySystem{@NamedTuple{m1::Float64, m2::Float64, m3::Float64, m0::Float64}, @NamedTuple{two_h1::Int64, two_h2::Int64, two_h3::Int64, two_h0::Int64}}}, ComplexF64, String}
+  chains: StaticArraysCore.SVector{6, DecayChain{Main.var&quot;Main&quot;.BW, ThreeBodySystem{@NamedTuple{m1::Float64, m2::Float64, m3::Float64, m0::Float64}, @NamedTuple{two_h1::Int64, two_h2::Int64, two_h3::Int64, two_h0::Int64}}}}
+  couplings: StaticArraysCore.SVector{6, ComplexF64}
+  names: StaticArraysCore.SVector{6, String}
+</code></pre><p>just a random point of the Dalitz Plot</p><pre><code class="language-julia hljs">σs = randomPoint(tbs.ms)
+two_λs = randomPoint(tbs.two_js)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(two_h1 = 0, two_h2 = 1, two_h3 = 0, two_h0 = -1)</code></pre><p>Model is build, one can compute unpolarized intensity with it</p><pre><code class="language-julia hljs">@show amplitude(model, σs, two_λs)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">-3.3922638313810536 + 1.072854676659944im</code></pre><p>gives a real number - probability</p><pre><code class="language-julia hljs">@show unpolarized_intensity(model, σs)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">218.81728842759534</code></pre><h2 id="Plotting-API"><a class="docs-heading-anchor" href="#Plotting-API">Plotting API</a><a id="Plotting-API-1"></a><a class="docs-heading-anchor-permalink" href="#Plotting-API" title="Permalink"></a></h2><p>A natural way to visualize the three-body decay with two degrees of freedom is a correlation plot of the subchannel invariant masses squared. Kinematic limits can visualized using the <code>border</code> function. Plot in the σ₁σ₃ variables is obtained by</p><pre><code class="language-julia hljs">plot(
+    lab = &quot;&quot;,
+    grid = false,
+    size = (600, 300),
+    plot(border31(masses(model)), xlab = &quot;σ₁ (GeV²)&quot;, ylab = &quot;σ₃ (GeV²)&quot;),
+    plot(border12(masses(model)), xlab = &quot;σ₂ (GeV²)&quot;, ylab = &quot;σ₁ (GeV²)&quot;),
+)</code></pre><img src="3d0a3a28.svg" alt="Example block output"/><p>The matrix element as a function of the kinematic variables can be visualized by passing an amplitude function and the kinematic mass object.</p><pre><code class="language-julia hljs">plot(masses(model), σs -&gt; abs2(amplitude(Pc4312, σs, (2, -1, 0, 1))))
+plot(masses(model), Base.Fix1(unpolarized_intensity, model); iσx = 1, iσy = 3)</code></pre><img src="796a5174.svg" alt="Example block output"/><p>The projections of the Dalitz Plot can be computed numerically using integration routine, e.g. <code>QuadGK</code>.</p><pre><code class="language-julia hljs">plot(4.2, 4.6) do e1
+    I = Base.Fix1(unpolarized_intensity, model)
+    e1 * quadgk(projection_integrand(I, masses(model), e1^2; k = 3), 0, 1)[1]
+end</code></pre><img src="ac6cabd1.svg" alt="Example block output"/><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« ThreeBodyDecays</a><a class="docs-footer-nextpage" href="../90-contributing/">Contributing guidelines »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.7.0 on <span class="colophon-date" title="Friday 6 September 2024 17:18">Friday 6 September 2024</span>. Using Julia version 1.10.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
