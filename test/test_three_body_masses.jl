@@ -1,24 +1,24 @@
 using ThreeBodyDecays
 using Test
 
-ms = ThreeBodyMasses(1.0, 2.0, 3.0; m0=120.0)
+ms = ThreeBodyMasses(1.0, 2.0, 3.0; m0 = 120.0)
 
 @testset "Three Body Masses structure" begin
-    # 
+    #
     @test ms.m1 == ms[1] == 1
     @test ms.m2 == ms[2] == 2
     @test ms.m3 == ms[3] == 3.0
     @test ms.m0 == ms[4] == 120
-    # 
+    #
     @test_throws BoundsError ms[5]
-    @test_throws ErrorException ThreeBodyMasses(0, 1, 1; m0=1)
+    @test_throws ErrorException ThreeBodyMasses(0, 1, 1; m0 = 1)
     @test_throws UndefKeywordError ThreeBodyMasses(0, 1, 1)
 end
 
-@testset "operations and interate" begin
+@testset "operations and integrate" begin
     ms² = ms^2
     @test sum(ms²) == sum(abs2, ms)
-    # 
+    #
     @test ms²[1] == ms[1]^2
     @test ms²[2] == ms[2]^2
     @test ms²[3] == ms[3]^2
@@ -31,7 +31,7 @@ let
     m2 = 0.49367
     m3 = 0.13957
     m0 = 2.46867
-    ms = ThreeBodyMasses(m1, m2, m3; m0=m0)
+    ms = ThreeBodyMasses(m1, m2, m3; m0 = m0)
     #
     @test lims1(ms)[1] == (m2 + m3)^2
     @test lims2(ms)[1] == (m3 + m1)^2
@@ -41,7 +41,7 @@ let
     @test lims2(ms)[2] == (m0 - m2)^2
     @test lims3(ms)[2] == (m0 - m3)^2
     #
-    @test lims1(ms) == lims(1, ms) == lims(ms; k=1)
-    @test lims2(ms) == lims(2, ms) == lims(ms; k=2)
-    @test lims3(ms) == lims(3, ms) == lims(ms; k=3)
+    @test lims1(ms) == lims(1, ms) == lims(ms; k = 1)
+    @test lims2(ms) == lims(2, ms) == lims(ms; k = 2)
+    @test lims3(ms) == lims(3, ms) == lims(ms; k = 3)
 end

@@ -13,27 +13,27 @@ end
 
 
 @testset "jp ⊗ jp" begin
-    Swave = SpinParity("1/2+") ⊗ SpinParity("1-")
-    Pwave = [sw ⊗ SpinParity("1-") for sw in Swave]
-    Dwave = [sw ⊗ SpinParity("2+") for sw in Swave]
-    # 
-    @test length(Swave) == 2
-    @test length(vcat(Pwave...)) == 5
-    @test length(Set(vcat(Pwave...))) == 3
+    S_wave = SpinParity("1/2+") ⊗ SpinParity("1-")
+    P_wave = [sw ⊗ SpinParity("1-") for sw in S_wave]
+    D_wave = [sw ⊗ SpinParity("2+") for sw in S_wave]
+    #
+    @test length(S_wave) == 2
+    @test length(vcat(P_wave...)) == 5
+    @test length(Set(vcat(P_wave...))) == 3
 end
 
 let
-    @test length(possible_ls(jp"3/2-", jp"3-"; jp=jp"1/2+")) == 4
-    @test possible_ls("3/2-", "3-"; jp="1/2+") ==
-          possible_ls(jp"3/2-", jp"3-"; jp=jp"1/2+")
+    @test length(possible_ls(jp"3/2-", jp"3-"; jp = jp"1/2+")) == 4
+    @test possible_ls("3/2-", "3-"; jp = "1/2+") ==
+          possible_ls(jp"3/2-", jp"3-"; jp = jp"1/2+")
     #
-    two_js, Ps = ThreeBodySpinParities("1+", "1/2+", "0-"; jp0="1/2-")
-    lsLSv = possible_lsLS(jp"1/2+", two_js, Ps; k=1)
+    two_js, Ps = ThreeBodySpinParities("1+", "1/2+", "0-"; jp0 = "1/2-")
+    lsLSv = possible_lsLS(jp"1/2+", two_js, Ps; k = 1)
     @test size(lsLSv) == (1, 2)
     #
-    @test length(possible_ls_ij(jp"1+", two_js, Ps; k=1)) == 1
-    @test length(possible_ls_Rk(jp"1+", two_js, Ps; k=1)) == 2
-    lsLSv = possible_lsLS(jp"1+", two_js, Ps; k=1)
+    @test length(possible_ls_ij(jp"1+", two_js, Ps; k = 1)) == 1
+    @test length(possible_ls_Rk(jp"1+", two_js, Ps; k = 1)) == 2
+    lsLSv = possible_lsLS(jp"1+", two_js, Ps; k = 1)
     @test size(lsLSv) == (1, 2)
 end
 

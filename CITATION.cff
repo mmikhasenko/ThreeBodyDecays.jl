@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+title: ThreeBodyDecays.jl
+message: >-
+    If you use this software, please cite it using the
+    metadata from this file.
+type: software
+authors:
+    - given-names: Mikhail
+      family-names: Mikhasenko
+      email: mikhail.mikhasenko@cern.ch
+      affiliation: Ruhr University Bochum
+      orcid: "https://orcid.org/0000-0002-6969-2063"
+repository-code: "https://github.com/mmikhasenko/ThreeBodyDecays.jl"
+abstract: >-
+    ThreeBodyDecays.jl is a Julia package for building
+    three-body decay models using a cascade reaction. It is
+    designed for researchers and scientists in the field of
+    particle physics. Decays with three particles is the main
+    application of the approach, however, it is also found
+    useful in multibody decays where transitions can be
+    factorized to a product of sequential decays with
+    products. Particles can have arbitrary spin. The
+    implementation is based on a research paper, "Dalitz-plot
+    decomposition for three-body decays" by JPAC Collaboration
+    (M. Mikhasenko at al.), PRD 101 (2020) 3, 034033,
+    inSpireID: 1758460
+keywords:
+    - hadron physics
+    - hadron spectroscopy
+    - helicity formalism
+license: MIT
