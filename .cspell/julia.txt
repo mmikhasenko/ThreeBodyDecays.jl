@@ -2,6 +2,7 @@ autodocs
 btime
 circleorigin
 coeffs
+cosβ
 cosζi
 cosθ
 cosθij
