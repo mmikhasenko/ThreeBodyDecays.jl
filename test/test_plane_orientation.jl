@@ -46,3 +46,57 @@ end
 	interference_fraction = (incoherent-coherent)/coherent
     @test round(interference_fraction * 100; digits=2) == 2.87 # 2.87%
 end
+
+
+
+# Other conventions
+using ThreeBodyDecays.Parameters
+using ThreeBodyDecays.Tullio
+
+function amplitude_helicity(model, angles, pars...; reference_chain, kw...)
+	#
+	@unpack γ = angles
+    two_js = spins(model)
+	all_two_js_ijk = itr(collect(two_js)[1:3])
+	#
+	phase = map(all_two_js_ijk) do two_λs
+		cis(γ * two_λs[reference_chain] / 2)
+	end
+    #
+	refζs=fill(reference_chain, 4)
+	F0 = amplitude(model, angles, pars...; refζs, kw...)
+	#
+	F = similar(F0)
+	@tullio F[_i, _j, _k, _z] = phase[_i, _j, _k] * F0[_i, _j, _k, _z]
+	return F
+end
+
+function amplitude_minusphi(model, angles, pars...; reference_chain, kw...)
+	refζi, refζj = ij_from_k(reference_chain)
+	#
+	@unpack α, cosβ, γ = angles
+	γ′ = α + γ
+	#
+    two_js = spins(model)
+	all_two_js_ijk = itr(collect(two_js)[1:3])
+	phase = map(all_two_js_ijk) do two_λs
+		cis(γ′ * (two_λs[reference_chain]-two_λs[refζi]+two_λs[refζj]) / 2)
+	end
+	refζs=fill(reference_chain, 4)
+	F0 = amplitude(model, angles, pars...; refζs, kw...)
+	#
+	F = similar(F0)
+	@tullio F[_i, _j, _k, _z] = phase[_i, _j, _k] * F0[_i, _j, _k, _z]
+	return F
+end
+
+A_helicity = amplitude_helicity(reference_model, angles_test, σs_test; reference_chain=1)
+A_minusphi = amplitude_minusphi(reference_model, angles_test, σs_test; reference_chain=1)
+
+@testset "Minus phi and helicity conventions" begin
+
+    @test A_helicity[2,3,1,1] ≈ -0.3203152615528447 - 0.14539779706573902im
+    @test A_minusphi[2,3,1,1] ≈ -0.34299056035837566 + 0.07810161125280723im
+
+    @test sum(abs2, A_helicity) ≈  sum(abs2, A_minusphi)
+end
