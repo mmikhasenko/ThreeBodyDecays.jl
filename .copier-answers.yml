@@ -1,0 +1,12 @@
+# Changes here will be overwritten by Copier
+AnswerStrategy: recommended
+AuthorEmail: mikhail.mikhasenko@cern.ch
+AuthorName: Misha Mikhasenko
+Indentation: 4
+JuliaMinVersion: "1.7"
+License: MIT
+PackageName: ThreeBodyDecays
+PackageOwner: mmikhasenko
+PackageUUID: e6563dab-9ca1-5843-bde3-2ccf38d63843
+_commit: v0.9.1
+_src_path: https://github.com/abelsiqueira/BestieTemplate.jl
