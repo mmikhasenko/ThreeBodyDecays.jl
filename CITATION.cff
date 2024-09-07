@@ -1,6 +1,3 @@
-# This CITATION.cff file was generated with cffinit.
-# Visit https://bit.ly/cffinit to generate yours today!
-
 cff-version: 1.2.0
 title: ThreeBodyDecays.jl
 message: >-
@@ -10,7 +7,6 @@ type: software
 authors:
     - given-names: Mikhail
       family-names: Mikhasenko
-      name-particle: Mikhail
       email: mikhail.mikhasenko@cern.ch
       affiliation: Ruhr University Bochum
       orcid: "https://orcid.org/0000-0002-6969-2063"
