@@ -1,6 +1,7 @@
 autodocs
 btime
 circleorigin
+clebschgordan
 coeffs
 cosβ
 cosζi

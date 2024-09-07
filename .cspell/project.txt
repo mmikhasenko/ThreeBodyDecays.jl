@@ -1,5 +1,6 @@
 Breit
 cffinit
+Clebsch
 colorbar
 compat
 cosζ
@@ -11,6 +12,7 @@ eachslice
 findmin
 getindex
 getproperty
+Gordan
 guidefonthalign
 guidefontvalign
 helicities
