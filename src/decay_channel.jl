@@ -283,7 +283,7 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple; refζs = (1, 2, 3, 1))
 end
 
 
-const PlaneOrientation = NamedTuple{(:α, :cosβ, :γ), Tuple{T, T, T}} where T<:Real
+const PlaneOrientation = NamedTuple{(:α, :cosβ, :γ),Tuple{T,T,T}} where {T<:Real}
 
 """
     amplitude(dc::DecayChain, orientation_angles::PlaneOrientation, σs::MandelstamTuple; kw...)
@@ -303,19 +303,23 @@ Compute the amplitude for a given decay chain with orientation angles applied to
 The function first computes the array of aligned amplitudes.
 Then it contract it with a Wigner D-matrix.
 """
-function amplitude(dc::DecayChain, orientation_angles::PlaneOrientation, σs::MandelstamTuple; kw...)
+function amplitude(
+    dc::DecayChain,
+    orientation_angles::PlaneOrientation,
+    σs::MandelstamTuple;
+    kw...,
+)
     @unpack k, tbs, two_j = dc
-	two_j0 = tbs.two_js[4]
+    two_j0 = tbs.two_js[4]
 
     F0 = amplitude(dc, σs; kw...)
 
     # alignment rotations
     D0 = conj.(wignerD_doublearg(two_j0, orientation_angles...))
     #
-	F = similar(F0)
-    @tullio F[_i, _j, _k, _z] =
-        D0[_z, _z′] * F0[_i, _j, _k, _z′]
-	#
+    F = similar(F0)
+    @tullio F[_i, _j, _k, _z] = D0[_z, _z′] * F0[_i, _j, _k, _z′]
+    #
     return F
 end
 
