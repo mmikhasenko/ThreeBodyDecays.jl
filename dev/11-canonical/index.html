@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Canonical formalism · ThreeBodyDecays.jl</title><meta name="title" content="Canonical formalism · ThreeBodyDecays.jl"/><meta property="og:title" content="Canonical formalism · ThreeBodyDecays.jl"/><meta property="twitter:title" content="Canonical formalism · ThreeBodyDecays.jl"/><meta name="description" content="Documentation for ThreeBodyDecays.jl."/><meta property="og:description" content="Documentation for ThreeBodyDecays.jl."/><meta property="twitter:description" content="Documentation for ThreeBodyDecays.jl."/><meta property="og:url" content="https://mmikhasenko.github.io/ThreeBodyDecays.jl/11-canonical/"/><meta property="twitter:url" content="https://mmikhasenko.github.io/ThreeBodyDecays.jl/11-canonical/"/><link rel="canonical" href="https://mmikhasenko.github.io/ThreeBodyDecays.jl/11-canonical/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">ThreeBodyDecays.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">ThreeBodyDecays</a></li><li><a class="tocitem" href="../10-tutorial/">Tutorial</a></li><li class="is-active"><a class="tocitem" href>Canonical formalism</a><ul class="internal"><li><a class="tocitem" href="#Implementation"><span>Implementation</span></a></li><li><a class="tocitem" href="#Example"><span>Example</span></a></li></ul></li><li><a class="tocitem" href="../90-contributing/">Contributing guidelines</a></li><li><a class="tocitem" href="../91-developer/">Developer documentation</a></li><li><a class="tocitem" href="../95-reference/">Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Canonical formalism</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Canonical formalism</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/mmikhasenko/ThreeBodyDecays.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/mmikhasenko/ThreeBodyDecays.jl/blob/main/docs/src/11-canonical.jl#" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Canonical-formalism"><a class="docs-heading-anchor" href="#Canonical-formalism">Canonical formalism</a><a id="Canonical-formalism-1"></a><a class="docs-heading-anchor-permalink" href="#Canonical-formalism" title="Permalink"></a></h1><p>This is an <em>advanced tutorial</em> that preserves an exercises performed while investigating different formalisms. This notebook demonstrates the equivalence of the canonical formulation of the decay to the helicity formalism with LS couplings, for a single chain</p><pre><code class="language-julia hljs">using Markdown
+using InteractiveUtils
+using Random
+Random.seed!(1212);</code></pre><h2 id="Implementation"><a class="docs-heading-anchor" href="#Implementation">Implementation</a><a id="Implementation-1"></a><a class="docs-heading-anchor-permalink" href="#Implementation" title="Permalink"></a></h2><pre><code class="language-julia hljs">using ThreeBodyDecays
+using ThreeBodyDecays.Parameters
+using ThreeBodyDecays.PartialWaveFunctions</code></pre><p>The <code>CC</code> function calculates the Clebsch-Gordan coefficients for the given quantum numbers.</p><pre><code class="language-julia hljs">function CC(two_m12t, two_j12t, two_ls)
+    two_j1, two_j2, two_j = two_j12t
+    two_m1, two_m2, two_mj = two_m12t
+    two_l, two_s = two_ls
+
+    two_ms = two_m1 + two_m2
+    two_ml = two_mj - two_ms
+
+    clebschgordan_doublearg(two_j1, two_m1, two_j2, two_m2, two_s, two_ms) *
+    clebschgordan_doublearg(two_l, two_ml, two_s, two_ms, two_j, two_mj)
+end;</code></pre><p>The <code>Y_lm_doublearg</code> function calculates the spherical harmonics for the given quantum numbers and angles.</p><pre><code class="language-julia hljs">Y_lm_doublearg(two_l, two_m, ϕ, cosθ) =
+    sqrt((two_l + 1) / (4π)) * conj(wignerD_doublearg(two_l, two_m, 0, ϕ, cosθ, 0));</code></pre><p>The <code>A_node_canonical</code> function calculates the amplitude for a node in the canonical formalism.</p><pre><code class="language-julia hljs">function A_node_canonical(angles, two_m12t, two_j12t, two_ls)
+    two_m1, two_m2, two_mj = two_m12t
+    two_ms = two_m1 + two_m2
+    two_ml = two_mj - two_ms
+    two_l, _ = two_ls
+    @unpack ϕ, cosθ = angles
+
+    return CC(two_m12t, two_j12t, two_ls) *
+           Y_lm_doublearg(two_l, two_ml, ϕ, cosθ) *
+           sqrt(4π)
+end;</code></pre><p>The <code>A_canonical</code> function calculates the amplitude for the entire decay chain in the canonical formalism.</p><pre><code class="language-julia hljs">function A_canonical(chain, angles, two_ms)
+    @unpack Hij, HRk = chain
+    two_LS = HRk.two_ls
+    two_ls = Hij.two_ls
+    @unpack angles_Hij, angles_HRk = angles
+
+    @unpack k = chain
+    i, j = ij_from_k(k)
+
+    @unpack two_js = chain.tbs
+    two_ji, two_jj, two_jk, two_j0 = two_js[i], two_js[j], two_js[k], two_js[4]
+    two_mi, two_mj, two_mk, two_m0 = two_ms[i], two_ms[j], two_ms[k], two_ms[4]
+
+    @unpack two_j = chain
+    value = sum(-two_j:2:two_j) do two_m
+        A_node_canonical(angles_HRk, (two_m, two_mk, two_m0), (two_j, two_jk, two_j0), two_LS) * A_node_canonical(
+            angles_Hij,
+            (two_mi, two_mj, two_m),
+            (two_ji, two_jj, two_j),
+            two_ls,
+        )
+    end
+
+    matching = 1 / sqrt(two_j0 + 1) # ThreeBodyDecays implementation does not have sqrt(two_j0+1) factor
+    return value * matching
+end;</code></pre><p>The <code>unpolarized_intensity_canonical</code> function calculates the unpolarized intensity for the canonical formalism.</p><pre><code class="language-julia hljs">unpolarized_intensity_canonical(chain, angles) =
+    sum(itr(chain.tbs.two_js)) do two_ms
+        A = A_canonical(chain, angles, two_ms)
+        abs2(A)
+    end;</code></pre><h2 id="Example"><a class="docs-heading-anchor" href="#Example">Example</a><a id="Example-1"></a><a class="docs-heading-anchor-permalink" href="#Example" title="Permalink"></a></h2><p>In this example, we use a decay process, <code>0</code> → <code>1</code> <code>2</code> <code>3</code> with spins <code>3/2</code> → <code>1/2</code> <code>1</code> <code>0</code>, respectively. A decay chain <code>(23)1</code> with <code>jp=2-</code> permit 8 different helicity couplings. The equivalent between formalism is checked separately for each of them.</p><p>Create a three-body system with specified masses and spins.</p><pre><code class="language-julia hljs">tbs = ThreeBodySystem(
+    ThreeBodyMasses(1, 2, 3; m0 = 6.32397),
+    ThreeBodySpins(1, 2, 0; two_h0 = 3),
+);</code></pre><p>Define a decay chain with LS couplings.</p><pre><code class="language-julia hljs">decay_chains = DecayChainsLS(;
+    k = 1,
+    Xlineshape = x -&gt; 1.0,
+    jp = jp&quot;2-&quot;,
+    Ps = ThreeBodyParities(&#39;+&#39;, &#39;+&#39;, &#39;+&#39;; P0 = &#39;+&#39;), # need parities
+    tbs,
+); # give three-body-system structure</code></pre><p>Generate a random point in the phase space.</p><pre><code class="language-julia hljs">dpp = randomPoint(tbs);
+(masses = dpp.σs, spin_projections = dpp.two_λs)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(masses = (σ1 = 26.982069724086216, σ2 = 17.10850354543374, σ3 = 9.902023291380047), spin_projections = (two_h1 = 1, two_h2 = -2, two_h3 = 0, two_h0 = 1))</code></pre><p>Define the angles for the decay. Here, there is something cool 🔥: for canonical formulation, <code>RBR⁻¹</code> is applied when going to a subchannel rest frame. Hence, the θ<em>ij is that is passed to Y</em>lm is actually the sum of both polar helicity angle, θ<em>Rk and θ</em>ij. Going over π might be subtle.</p><pre><code class="language-julia hljs">angles = let
+    cosθ_Rh = 0.7
+    cosθ_ij = cos(acos(cosθ_Rh) + acos(cosθ23(dpp.σs, tbs.ms^2)))
+
+    angles_HRk = (ϕ = 0.3, cosθ = cosθ_Rh) # ϕ is arbitrary
+    angles_Hij = (ϕ = 0.5, cosθ = cosθ_ij) # ϕ is arbitrary
+    (; angles_Hij, angles_HRk)
+end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(angles_Hij = (ϕ = 0.5, cosθ = -0.705720611437419), angles_HRk = (ϕ = 0.3, cosθ = 0.7))</code></pre><p>Calculate and compare the unpolarized intensities.</p><pre><code class="language-julia hljs">let
+    Ic = [unpolarized_intensity_canonical(dc, angles) for dc in decay_chains]
+    Ih = [unpolarized_intensity(dc, dpp.σs) for dc in decay_chains]
+    Ic ./ Ih
+end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">2×4 Matrix{Float64}:
+ 1.00009  0.999837  0.999837  0.999882
+ 1.0001   0.999803  0.999803  0.999741</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../10-tutorial/">« Tutorial</a><a class="docs-footer-nextpage" href="../90-contributing/">Contributing guidelines »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.7.0 on <span class="colophon-date" title="Saturday 7 September 2024 16:25">Saturday 7 September 2024</span>. Using Julia version 1.10.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
