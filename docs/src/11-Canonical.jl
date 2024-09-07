@@ -2,6 +2,7 @@
 #nb # # Canonical formalism
 #jl # # Canonical formalism
 
+# This is an *advanced tutorial* that preserves an exercises performed while investigating different formalisms.
 # This notebook demonstrates the equivalence of the canonical formulation of the decay to the helicity formalism with LS couplings,
 # for a single chain
 
