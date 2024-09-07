@@ -2,6 +2,8 @@
 
 [![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://mmikhasenko.github.io/ThreeBodyDecays.jl/stable)
 [![In development documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://mmikhasenko.github.io/ThreeBodyDecays.jl/dev)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13713312.svg)](https://doi.org/10.5281/zenodo.13713312)
+
 [![Build Status](https://github.com/mmikhasenko/ThreeBodyDecays.jl/workflows/Test/badge.svg)](https://github.com/mmikhasenko/ThreeBodyDecays.jl/actions)
 [![Test workflow status](https://github.com/mmikhasenko/ThreeBodyDecays.jl/actions/workflows/Test.yml/badge.svg?branch=main)](https://github.com/mmikhasenko/ThreeBodyDecays.jl/actions/workflows/Test.yml?query=branch%3Amain)
 [![Lint workflow Status](https://github.com/mmikhasenko/ThreeBodyDecays.jl/actions/workflows/Lint.yml/badge.svg?branch=main)](https://github.com/mmikhasenko/ThreeBodyDecays.jl/actions/workflows/Lint.yml?query=branch%3Amain)
