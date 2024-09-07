@@ -104,14 +104,33 @@ function DecayChainLS(;
 end
 
 """
-DecayChainsLS(;
-k, # chain is specified by the spectator index k
-Xlineshape, # lambda function for lineshape
-jp, # the spin-parity of the resonance, e.g. jp"1/2-"
-Ps, # need parities, e.g. Ps=ThreeBodyParities('+','+','+'; P0='+')
-tbs) # give three-body-system structure
+    DecayChainsLS(; k, Xlineshape, jp, Ps, tbs)
 
-Returns an array of the decay chains with all possible couplings
+Generate decay chains with all possible couplings based on the specified parameters.
+
+# Arguments
+- `k`: index of spectator that specifies the decay chain.
+- `Xlineshape`: Lambda function for the lineshape of the resonance.
+- `jp`: Spin-parity quantum numbers of the resonance (e.g., `jp = "1/2-"`).
+- `Ps`: Parity quantum numbers of the three-body system (e.g., `Ps = ThreeBodyParities('+','+','+'; P0='+')`).
+- `tbs`: Three-body-system structure that defines the involved particles and their properties.
+
+# Returns
+- An array of `DecayChain` objects representing all possible couplings for the given decay configuration.
+
+# Notes
+The function computes the possible coupling combinations (`ls` x `LS`).
+For each combination, a `DecayChain` object is created with the appropriate recoupling terms (`Hij`, `HRk`).
+
+# Example
+```julia
+DecayChainsLS(
+    k=3, Xlineshape=σ->1.0, jp="1/2-", Ps=ThreeBodyParities('+','+','+'; P0='+'),
+    tbs=ThreeBodySystem(
+        ThreeBodyMasses(1, 2, 3; m0=7.0),
+        ThreeBodySpins(1, 2, 0; h0=3)
+    )
+)
 """
 function DecayChainsLS(;
     k,
@@ -122,7 +141,7 @@ function DecayChainsLS(;
 )
     #
     _jp = SpinParity(jp)
-    LS_ls_matrix = possible_lsLS(_jp, tbs.two_js, Ps; k)
+    ls_LS_matrix = possible_lsLS(_jp, tbs.two_js, Ps; k)
     return [
         DecayChain(;
             k,
@@ -131,25 +150,15 @@ function DecayChainsLS(;
             _jp.two_j,
             Hij = RecouplingLS(two_ls),
             HRk = RecouplingLS(two_LS),
-        ) for (two_ls, two_LS) in LS_ls_matrix
+        ) for (two_ls, two_LS) in ls_LS_matrix
     ]
 end
 
-
+#
 wignerd_doublearg_sign(two_j, two_λ1, two_λ2, cosθ, ispositive) =
     (ispositive ? 1 : x"-1"^div(two_λ1 - two_λ2, 2)) *
     wignerd_doublearg(two_j, two_λ1, two_λ2, cosθ)
-
-wignerd_doublearg_sign(two_j, cosθ, ispositive) =
-    wignerd_doublearg_sign.(
-        two_j,
-        -two_j:2:two_j,
-        transpose(-two_j:2:two_j),
-        cosθ,
-        ispositive,
-    )
-
-
+#
 function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     @unpack k, tbs, two_j, HRk, Hij = dc
     i, j = ij_from_k(k)
@@ -195,6 +204,20 @@ function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     return F0
 end
 
+"""
+    amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2, 3, 1))
+
+Compute the total amplitude for a given decay chain and kinematic configuration.
+
+# Arguments
+- `dc::DecayChain`: The decay-chain object.
+- `σs::MandelstamTuple`: Tuple representing Mandelstam variables that describe the kinematic invariants of the process.
+- `two_λs`: A collection of helicity values for the particles involved in the decay.
+- `refζs`: Reference ζ indices for alignment rotations (default is `(1, 2, 3, 1)`).
+
+# Returns
+- A four-dimensional array of amplitude values.
+"""
 function amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2, 3, 1))
     @unpack k, tbs, two_j = dc
     ms² = tbs.ms^2
@@ -225,6 +248,19 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2
     return f
 end
 
+"""
+    amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2, 3, 1))
+
+Compute the total amplitude for a given decay chain, kinematic configuration, and all possible helicity values.
+
+# Arguments
+- `dc::DecayChain`: The decay-chain object.
+- `σs::MandelstamTuple`: Tuple representing Mandelstam variables that describe the kinematic invariants of the process.
+- `refζs`: Reference ζ indices for alignment rotations (default is `(1, 2, 3, 1)`).
+
+# Returns
+- A four-dimensional array of amplitude values.
+"""
 function amplitude(dc::DecayChain, σs::MandelstamTuple; refζs = (1, 2, 3, 1))
     @unpack k, tbs, two_j = dc
     ms² = tbs.ms^2
@@ -245,6 +281,49 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple; refζs = (1, 2, 3, 1))
         D0[_z, _z′] * F0[_i′, _j′, _k′, _z′] * D1[_i′, _i] * D2[_j′, _j] * D3[_k′, _k]
     return F
 end
+
+
+const PlaneOrientation = NamedTuple{(:α, :cosβ, :γ),Tuple{T,T,T}} where {T<:Real}
+
+"""
+    amplitude(dc::DecayChain, orientation_angles::PlaneOrientation, σs::MandelstamTuple; kw...)
+
+Compute the amplitude for a given decay chain with orientation angles applied to the rotation of the final state.
+
+# Arguments
+- `dc::DecayChain`: The decay chain object containing the system's configuration (e.g., spin, parity, etc.).
+- `orientation_angles::PlaneOrientation`: Named tuple representing the plane orientation angles (`α`, `cosβ`, `γ`) for the final state.
+- `σs::MandelstamTuple`: Tuple representing the Mandelstam variables that describe the kinematic invariants of the process.
+- `kw...`: Additional keyword arguments to be passed to the underlying `amplitude` calculation (e.g `refζs` reference kinematics).
+
+# Returns
+- A four dimensional amplitude array
+
+# Details
+The function first computes the array of aligned amplitudes.
+Then it contract it with a Wigner D-matrix.
+"""
+function amplitude(
+    dc::DecayChain,
+    orientation_angles::PlaneOrientation,
+    σs::MandelstamTuple;
+    kw...,
+)
+    @unpack k, tbs, two_j = dc
+    two_j0 = tbs.two_js[4]
+
+    F0 = amplitude(dc, σs; kw...)
+
+    # alignment rotations
+    D0 = conj.(wignerD_doublearg(two_j0, orientation_angles...))
+    #
+    F = similar(F0)
+    @tullio F[_i, _j, _k, _z] = D0[_z, _z′] * F0[_i, _j, _k, _z′]
+    #
+    return F
+end
+
+
 
 #
 amplitude(dc::AbstractDecayChain, dpp::DalitzPlotPoint; kw...) =

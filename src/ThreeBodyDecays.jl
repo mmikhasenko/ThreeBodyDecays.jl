@@ -9,7 +9,7 @@ using PolynomialRoots
 using Tullio
 
 import Base: getindex, iterate, length, vcat
-
+import PartialWaveFunctions: wignerD_doublearg
 
 export Kallen, sqrtKallenFact, Kibble, inphrange, isphysical, lims, lims1, lims2, lims3
 export phase
@@ -72,6 +72,10 @@ include("coupling_scheme.jl")
 
 export change_basis_3from1, change_basis_1from2, change_basis_2from3
 include("cross_channel_relations.jl")
+
+# add wignerd_doublearg_sign
+# and matrix
+include("wignerd_matrix.jl")
 
 export Recoupling
 export NoRecoupling, ParityRecoupling, RecouplingLS

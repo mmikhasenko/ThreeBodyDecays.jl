@@ -26,6 +26,7 @@ markdownlint
 Mikhasenko
 minorticks
 minusone
+minusphi
 Misha
 mmikhasenko
 multibody
