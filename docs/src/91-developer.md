@@ -149,7 +149,7 @@ To create a new release, you can follow these simple steps:
     - Add a new link in the bottom for version "x.y.z"
     - Change the "[unreleased]" link to use the latest version - end of line, `vx.y.z ... HEAD`.
 - Create a commit "Release vx.y.z", push, create a PR, wait for it to pass, merge the PR.
-- Go back to main screen and click on the latest commit (link: <https://github.com/mmikhasenko/ThreeBodyDecays.jl/commit/main>)
+- Go back to main screen and click on the latest commit
 - At the bottom, write `@JuliaRegistrator register`
 
 After that, you only need to wait and verify:
