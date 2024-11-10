@@ -8,7 +8,7 @@ repos:
             language: fail
             files: "\\.rej$"
     - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v4.6.0
+      rev: v5.0.0
       hooks:
           - id: check-json
           - id: check-toml
@@ -24,11 +24,11 @@ repos:
           - id: check-merge-conflict
             args: [--assume-in-merge]
     - repo: https://github.com/igorshubovych/markdownlint-cli
-      rev: v0.41.0
+      rev: v0.42.0
       hooks:
           - id: markdownlint-fix
     - repo: https://github.com/streetsidesoftware/cspell-cli
-      rev: v8.13.3
+      rev: v8.15.3
       hooks:
           - id: cspell
     - repo: https://github.com/citation-file-format/cffconvert
@@ -46,6 +46,6 @@ repos:
       hooks:
           - id: yamllint
     - repo: https://github.com/domluna/JuliaFormatter.jl
-      rev: v1.0.60
+      rev: v2.0.0
       hooks:
           - id: julia-formatter
