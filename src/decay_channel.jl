@@ -1,4 +1,3 @@
-
 #        _|                                                        _|                  _|
 #    _|_|_|    _|_|      _|_|_|    _|_|_|  _|    _|        _|_|_|  _|_|_|      _|_|_|      _|_|_|
 #  _|    _|  _|_|_|_|  _|        _|    _|  _|    _|      _|        _|    _|  _|    _|  _|  _|    _|
@@ -68,14 +67,26 @@ spins(d::DecayChain) = d.tbs.two_js
 masses(d::DecayChain) = d.tbs.ms
 
 """
-DecayChainLS(;
-k, # chain is specified by the spectator index k
-Xlineshape, # lambda function for lineshape
-jp, # the spin-parity of the resonance, e.g. jp"1/2-"
-Ps, # need parities, e.g. Ps=ThreeBodyParities('+','+','+'; P0='+')
-tbs) # give three-body-system structure
+    DecayChainLS(; k, Xlineshape, jp, Ps, tbs)
 
-Returns the decay chain with the smallest LS, ls
+Constructs a decay chain with the smallest spin-orbit coupling.
+
+# Arguments
+- `k`: Index of the spectator particle.
+- `Xlineshape`: Lambda function for the lineshape of the resonance.
+- `jp`: Spin-parity of the resonance (e.g., `jp = "1/2-"`).
+- `Ps`: Parities of the three-body system (e.g., `Ps = ThreeBodyParities('+','+','+'; P0='+')`).
+- `tbs`: Three-body system structure.
+
+# Example
+```julia
+DecayChainLS(
+    k = 1,
+    Xlineshape = x -> 1 / (x - 1im),
+    jp = "1/2-",
+    Ps = ThreeBodyParities('+', '+', '+'; P0 = '+'),
+    tbs = ThreeBodySystem(1.0, 2.0, 3.0; m0 = 4.0)
+)
 """
 function DecayChainLS(;
     k,

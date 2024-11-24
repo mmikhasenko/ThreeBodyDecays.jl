@@ -52,6 +52,8 @@ textrm
 tonumber
 tullio
 warntype
+xlims
+ylims
 σiofk
 σjofk
 σkmax

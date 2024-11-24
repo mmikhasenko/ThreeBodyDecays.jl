@@ -49,7 +49,7 @@ export str2jp
 export @jp_str
 export ThreeBodyMasses, ThreeBodySpins, ThreeBodyParities
 export SpinParity, ThreeBodySpinParities
-export MandelstamTuple, SpinTuple, ParityTuple
+export MassTuple, MandelstamTuple, SpinTuple, ParityTuple
 export ThreeBodySystem
 export DalitzPlotPoint
 export Invariants
@@ -93,6 +93,7 @@ export phase_space_integrand
 export projection_integrand
 include("integrand.jl")
 
+export DalitzPlot # just a docstring
 include("dalitz_plot_recipe.jl")
 
 end  # module ThreeBodyDecays
