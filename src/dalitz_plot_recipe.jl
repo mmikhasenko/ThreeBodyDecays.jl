@@ -12,10 +12,15 @@ end
     return (intensity, ms)
 end
 
-@recipe function f(intensity::Function, ms::MassTuple;
-    iσx = 1, iσy = 2, grid_size = 100,
+@recipe function f(
+    intensity::Function,
+    ms::MassTuple;
+    iσx = 1,
+    iσy = 2,
+    grid_size = 100,
     xlims = lims(iσx, ms),
-    ylims = lims(iσy, ms))
+    ylims = lims(iσy, ms),
+)
     #
     σxv = range(xlims..., length = grid_size + 1) |> shift_by_half
     σyv = range(ylims..., length = grid_size + 1) |> shift_by_half

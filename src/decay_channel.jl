@@ -40,7 +40,7 @@ function amplitude(cs::ParityRecoupling, (two_λa, two_λb), (two_j, two_ja, two
 end
 
 @with_kw struct RecouplingLS <: Recoupling
-    two_ls::Tuple{Int, Int}
+    two_ls::Tuple{Int,Int}
 end
 
 amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
@@ -48,7 +48,7 @@ amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
 
 abstract type AbstractDecayChain end
 
-@with_kw struct DecayChain{X, T} <: AbstractDecayChain
+@with_kw struct DecayChain{X,T} <: AbstractDecayChain
     k::Int
     #
     two_j::Int # isobar spin
@@ -294,7 +294,7 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple; refζs = (1, 2, 3, 1))
 end
 
 
-const PlaneOrientation = NamedTuple{(:α, :cosβ, :γ), Tuple{T, T, T}} where {T <: Real}
+const PlaneOrientation = NamedTuple{(:α, :cosβ, :γ),Tuple{T,T,T}} where {T<:Real}
 
 """
     amplitude(dc::DecayChain, orientation_angles::PlaneOrientation, σs::MandelstamTuple; kw...)
