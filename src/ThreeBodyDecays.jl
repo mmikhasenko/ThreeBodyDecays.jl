@@ -93,6 +93,7 @@ export phase_space_integrand
 export projection_integrand
 include("integrand.jl")
 
+export DalitzPlot # just a docstring
 include("dalitz_plot_recipe.jl")
 
 end  # module ThreeBodyDecays

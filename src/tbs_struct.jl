@@ -6,7 +6,7 @@
 #                  _|
 #              _|_|
 
-const MassTuple{T} = NamedTuple{(:m1, :m2, :m3, :m0),NTuple{4,T}}
+const MassTuple{T} = NamedTuple{(:m1, :m2, :m3, :m0), NTuple{4, T}}
 function ThreeBodyMasses(m1, m2, m3; m0)
     tm0 = typeof(m0)
     tm0 <: Number && (m0 < m1 + m2 + m3) && error("m₀ should be bigger than m₁+m₂+m₃")
@@ -28,7 +28,7 @@ import Base: getindex, ^, length, iterate
 ^(ms::MassTuple, i::Int) = Tuple(ms) .^ i
 
 # -----------------------------------------------------
-const SpinTuple = NamedTuple{(:two_h1, :two_h2, :two_h3, :two_h0),NTuple{4,Int}}
+const SpinTuple = NamedTuple{(:two_h1, :two_h2, :two_h3, :two_h0), NTuple{4, Int}}
 
 function ThreeBodySpins(
     two_h1_or_h1,
@@ -52,7 +52,7 @@ function ThreeBodySpins(
 end
 #
 #
-@with_kw struct ThreeBodySystem{T,K}
+@with_kw struct ThreeBodySystem{T, K}
     ms::T
     two_js::K = ThreeBodySpins(0, 0, 0; two_h0 = 0)
 end
@@ -105,7 +105,7 @@ end
 
 # -----------------------------------------------------
 
-const ParityTuple = NamedTuple{(:P1, :P2, :P3, :P0),NTuple{4,Char}}
+const ParityTuple = NamedTuple{(:P1, :P2, :P3, :P0), NTuple{4, Char}}
 #
 ThreeBodyParities(
     P1,
@@ -137,7 +137,7 @@ function ThreeBodySpinParities(
 end
 
 # Dynamic variables
-const MandelstamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3),NTuple{3,T}}
+const MandelstamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3), NTuple{3, T}}
 
 """
 Invariants(ms::MassTuple{T}; σ1, σ2)
@@ -194,22 +194,22 @@ where the Dalitz plot has the closest shape to the squared fitting box.
 
 ## Returns
 - an instance of `MandelstamTuple` with the squared masses.
-
+DecayChainLS docstring:
 ## Example
 
 The phase space sample with 100 points can be generated as follows:
 ```julia
 data = let
-	N = 100
-	# map random variables to dalitz
-	_data = mapslices(rand(N,2); dims=2) do xy
-		y2σs(xy, ms)
-	end[:,1]
-	# select physical
-	filter!(_data) do σs
-		isphysical(σs, ms)
-	end
-	_data
+N = 100
+# map random variables to dalitz
+_data = mapslices(rand(N,2); dims=2) do xy
+y2σs(xy, ms)
+end[:,1]
+# select physical
+filter!(_data) do σs
+isphysical(σs, ms)
+end
+_data
 end
 ````
 """
@@ -225,7 +225,7 @@ end
 randomPoint(ms::MassTuple) = x2σs(rand(2), ms; k = 3)
 randomPoint(two_js::SpinTuple) = SpinTuple([rand(-j:2:j) for j in two_js])
 
-@with_kw struct DalitzPlotPoint{I,S}
+@with_kw struct DalitzPlotPoint{I, S}
     σs::I
     two_λs::S
 end
