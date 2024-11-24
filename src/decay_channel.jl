@@ -1,4 +1,3 @@
-
 #        _|                                                        _|                  _|
 #    _|_|_|    _|_|      _|_|_|    _|_|_|  _|    _|        _|_|_|  _|_|_|      _|_|_|      _|_|_|
 #  _|    _|  _|_|_|_|  _|        _|    _|  _|    _|      _|        _|    _|  _|    _|  _|  _|    _|
@@ -41,7 +40,7 @@ function amplitude(cs::ParityRecoupling, (two_λa, two_λb), (two_j, two_ja, two
 end
 
 @with_kw struct RecouplingLS <: Recoupling
-    two_ls::Tuple{Int,Int}
+    two_ls::Tuple{Int, Int}
 end
 
 amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
@@ -49,7 +48,7 @@ amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
 
 abstract type AbstractDecayChain end
 
-@with_kw struct DecayChain{X,T} <: AbstractDecayChain
+@with_kw struct DecayChain{X, T} <: AbstractDecayChain
     k::Int
     #
     two_j::Int # isobar spin
@@ -68,14 +67,26 @@ spins(d::DecayChain) = d.tbs.two_js
 masses(d::DecayChain) = d.tbs.ms
 
 """
-DecayChainLS(;
-k, # chain is specified by the spectator index k
-Xlineshape, # lambda function for lineshape
-jp, # the spin-parity of the resonance, e.g. jp"1/2-"
-Ps, # need parities, e.g. Ps=ThreeBodyParities('+','+','+'; P0='+')
-tbs) # give three-body-system structure
+    DecayChainLS(; k, Xlineshape, jp, Ps, tbs)
 
-Returns the decay chain with the smallest LS, ls
+Constructs a decay chain with the smallest spin-orbit coupling.
+
+# Arguments
+- `k`: Index of the spectator particle.
+- `Xlineshape`: Lambda function for the lineshape of the resonance.
+- `jp`: Spin-parity of the resonance (e.g., `jp = "1/2-"`).
+- `Ps`: Parities of the three-body system (e.g., `Ps = ThreeBodyParities('+','+','+'; P0='+')`).
+- `tbs`: Three-body system structure.
+
+# Example
+```julia
+DecayChainLS(
+    k = 1,
+    Xlineshape = x -> 1 / (x - 1im),
+    jp = "1/2-",
+    Ps = ThreeBodyParities('+', '+', '+'; P0 = '+'),
+    tbs = ThreeBodySystem(1.0, 2.0, 3.0; m0 = 4.0)
+)
 """
 function DecayChainLS(;
     k,
@@ -283,7 +294,7 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple; refζs = (1, 2, 3, 1))
 end
 
 
-const PlaneOrientation = NamedTuple{(:α, :cosβ, :γ),Tuple{T,T,T}} where {T<:Real}
+const PlaneOrientation = NamedTuple{(:α, :cosβ, :γ), Tuple{T, T, T}} where {T <: Real}
 
 """
     amplitude(dc::DecayChain, orientation_angles::PlaneOrientation, σs::MandelstamTuple; kw...)
