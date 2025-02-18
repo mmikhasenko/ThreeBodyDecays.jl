@@ -194,22 +194,22 @@ where the Dalitz plot has the closest shape to the squared fitting box.
 
 ## Returns
 - an instance of `MandelstamTuple` with the squared masses.
-
+DecayChainLS docstring:
 ## Example
 
 The phase space sample with 100 points can be generated as follows:
 ```julia
 data = let
-	N = 100
-	# map random variables to dalitz
-	_data = mapslices(rand(N,2); dims=2) do xy
-		y2σs(xy, ms)
-	end[:,1]
-	# select physical
-	filter!(_data) do σs
-		isphysical(σs, ms)
-	end
-	_data
+N = 100
+# map random variables to dalitz
+_data = mapslices(rand(N,2); dims=2) do xy
+y2σs(xy, ms)
+end[:,1]
+# select physical
+filter!(_data) do σs
+isphysical(σs, ms)
+end
+_data
 end
 ````
 """

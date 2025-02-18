@@ -49,7 +49,7 @@ export str2jp
 export @jp_str
 export ThreeBodyMasses, ThreeBodySpins, ThreeBodyParities
 export SpinParity, ThreeBodySpinParities
-export MandelstamTuple, SpinTuple, ParityTuple
+export MassTuple, MandelstamTuple, SpinTuple, ParityTuple
 export ThreeBodySystem
 export DalitzPlotPoint
 export Invariants
@@ -66,8 +66,9 @@ include("tbs_struct.jl")
 
 export letterL
 export ⊗
-export possible_ls, possible_ls_ij, possible_ls_Rk, possible_lsLS
+export possible_ls, possible_ls_ij, possible_ls_Rk, possible_lsLS, possible_l_s_L_S
 export possible_coupling_schemes
+export complete_l_s_L_S
 include("coupling_scheme.jl")
 
 export change_basis_3from1, change_basis_1from2, change_basis_2from3
@@ -93,6 +94,7 @@ export phase_space_integrand
 export projection_integrand
 include("integrand.jl")
 
+export DalitzPlot # just a docstring
 include("dalitz_plot_recipe.jl")
 
 end  # module ThreeBodyDecays

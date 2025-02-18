@@ -59,3 +59,28 @@ end
     @test letterL("2") == 'D'
     @test letterL(4 |> d2) == 'D'
 end
+
+
+(two_js, pc), (_, pv) = map(["1/2+", "1/2-"]) do jp0
+    ThreeBodySpinParities("1/2+", "0-", "0-"; jp0)
+end;
+
+@testset "Completing l, s, L, S" begin
+    qn = (jp = jp"1/2-", k = 2)
+    updated_qn = complete_l_s_L_S(qn.jp, two_js, pc, qn; qn.k)
+    @test updated_qn.l == "0"
+    @test updated_qn.s == "1/2"
+    @test updated_qn.L == "0"
+    @test updated_qn.S == "1/2"
+    #
+    qn = (jp = jp"2+", k = 1)
+    @test_throws ErrorException complete_l_s_L_S(qn.jp, two_js, pc, qn; qn.k)
+    qn = (jp = jp"2+", S = 3 / 2, k = 1)
+    @test complete_l_s_L_S(qn.jp, two_js, pc, qn; qn.k).L == "2"
+    #
+    qn = (jp = jp"0+", k = 1)
+    @test_throws ErrorException complete_l_s_L_S(qn.jp, two_js, [pc, pv], qn; qn.k)
+    #
+    qn = (jp = jp"0+", k = 1, L = 0)
+    @test complete_l_s_L_S(qn.jp, two_js, [pc, pv], qn; qn.k).S == "1/2"
+end
