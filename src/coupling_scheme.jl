@@ -1,5 +1,5 @@
 function possible_ls(jp1::SpinParity, jp2::SpinParity; jp::SpinParity)
-    two_ls = Vector{Tuple{Int, Int}}(undef, 0)
+    two_ls = Vector{Tuple{Int,Int}}(undef, 0)
     for two_s ∈ abs(jp1.two_j - jp2.two_j):2:abs(jp1.two_j + jp2.two_j)
         for two_l ∈ abs(jp.two_j - two_s):2:abs(jp.two_j + two_s)
             if jp1.p ⊗ jp2.p ⊗ jp.p == (isodd(div(two_l, 2)) ? '-' : '+')
@@ -11,7 +11,7 @@ function possible_ls(jp1::SpinParity, jp2::SpinParity; jp::SpinParity)
 end
 
 
-const TwoBodyTopologySpinParity = Pair{SpinParity, Tuple{SpinParity, SpinParity}}
+const TwoBodyTopologySpinParity = Pair{SpinParity,Tuple{SpinParity,SpinParity}}
 possible_ls((jp, (jp1, jp2))::TwoBodyTopologySpinParity) = possible_ls(jp1, jp2; jp)
 possible_ls(jp1::AbstractString, jp2::AbstractString; jp::AbstractString) =
     possible_ls(str2jp(jp1), str2jp(jp2); jp = str2jp(jp))
@@ -84,10 +84,13 @@ filter_qn!(possible_qn, constraints::NamedTuple) =
         end
     end
 #
-function complete_l_s_L_S(jp::SpinParity,
+function complete_l_s_L_S(
+    jp::SpinParity,
     two_js::SpinTuple,
     Ps::ParityTuple,
-    constraints; k)
+    constraints;
+    k,
+)
     #
     qn = possible_l_s_L_S(jp, two_js, Ps; k)
     all_qn = copy(qn)
@@ -100,7 +103,9 @@ function complete_l_s_L_S(
     jp::SpinParity,
     two_js::SpinTuple,
     several_Ps::AbstractArray{ParityTuple},
-    constraints; k)
+    constraints;
+    k,
+)
     #
     qn = vcat([possible_l_s_L_S(jp, two_js, Ps; k) for Ps in several_Ps]...)
     all_qn = copy(qn)
