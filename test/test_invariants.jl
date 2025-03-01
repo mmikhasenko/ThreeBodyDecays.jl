@@ -89,3 +89,46 @@ rp = randomPoint(tbsS)
     @test Kibble(rp.σs, tbsS.ms^2) < 0
     @test Tuple(rp.two_λs) ∈ collect(itr(tbsS.two_js))
 end
+
+
+@testset "Aligned four vectors" begin
+    # Test 1: Check four-momentum conservation
+    p1, p2, p3 = aligned_four_vectors(σs, ms; k = 1)
+    @test all(p1 .+ p2 .+ p3 .≈ (0, 0, 0, ms.m0))
+    #
+    # aligned vector k, px=0, is on kth place
+    @test aligned_four_vectors(σs, ms; k = 1)[1][1] == 0.0
+    @test aligned_four_vectors(σs, ms; k = 2)[2][1] == 0.0
+    @test aligned_four_vectors(σs, ms; k = 3)[3][1] == 0.0
+
+    metric = (-1, -1, -1, 1)
+    # Test 2: Check mass shell conditions
+    @test sum(p1 .^ 2 .* metric) ≈ ms.m1^2
+    @test sum(p2 .^ 2 .* metric) ≈ ms.m2^2
+    @test sum(p3 .^ 2 .* metric) ≈ ms.m3^2
+
+    # Test 3: Verify invariant masses
+    @test sum((p2 .+ p3) .^ 2 .* metric) ≈ σs.σ1
+    @test sum((p3 .+ p1) .^ 2 .* metric) ≈ σs.σ2
+    @test sum((p1 .+ p2) .^ 2 .* metric) ≈ σs.σ3
+end
+
+@testset "Aligned four vectors are cyclic" begin
+    p1_1, p2_1, p3_1 = aligned_four_vectors(σs, ms; k = 1)
+    #
+    p1_2, p2_2, p3_2 = aligned_four_vectors(
+        MandelstamTuple{Float64}((σs[3], σs[1], σs[2])),
+        ThreeBodyMasses(ms[3], ms[1], ms[2]; ms.m0);
+        k = 2,
+    )
+    #
+    p1_3, p2_3, p3_3 = aligned_four_vectors(
+        MandelstamTuple{Float64}((σs[2], σs[3], σs[1])),
+        ThreeBodyMasses(ms[2], ms[3], ms[1]; ms.m0);
+        k = 3,
+    )
+    #
+    @test all(p1_1 .≈ p2_2 .≈ p3_3)
+    @test all(p2_1 .≈ p3_2 .≈ p1_3)
+    @test all(p3_1 .≈ p1_2 .≈ p2_3)
+end

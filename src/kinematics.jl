@@ -7,7 +7,8 @@ Kibble(σs, msq) = Kallen(
     Kallen(msq[4], msq[2], σs[2]),
     Kallen(msq[4], msq[3], σs[3]),
 )
-#
+
+
 """
 	σjofk(z,σi,msq; k::Int)
 
@@ -91,4 +92,53 @@ breakup_Rk(ms; k) = σ -> breakup(ms[4], sqrt(σ), ms[k])
 function breakup_ij(ms; k)
     (i, j) = ij_from_k(k)
     return σ -> breakup(sqrt(σ), ms[i], ms[j])
+end
+
+"""
+    aligned_four_vectors(σs,ms; k::Int)
+
+Computes the four-momenta of the three particles in the center of momentum frame aligning the k-th particle with the -z-axis.
+
+## Arguments
+- `σs`: Tuple of mandelstam variables,
+- `ms`: Tuple of masses in the order m1, m2, m3, m0.
+- `k`: Index of the particle to be aligned with the -z-axis.
+
+## Returns
+
+A tuple of three four-momenta in the form of (px, py, pz, E).
+
+## Example
+````julia
+ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0)
+σs = x2σs([0.5, 0.5], ms; k=2)
+p1, p2, p3 = aligned_four_vectors(σs, ms; k=1)
+````
+"""
+function aligned_four_vectors(σs, ms; k::Int)
+    #
+    i, j = ij_from_k(k)
+    m0 = ms[4]
+    s = m0^2
+    #
+    mi, mj, mk = ms[i], ms[j], ms[k]
+    σi, σj, σk = σs[i], σs[j], σs[k]
+    misq, mjsq, mksq = (mi, mj, mk) .^ 2
+    #
+    Ei = (s + misq - σi) / (2m0)
+    Ej = (s + mjsq - σj) / (2m0)
+    Ek = (s + mksq - σk) / (2m0)
+    #
+    p3i = sqrt(Kallen(s, misq, σi)) / (2m0)
+    p3j = sqrt(Kallen(s, mjsq, σj)) / (2m0)
+    p3k = sqrt(Kallen(s, mksq, σk)) / (2m0)
+    #
+    cosθ = -cosζ(wr(k, i, 0), σs, ms^2) # pi-angle(1,2) in rest of 0
+    sinθ = sqrt(1 - cosθ^2)
+    #
+    pk = (0, 0, -p3k, Ek)
+    pi = (p3i * sinθ, 0, p3i * cosθ, Ei)
+    pj = (-p3i * sinθ, 0, p3k - p3i * cosθ, Ej)
+    #
+    return circleorigin(-k, (pi, pj, pk))
 end
