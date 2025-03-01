@@ -21,6 +21,7 @@ export cosθ12, cosθ23, cosθ31
 export σiofk, σjofk
 export σ1of2, σ2of3, σ3of1, σ1of3, σ2of1, σ3of2
 export breakup, breakup_Rk, breakup_ij
+export aligned_four_vectors
 include("kinematics.jl")
 
 export minusone
