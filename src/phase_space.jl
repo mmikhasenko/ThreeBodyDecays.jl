@@ -244,10 +244,13 @@ function aligned_four_vectors(σs, ms; k::Int)
     return circleorigin(-k, (pi, pj, pk))
 end
 
+inrange(x, r) = r[1] < x < r[2]
+inphrange(σs, ms::MassTuple) = isphysical(σs, ms)
+
 """
-    isphysical(σs::MandelstamTuple, ms::MassTuple)
-    inphrange(σs::MandelstamTuple, ms::MassTuple)
-    inrange(x, r)
+    isphysical(σs::MandelstamTuple, ms::MassTuple) -> Bool
+    inphrange(σs::MandelstamTuple, ms::MassTuple) -> Bool
+    inrange(x, r) -> Bool
 
 Check if a set of Mandelstam variables represents a physically valid configuration in the three-body phase space.
 A configuration is physical if:
@@ -255,8 +258,8 @@ A configuration is physical if:
 2. All Mandelstam variables are within their kinematically allowed ranges
 
 # Arguments
-- `σs`: Tuple of Mandelstam variables (σ₁,σ₂,σ₃)
-- `ms`: Tuple of masses (m₁,m₂,m₃,M)
+- `σs::MandelstamTuple`: Tuple of Mandelstam variables (σ₁,σ₂,σ₃)
+- `ms::MassTuple`: Tuple of masses (m₁,m₂,m₃,M)
 - `x`: Value to check (for `inrange`)
 - `r`: Range tuple (min,max) to check against (for `inrange`)
 
@@ -270,10 +273,8 @@ ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0)
 isphysical(σs, ms)  # checks if this configuration is physically possible
 ```
 
-See also [`Kibble`](@ref), [`lims`](@ref).
+See also [`Kibble`](@ref), [`limss`](@ref).
 """
-inrange(x, r) = r[1] < x < r[2]
-inphrange(σs, ms::MassTuple) = isphysical(σs, ms)
 isphysical(σs, ms::MassTuple) =
     Kibble(σs, ms^2) < 0 &&
     inrange(σs[1], lims1(ms)) &&
