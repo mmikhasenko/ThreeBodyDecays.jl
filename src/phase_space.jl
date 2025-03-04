@@ -245,20 +245,32 @@ function aligned_four_vectors(σs, ms; k::Int)
 end
 
 """
-    inrange(x, r)
-    inphrange(σs::MandelstamTuple, ms::MassTuple)
     isphysical(σs::MandelstamTuple, ms::MassTuple)
+    inphrange(σs::MandelstamTuple, ms::MassTuple)
+    inrange(x, r)
 
-Check if values are within physical ranges.
+Check if a set of Mandelstam variables represents a physically valid configuration in the three-body phase space.
+A configuration is physical if:
+1. The Kibble function is negative (φ(σ₁,σ₂,σ₃) < 0)
+2. All Mandelstam variables are within their kinematically allowed ranges
 
 # Arguments
-- `x`: Value to check
-- `r`: Range to check against
-- `σs`: Mandelstam variables
-- `ms`: Masses of the system
+- `σs`: Tuple of Mandelstam variables (σ₁,σ₂,σ₃)
+- `ms`: Tuple of masses (m₁,m₂,m₃,M)
+- `x`: Value to check (for `inrange`)
+- `r`: Range tuple (min,max) to check against (for `inrange`)
 
 # Returns
-- `Bool`: Whether the values are physical
+- `Bool`: `true` if the configuration is physical, `false` otherwise
+
+# Example
+```julia
+ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0)
+σs = (2.0, 2.0, 2.0)
+isphysical(σs, ms)  # checks if this configuration is physically possible
+```
+
+See also [`Kibble`](@ref), [`lims`](@ref).
 """
 inrange(x, r) = r[1] < x < r[2]
 inphrange(σs, ms::MassTuple) = isphysical(σs, ms)
