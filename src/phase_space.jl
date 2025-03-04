@@ -1,4 +1,3 @@
-
 Kallen(x, y, z) = x^2 + y^2 + z^2 - 2x * y - 2y * z - 2z * x
 sqrtKallenFact(a, b, c) =
     sqrt(a - (b + c)) * sqrt(a - (b - c)) * sqrt(a + (b + c)) * sqrt(a + (b - c))
@@ -10,7 +9,7 @@ Kibble(σs, msq) = Kallen(
 
 
 """
-	σjofk(z,σi,msq; k::Int)
+σjofk(z,σi,msq; k::Int)
 
 Computes invariant σj = (p0-pj)² from
 the scattering angle z=cosθij in the rest from of (i,j),
@@ -37,7 +36,7 @@ end
 
 
 """
-	σiofk(k,z,σj,msq)
+σiofk(k,z,σj,msq)
 
 Computes invariant σi = (p0 - pi)² from
 the scattering angle z=cosθij in the rest from of (i,j),
@@ -59,7 +58,7 @@ end
 # Scattering angle
 
 """
-	cosθij(k,σs,msq)
+cosθij(k,σs,msq)
 
 Isobar decay angle for the chain-k, i.e.
 an angle of between vectors pi and -pk in the (ij) rest frame.
@@ -142,3 +141,27 @@ function aligned_four_vectors(σs, ms; k::Int)
     #
     return circleorigin(-k, (pi, pj, pk))
 end
+
+"""
+    inrange(x, r)
+    inphrange(σs::MandelstamTuple, ms::MassTuple)
+    isphysical(σs::MandelstamTuple, ms::MassTuple)
+
+Check if values are within physical ranges.
+
+# Arguments
+- `x`: Value to check
+- `r`: Range to check against
+- `σs`: Mandelstam variables
+- `ms`: Masses of the system
+
+# Returns
+- `Bool`: Whether the values are physical
+"""
+inrange(x, r) = r[1] < x < r[2]
+inphrange(σs, ms::MassTuple) = isphysical(σs, ms)
+isphysical(σs, ms::MassTuple) =
+    Kibble(σs, ms^2) < 0 &&
+    inrange(σs[1], lims1(ms)) &&
+    inrange(σs[2], lims2(ms)) &&
+    inrange(σs[3], lims3(ms))
