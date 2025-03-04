@@ -184,9 +184,7 @@ Calculate the breakup momentum for a two-body system.
 - Break-up momentum magnitude
 
 # Examples
-```jldoctest
-julia> using ThreeBodyDecays  # hide
-
+```jldoctest; setup = :(using ThreeBodyDecays)
 julia> ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0);
 
 julia> p = breakup_Rk(2.5^2, ms; k=1)
