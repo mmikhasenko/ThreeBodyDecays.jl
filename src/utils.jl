@@ -1,3 +1,6 @@
+ijk(k::Int) = (k + 1, k + 2, k) |> x -> mod.(x, Ref(Base.OneTo(3)))
+ij_from_k(k::Int) = ijk(k)
+
 struct minusone end
 import Base: ^
 ^(x::minusone, n::Number) = isodd(n) ? -1 : 1

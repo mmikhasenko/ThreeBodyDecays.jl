@@ -25,17 +25,11 @@ iseven(wr::WignerRotation{0}) = true
 iseven(wr::WignerRotation{3}) = true
 iseven(wr::WignerRotation{2}) = wr.iseven
 
-
-ijk(k::Int) = (k + 1, k + 2, k) |> x -> mod.(x, Ref(Base.OneTo(3)))
 ijk(wr::AbstractWignerRotation) = ijk(wr.k)
-#
-ij_from_k(k::Int) = ijk(k)
-
 issequential(i, j) = (j - i) ∈ (1, -2)
 
-
 """
-	wr(system_a, reference_b, particle_c=0)
+wr(system_a, reference_b, particle_c=0)
 
 Create a WignerRotation object of the right type based on provided indices.
 The daughter particles are numbered 1,2,3, the mother particle is 0.
@@ -122,7 +116,7 @@ cosζk2_for2(k, σs, ms²) = cosζ(wr(k, 2, 2), σs, ms²)
 cosζk3_for3(k, σs, ms²) = cosζ(wr(k, 3, 3), σs, ms²)
 
 """
-	Phase for wigner d-functions for clockwise rotations
+Phase for wigner d-functions for clockwise rotations
 """
 phase(two_λ1_minus_λ2) =
     (abs(two_λ1_minus_λ2) % 4 == 2 ? -one(two_λ1_minus_λ2) : one(two_λ1_minus_λ2))
