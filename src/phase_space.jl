@@ -19,8 +19,59 @@ Kallen(10.0, 1.0, 1.0)  # returns 64.0
 See also [`sqrtKallenFact`](@ref), [`Kibble`](@ref).
 """
 Kallen(x, y, z) = x^2 + y^2 + z^2 - 2x * y - 2y * z - 2z * x
+
+"""
+    sqrtKallenFact(a, b, c)
+
+Calculate the square root of the Källén function λ(a,b,c) in factorized form.
+The Källén function is defined as λ(a,b,c) = a² + b² + c² - 2ab - 2bc - 2ca.
+This function returns √λ(a,b,c) in a factorized form to improve numerical stability:
+√(a-(b+c)) √(a-(b-c)) √(a+(b+c)) √(a+(b-c)).
+
+# Arguments
+- `a`, `b`, `c`: Input values for the Källén function
+
+# Returns
+- Square root of the Källén function in factorized form
+
+# Example
+```julia
+julia> sqrtKallenFact(10.0, 1.0, 1.0)
+8.0  # √λ(10,1,1) = √64 = 8
+```
+
+See also [`Kallen`](@ref), [`Kibble`](@ref).
+"""
 sqrtKallenFact(a, b, c) =
     sqrt(a - (b + c)) * sqrt(a - (b - c)) * sqrt(a + (b + c)) * sqrt(a + (b - c))
+
+"""
+    Kibble(σs, msq)
+
+Calculate the Kibble function φ(σ₁,σ₂,σ₃) for three-body decays, which is defined in terms of Källén functions.
+The Kibble function determines the physical boundaries of the three-body phase space.
+
+The function is calculated as:
+φ(σ₁,σ₂,σ₃) = λ(λ₁,λ₂,λ₃)
+where λᵢ = λ(M², mᵢ², σᵢ) are Källén functions of the total mass squared M²,
+the i-th particle mass squared mᵢ², and the corresponding Mandelstam variable σᵢ.
+
+# Arguments
+- `σs`: Tuple of Mandelstam variables (σ₁,σ₂,σ₃)
+- `msq`: Tuple of squared masses (m₁²,m₂²,m₃²,M²)
+
+# Returns
+- Value of the Kibble function
+
+# Example
+```julia
+msq = (1.0, 1.0, 1.0, 16.0)  # squared masses: m₁², m₂², m₃², M²
+σs = (2.0, 2.0, 2.0)         # Mandelstam variables
+Kibble(σs, msq)              # returns the Kibble function value
+```
+
+See also [`Kallen`](@ref), [`isphysical`](@ref).
+"""
 Kibble(σs, msq) = Kallen(
     Kallen(msq[4], msq[1], σs[1]),
     Kallen(msq[4], msq[2], σs[2]),
@@ -37,7 +88,7 @@ given the mass of the system m(i,j)² = σk
 
 Explicit forms: `σ3of1`, `σ1of2`, `σ2of3`.
 
-See also `σiofk(z,σj,msq; k)`
+See also [`σiofk`](@ref)
 """
 function σjofk(z, σk, msq; k::Int)
     i, j = ij_from_k(k)
