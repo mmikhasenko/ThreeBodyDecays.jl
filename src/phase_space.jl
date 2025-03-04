@@ -11,7 +11,7 @@ This function appears frequently in relativistic kinematics calculations.
 - The value of the Källén function
 
 # Examples
-```jldoctest
+```jldoctest; setup = :(using ThreeBodyDecays)
 julia> Kallen(10.0, 1.0, 1.0)  # For a decay A -> B + C, calculate λ(mA², mB², mC²)
 60.0
 
@@ -38,7 +38,7 @@ This function returns √λ(a,b,c) in a factorized form to improve numerical sta
 - Square root of the Källén function in factorized form
 
 # Examples
-```jldoctest
+```jldoctest; setup = :(using ThreeBodyDecays)
 julia> sqrtKallenFact(10.0, 1.0, 1.0)  # √λ(10,1,1) = √9600
 97.97958971132714
 
@@ -70,7 +70,7 @@ the i-th particle mass squared mᵢ², and the corresponding Mandelstam variable
 - Value of the Kibble function
 
 # Examples
-```jldoctest
+```jldoctest; setup = :(using ThreeBodyDecays)
 julia> msq = (1.0, 1.0, 1.0, 16.0);  # squared masses: m₁², m₂², m₃², M²
 
 julia> σs = (2.0, 2.0, 2.0);         # Mandelstam variables
@@ -226,9 +226,7 @@ Computes the four-momenta of the three particles in the center of momentum frame
 A tuple of three four-momenta in the form of (px, py, pz, E).
 
 ## Examples
-```jldoctest
-julia> using ThreeBodyDecays  # hide
-
+```jldoctest; setup = :(using ThreeBodyDecays)
 julia> ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0);
 
 julia> σs = x2σs([0.5, 0.5], ms; k=2);
@@ -293,9 +291,7 @@ A configuration is physical if:
 - `Bool`: `true` if the configuration is physical, `false` otherwise
 
 # Examples
-```jldoctest
-julia> using ThreeBodyDecays  # hide
-
+```jldoctest; setup = :(using ThreeBodyDecays)
 julia> ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0);
 
 julia> σs = (6.25, 6.25, 6.5);
