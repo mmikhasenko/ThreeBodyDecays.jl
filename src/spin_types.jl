@@ -4,7 +4,7 @@
 A named tuple representing the spins of a three-body system.
 Contains twice the helicities of the particles (2h₁, 2h₂, 2h₃, 2h₀).
 """
-const SpinTuple = NamedTuple{(:two_h1, :two_h2, :two_h3, :two_h0), NTuple{4, Int}}
+const SpinTuple = NamedTuple{(:two_h1, :two_h2, :two_h3, :two_h0),NTuple{4,Int}}
 
 """
     ThreeBodySpins(two_h1_or_h1, two_h2_or_h2, two_h3_or_h3; h0=nothing, two_h0=nothing)

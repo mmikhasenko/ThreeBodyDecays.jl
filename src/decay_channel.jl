@@ -1,6 +1,6 @@
 abstract type AbstractDecayChain end
 
-@with_kw struct DecayChain{X, T} <: AbstractDecayChain
+@with_kw struct DecayChain{X,T} <: AbstractDecayChain
     k::Int
     #
     two_j::Int # isobar spin
@@ -246,7 +246,7 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple; refζs = (1, 2, 3, 1))
 end
 
 
-const PlaneOrientation = NamedTuple{(:α, :cosβ, :γ), Tuple{T, T, T}} where {T <: Real}
+const PlaneOrientation = NamedTuple{(:α, :cosβ, :γ),Tuple{T,T,T}} where {T<:Real}
 
 """
     amplitude(dc::DecayChain, orientation_angles::PlaneOrientation, σs::MandelstamTuple; kw...)

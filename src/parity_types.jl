@@ -4,7 +4,7 @@
 A named tuple representing parities of a three-body system.
 Contains parities P₁, P₂, P₃ of the decay products and P₀ of the parent particle.
 """
-const ParityTuple = NamedTuple{(:P1, :P2, :P3, :P0), NTuple{4, Char}}
+const ParityTuple = NamedTuple{(:P1, :P2, :P3, :P0),NTuple{4,Char}}
 
 """
     ThreeBodyParities(P1, P2, P3; P0)

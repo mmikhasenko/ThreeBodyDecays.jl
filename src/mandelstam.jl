@@ -3,7 +3,7 @@
 
 A named tuple representing Mandelstam variables `(; σ1, σ2, σ3)` for a three-body system.
 """
-const MandelstamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3), NTuple{3, T}}
+const MandelstamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3),NTuple{3,T}}
 
 """
     Invariants(ms::MassTuple{T}; σ1, σ2, σ3)

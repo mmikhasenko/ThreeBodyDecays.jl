@@ -20,6 +20,7 @@ helicity
 imag
 issequential
 JPAC
+Källén
 latexstring
 lims
 markdownlint
@@ -36,6 +37,7 @@ pipx
 quadgk
 readdir
 Recoupling
+recouplings
 refζ
 refζs
 Registrator

@@ -4,7 +4,7 @@
 A named tuple representing the masses of a three-body system.
 Contains masses m₁, m₂, m₃ of the decay products and m₀ of the parent particle.
 """
-const MassTuple{T} = NamedTuple{(:m1, :m2, :m3, :m0), NTuple{4, T}}
+const MassTuple{T} = NamedTuple{(:m1, :m2, :m3, :m0),NTuple{4,T}}
 
 """
     ThreeBodyMasses(m1, m2, m3; m0)

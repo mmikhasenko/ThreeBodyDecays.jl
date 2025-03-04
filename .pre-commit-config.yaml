@@ -19,7 +19,6 @@ repos:
             args: [--unique]
           - id: mixed-line-ending
             args: [--fix=lf]
-          - id: no-commit-to-branch
           - id: trailing-whitespace
           - id: check-merge-conflict
             args: [--assume-in-merge]

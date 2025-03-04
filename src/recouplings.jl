@@ -32,7 +32,7 @@ function amplitude(cs::ParityRecoupling, (two_λa, two_λb), (two_j, two_ja, two
 end
 
 @with_kw struct RecouplingLS <: Recoupling
-    two_ls::Tuple{Int, Int}
+    two_ls::Tuple{Int,Int}
 end
 
 amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =

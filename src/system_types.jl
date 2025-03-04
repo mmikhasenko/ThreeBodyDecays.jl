@@ -7,7 +7,7 @@ A structure representing a three-body system with masses and spins.
 - `ms::T`: Masses of the system (MassTuple)
 - `two_js::K`: Spins of the system (SpinTuple)
 """
-@with_kw struct ThreeBodySystem{T, K}
+@with_kw struct ThreeBodySystem{T,K}
     ms::T
     two_js::K = ThreeBodySpins(0, 0, 0; two_h0 = 0)
 end
@@ -29,7 +29,7 @@ A structure representing a point in the Dalitz plot.
 - `σs::I`: Mandelstam variables
 - `two_λs::S`: Spin configuration
 """
-@with_kw struct DalitzPlotPoint{I, S}
+@with_kw struct DalitzPlotPoint{I,S}
     σs::I
     two_λs::S
 end

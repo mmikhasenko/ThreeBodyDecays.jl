@@ -30,7 +30,7 @@ ls_ij = possible_ls_ij(jp"1-", two_js, Ps; k=1)
 ```
 """
 function possible_ls(jp1::SpinParity, jp2::SpinParity; jp::SpinParity)
-    two_ls = Vector{Tuple{Int, Int}}(undef, 0)
+    two_ls = Vector{Tuple{Int,Int}}(undef, 0)
     for two_s ∈ abs(jp1.two_j - jp2.two_j):2:abs(jp1.two_j + jp2.two_j)
         for two_l ∈ abs(jp.two_j - two_s):2:abs(jp.two_j + two_s)
             if jp1.p ⊗ jp2.p ⊗ jp.p == (isodd(div(two_l, 2)) ? '-' : '+')
@@ -41,7 +41,7 @@ function possible_ls(jp1::SpinParity, jp2::SpinParity; jp::SpinParity)
     return sort(two_ls, by = x -> x[1])
 end
 
-const TwoBodyTopologySpinParity = Pair{SpinParity, Tuple{SpinParity, SpinParity}}
+const TwoBodyTopologySpinParity = Pair{SpinParity,Tuple{SpinParity,SpinParity}}
 possible_ls((jp, (jp1, jp2))::TwoBodyTopologySpinParity) = possible_ls(jp1, jp2; jp)
 possible_ls(jp1::AbstractString, jp2::AbstractString; jp::AbstractString) =
     possible_ls(str2jp(jp1), str2jp(jp2); jp = str2jp(jp))
