@@ -3,7 +3,7 @@
 
 A named tuple representing Mandelstam variables `(; σ1, σ2, σ3)` for a three-body system.
 """
-const MandelstamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3),NTuple{3,T}}
+const MandelstamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3), NTuple{3, T}}
 
 """
     Invariants(ms::MassTuple{T}; σ1, σ2, σ3)
@@ -45,7 +45,11 @@ function Invariants(
 
     # Validate the invariants
     if !isphysical((σ1, σ2, σ3), ms)
-        error("The provided invariants violate physical constraints")
+        K = Kibble((σ1, σ2, σ3), ms^2)
+        r1 = inrange(σ1, lims1(ms))
+        r2 = inrange(σ2, lims2(ms))
+        r3 = inrange(σ3, lims3(ms))
+        error("The provided invariants violate physical constraints: 0 should be > K = $K, r1 = $r1, r2 = $r2, r3 = $r3")
     end
 
     return MandelstamTuple{T}((σ1, σ2, σ3))
