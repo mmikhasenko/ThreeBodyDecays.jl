@@ -74,7 +74,8 @@ include("decay_model.jl")
 export change_basis_3from1, change_basis_1from2, change_basis_2from3
 include("cross_channel.jl")
 
-export phase_space_integrand, projection_integrand
+export phase_space_integrand
+export projection_integrand, project_cosθij_intergand
 include("integrand.jl")
 
 end  # module ThreeBodyDecays
