@@ -10,10 +10,13 @@ This function appears frequently in relativistic kinematics calculations.
 # Returns
 - The value of the Källén function
 
-# Example
-```julia
-# For a decay A -> B + C, calculate λ(mA², mB², mC²)
-Kallen(10.0, 1.0, 1.0)  # returns 64.0
+# Examples
+```jldoctest
+julia> Kallen(10.0, 1.0, 1.0)  # For a decay A -> B + C, calculate λ(mA², mB², mC²)
+60.0
+
+julia> Kallen(5.0, 1.0, 1.0)  # Another example with different masses
+5.0
 ```
 
 See also [`sqrtKallenFact`](@ref), [`Kibble`](@ref).
@@ -34,10 +37,13 @@ This function returns √λ(a,b,c) in a factorized form to improve numerical sta
 # Returns
 - Square root of the Källén function in factorized form
 
-# Example
-```julia
-julia> sqrtKallenFact(10.0, 1.0, 1.0)
-8.0  # √λ(10,1,1) = √64 = 8
+# Examples
+```jldoctest
+julia> sqrtKallenFact(10.0, 1.0, 1.0)  # √λ(10,1,1) = √9600
+97.97958971132714
+
+julia> sqrtKallenFact(4.0, 1.0, 1.0)  # √λ(4,1,1) = √192
+13.856406460551018
 ```
 
 See also [`Kallen`](@ref), [`Kibble`](@ref).
@@ -63,11 +69,17 @@ the i-th particle mass squared mᵢ², and the corresponding Mandelstam variable
 # Returns
 - Value of the Kibble function
 
-# Example
-```julia
-msq = (1.0, 1.0, 1.0, 16.0)  # squared masses: m₁², m₂², m₃², M²
-σs = (2.0, 2.0, 2.0)         # Mandelstam variables
-Kibble(σs, msq)              # returns the Kibble function value
+# Examples
+```jldoctest
+julia> msq = (1.0, 1.0, 1.0, 16.0);  # squared masses: m₁², m₂², m₃², M²
+
+julia> σs = (2.0, 2.0, 2.0);         # Mandelstam variables
+
+julia> Kibble(σs, msq)               # returns the Kibble function value
+-77763.0
+
+julia> Kibble(σs, msq) < 0           # physical configuration if negative
+true
 ```
 
 See also [`Kallen`](@ref), [`isphysical`](@ref).
@@ -171,8 +183,10 @@ Calculate the breakup momentum for a two-body system.
 # Returns
 - Break-up momentum magnitude
 
-# Example
-```julia
+# Examples
+```jldoctest
+julia> using ThreeBodyDecays  # hide
+
 julia> ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0);
 
 julia> p = breakup_Rk(2.5^2, ms; k=1)
@@ -180,6 +194,9 @@ julia> p = breakup_Rk(2.5^2, ms; k=1)
 
 julia> q = breakup_ij(2.5^2, ms; k=1)
 0.75
+
+julia> breakup(4.0, 2.5, 1.0)  # direct use of breakup function
+0.8975879135215668
 ```
 """
 breakup(m, m1, m2) =
@@ -206,15 +223,24 @@ Computes the four-momenta of the three particles in the center of momentum frame
 - `k`: Index of the particle to be aligned with the -z-axis.
 
 ## Returns
-
 A tuple of three four-momenta in the form of (px, py, pz, E).
 
-## Example
-````julia
-ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0)
-σs = x2σs([0.5, 0.5], ms; k=2)
-p1, p2, p3 = aligned_four_vectors(σs, ms; k=1)
-````
+## Examples
+```jldoctest
+julia> using ThreeBodyDecays  # hide
+
+julia> ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0);
+
+julia> σs = x2σs([0.5, 0.5], ms; k=2);
+
+julia> p1, p2, p3 = aligned_four_vectors(σs, ms; k=1);
+
+julia> p1[3] ≈ -breakup_Rk(σs[1], ms; k=1)  # first particle aligned with -z axis
+true
+
+julia> all(p -> abs(p[2]) < 1e-10, (p1, p2, p3))  # all momenta in x-z plane
+true
+```
 """
 function aligned_four_vectors(σs, ms; k::Int)
     #
@@ -266,14 +292,24 @@ A configuration is physical if:
 # Returns
 - `Bool`: `true` if the configuration is physical, `false` otherwise
 
-# Example
-```julia
-ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0)
-σs = (2.0, 2.0, 2.0)
-isphysical(σs, ms)  # checks if this configuration is physically possible
+# Examples
+```jldoctest
+julia> using ThreeBodyDecays  # hide
+
+julia> ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0);
+
+julia> σs = (6.25, 6.25, 6.5);
+
+julia> isphysical(σs, ms)  # checks if this configuration is physically possible
+true
+
+julia> σs_unphysical = (20.0, 20.0, 20.0);  # values outside allowed ranges
+
+julia> isphysical(σs_unphysical, ms)  # this configuration is not physical
+false
 ```
 
-See also [`Kibble`](@ref), [`limss`](@ref).
+See also [`Kibble`](@ref), [`lims`](@ref).
 """
 isphysical(σs, ms::MassTuple) =
     Kibble(σs, ms^2) < 0 &&
