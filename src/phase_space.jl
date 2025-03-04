@@ -196,7 +196,7 @@ julia> q = breakup_ij(2.5^2, ms; k=1)
 0.75
 
 julia> breakup(4.0, 2.5, 1.0)  # direct use of breakup function
-0.8975879135215668
+0.897587913521567
 ```
 """
 breakup(m, m1, m2) =
