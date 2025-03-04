@@ -42,16 +42,8 @@ function Invariants(
             σ2 = sum(ms^2) - σ3 - σ1
         end
     end
-
-    # Validate the invariants
-    if !isphysical((σ1, σ2, σ3), ms)
-        K = Kibble((σ1, σ2, σ3), ms^2)
-        r1 = inrange(σ1, lims1(ms))
-        r2 = inrange(σ2, lims2(ms))
-        r3 = inrange(σ3, lims3(ms))
-        error("The provided invariants violate physical constraints: 0 should be > K = $K, r1 = $r1, r2 = $r2, r3 = $r3")
-    end
-
+    # the check of physicality should not be done here,
+    # because the invariants are used for isphysical values, e.g. for plotting.
     return MandelstamTuple{T}((σ1, σ2, σ3))
 end
 Invariants(; σ1, σ2, σ3) = MandelstamTuple{typeof(σ1)}((σ1, σ2, σ3))
