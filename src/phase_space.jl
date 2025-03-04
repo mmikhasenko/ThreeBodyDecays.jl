@@ -1,3 +1,23 @@
+"""
+    Kallen(x, y, z)
+
+Calculate the Källén function λ(x,y,z) = x² + y² + z² - 2xy - 2yz - 2zx.
+This function appears frequently in relativistic kinematics calculations.
+
+# Arguments
+- `x`, `y`, `z`: Real numbers or complex values
+
+# Returns
+- The value of the Källén function
+
+# Example
+```julia
+# For a decay A -> B + C, calculate λ(mA², mB², mC²)
+Kallen(10.0, 1.0, 1.0)  # returns 64.0
+```
+
+See also [`sqrtKallenFact`](@ref), [`Kibble`](@ref).
+"""
 Kallen(x, y, z) = x^2 + y^2 + z^2 - 2x * y - 2y * z - 2z * x
 sqrtKallenFact(a, b, c) =
     sqrt(a - (b + c)) * sqrt(a - (b - c)) * sqrt(a + (b + c)) * sqrt(a + (b - c))
@@ -80,6 +100,37 @@ cosθ12(σs, msq) = cosθij(σs, msq; k = 3)
 
 
 # momentum
+"""
+    breakup(m, m1, m2)
+    breakup_Rk(σk, ms; k)
+    breakup_ij(σk, ms; k)
+
+Calculate the breakup momentum for a two-body system.
+- `breakup`: General form for any two-body decay
+- `breakup_Rk`: For decay of the total system into a subsystem (ij), and a particle k
+- `breakup_ij`: For decay of the subsystem (ij) into particles i and j
+
+# Arguments
+- `m`: Mass of the decaying system
+- `m1`, `m2`: Masses of the decay products
+- `σk`: Invariant mass squared of the isobar
+- `ms`: MassTuple containing all masses
+- `k`: Spectator index
+
+# Returns
+- Break-up momentum magnitude
+
+# Example
+```julia
+julia> ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0);
+
+julia> p = breakup_Rk(2.5^2, ms; k=1)
+0.897587913521567
+
+julia> q = breakup_ij(2.5^2, ms; k=1)
+0.75
+```
+"""
 breakup(m, m1, m2) =
     sqrt((m - (m1 + m2)) * (m + (m1 + m2)) * (m - (m1 - m2)) * (m + (m1 - m2))) / 2m
 breakup_Rk(σk, ms; k) = breakup(ms[4], sqrt(σk), ms[k])

@@ -1,8 +1,38 @@
+"""
+    AbstractWignerRotation
 
+Abstract type for representing Wigner rotations in three-body decays.
+Subtypes include `TrivialWignerRotation` and `WignerRotation{N}` for N = 0,2,3.
+"""
 abstract type AbstractWignerRotation end
+
+"""
+    TrivialWignerRotation <: AbstractWignerRotation
+
+Represents a trivial Wigner rotation (identity transformation).
+Used when the reference frame and system frame are the same.
+
+# Fields
+- `k::Int`: Index of the spectator particle
+"""
 struct TrivialWignerRotation <: AbstractWignerRotation
     k::Int
 end
+
+"""
+    WignerRotation{N} <: AbstractWignerRotation
+
+Represents a Wigner rotation in three-body decays.
+The type parameter N determines the kind of rotation:
+- N=0: Rotation between total system frames
+- N=2: Rotation involving two distinct indices
+- N=3: Rotation involving three distinct indices
+
+# Fields
+- `k::Int`: Index of the spectator particle
+- `ispositive::Bool`: Direction of rotation
+- `iseven::Bool`: Parity of the rotation
+"""
 struct WignerRotation{N} <: AbstractWignerRotation
     k::Int
     ispositive::Bool
@@ -16,6 +46,17 @@ const Arg3WignerRotation = WignerRotation{3}
 WignerRotation{N}(k::Int, ispositive::Bool) where {N} =
     WignerRotation{N}(k, ispositive, true)
 
+"""
+    ispositive(wr::AbstractWignerRotation)
+
+Determine if a Wigner rotation is in the positive direction.
+
+# Arguments
+- `wr`: A Wigner rotation object
+
+# Returns
+- `true` for positive rotations, `false` otherwise
+"""
 ispositive(wr::TrivialWignerRotation) = true
 ispositive(wr::WignerRotation) = wr.ispositive
 
@@ -29,14 +70,25 @@ ijk(wr::AbstractWignerRotation) = ijk(wr.k)
 issequential(i, j) = (j - i) ∈ (1, -2)
 
 """
-wr(system_a, reference_b, particle_c=0)
+    wr(system_a, reference_b, particle_c=0)
 
-Create a WignerRotation object of the right type based on provided indices.
-The daughter particles are numbered 1,2,3, the mother particle is 0.
- - `system_a` tells which isobar is considered, and
- - `reference_b` tell which system is used as a reference.
-For `system_a` and `reference_b` the spectator notations are used, i.e.
-1 for the system (2,3), 2 for the system (3,1), and 3 for the system (1,2).
+Create a WignerRotation object for transforming between different reference frames in a three-body system.
+
+# Arguments
+- `system_a`: Index of the isobar system being considered (1,2,3)
+- `reference_b`: Index of the reference system (1,2,3)
+- `particle_c`: Index of the particle (0 for parent particle, 1,2,3 for daughters)
+
+# Returns
+- A WignerRotation object of the appropriate type
+
+# Example
+```julia
+# Rotation from system 2 to system 1 for particle 1 => zeta_21_for1
+w = wr(2, 1, 1)
+# Rotation between total system frames => zeta_12_for0
+w0 = wr(1, 2, 0)
+```
 """
 function wr(system_a, reference_b, particle_c = 0)
     system_a == reference_b && return TrivialWignerRotation(particle_c)
@@ -51,8 +103,28 @@ function wr(system_a, reference_b, particle_c = 0)
     return Arg2WignerRotation(particle_c, !(S), T)
 end
 
+"""
+    cosζ(wr::AbstractWignerRotation, σs, msq)
 
+Calculate the cosine of the Wigner rotation angle ζ for a given kinematic configuration.
+Different methods are implemented for different types of Wigner rotations.
 
+# Arguments
+- `wr`: A Wigner rotation object
+- `σs`: Tuple of Mandelstam variables
+- `msq`: Tuple of squared masses
+
+# Returns
+- Cosine of the Wigner rotation angle
+
+# Example
+```julia
+ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0)
+σs = x2σs([0.5, 0.5], ms; k=1)
+w = wr(2, 1, 1)
+cosζ(w, σs, ms^2)  # Get rotation angle cosine
+```
+"""
 cosζ(wr::TrivialWignerRotation, σs, msq) = one(σs[1])
 
 function cosζ(wr::Arg0WignerRotation, σs, msq)
