@@ -19,6 +19,7 @@ helicities
 helicity
 imag
 issequential
+jldoctest
 JPAC
 Källén
 latexstring
@@ -46,6 +47,7 @@ sinθ
 subchannel
 sumrules
 typeof
+unphysical
 Utopic
 vcat
 wignerd
