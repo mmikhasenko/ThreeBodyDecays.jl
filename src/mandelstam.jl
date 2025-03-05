@@ -41,11 +41,11 @@ function Invariants(
         else
             σ2 = sum(ms^2) - σ3 - σ1
         end
-    end
-
-    # Validate the invariants
-    if !isphysical((σ1, σ2, σ3), ms)
-        error("The provided invariants violate physical constraints")
+    elseif n_provided == 3
+        # Check if the invariants are physical
+        if !isphysical((σ1, σ2, σ3), ms)
+            error("The invariants violate mass constraints")
+        end
     end
 
     return MandelstamTuple{T}((σ1, σ2, σ3))

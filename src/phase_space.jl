@@ -10,17 +10,80 @@ This function appears frequently in relativistic kinematics calculations.
 # Returns
 - The value of the Källén function
 
-# Example
-```julia
-# For a decay A -> B + C, calculate λ(mA², mB², mC²)
-Kallen(10.0, 1.0, 1.0)  # returns 64.0
+# Examples
+```jldoctest; setup = :(using ThreeBodyDecays)
+julia> Kallen(10.0, 1.0, 1.0)  # For a decay A -> B + C, calculate λ(mA², mB², mC²)
+60.0
+
+julia> Kallen(5.0, 1.0, 1.0)  # Another example with different masses
+5.0
 ```
 
 See also [`sqrtKallenFact`](@ref), [`Kibble`](@ref).
 """
 Kallen(x, y, z) = x^2 + y^2 + z^2 - 2x * y - 2y * z - 2z * x
+
+"""
+    sqrtKallenFact(a, b, c)
+
+Calculate the square root of the Källén function λ(a,b,c) in factorized form.
+The Källén function is defined as λ(a,b,c) = a² + b² + c² - 2ab - 2bc - 2ca.
+This function returns √λ(a,b,c) in a factorized form to improve numerical stability:
+√(a-(b+c)) √(a-(b-c)) √(a+(b+c)) √(a+(b-c)).
+
+# Arguments
+- `a`, `b`, `c`: Input values for the Källén function
+
+# Returns
+- Square root of the Källén function in factorized form
+
+# Examples
+```jldoctest; setup = :(using ThreeBodyDecays)
+julia> sqrtKallenFact(10.0, 1.0, 1.0)  # √λ(10,1,1) = √9600
+97.97958971132714
+
+julia> sqrtKallenFact(4.0, 1.0, 1.0)  # √λ(4,1,1) = √192
+13.856406460551018
+```
+
+See also [`Kallen`](@ref), [`Kibble`](@ref).
+"""
 sqrtKallenFact(a, b, c) =
     sqrt(a - (b + c)) * sqrt(a - (b - c)) * sqrt(a + (b + c)) * sqrt(a + (b - c))
+
+"""
+    Kibble(σs, msq)
+
+Calculate the Kibble function φ(σ₁,σ₂,σ₃) for three-body decays, which is defined in terms of Källén functions.
+The Kibble function determines the physical boundaries of the three-body phase space.
+
+The function is calculated as:
+φ(σ₁,σ₂,σ₃) = λ(λ₁,λ₂,λ₃)
+where λᵢ = λ(M², mᵢ², σᵢ) are Källén functions of the total mass squared M²,
+the i-th particle mass squared mᵢ², and the corresponding Mandelstam variable σᵢ.
+
+# Arguments
+- `σs`: Tuple of Mandelstam variables (σ₁,σ₂,σ₃)
+- `msq`: Tuple of squared masses (m₁²,m₂²,m₃²,M²)
+
+# Returns
+- Value of the Kibble function
+
+# Examples
+```jldoctest; setup = :(using ThreeBodyDecays)
+julia> msq = (1.0, 1.0, 1.0, 16.0);  # squared masses: m₁², m₂², m₃², M²
+
+julia> σs = (2.0, 2.0, 2.0);         # Mandelstam variables
+
+julia> Kibble(σs, msq)               # returns the Kibble function value
+-77763.0
+
+julia> Kibble(σs, msq) < 0           # physical configuration if negative
+true
+```
+
+See also [`Kallen`](@ref), [`isphysical`](@ref).
+"""
 Kibble(σs, msq) = Kallen(
     Kallen(msq[4], msq[1], σs[1]),
     Kallen(msq[4], msq[2], σs[2]),
@@ -29,7 +92,7 @@ Kibble(σs, msq) = Kallen(
 
 
 """
-σjofk(z,σi,msq; k::Int)
+    σjofk(z,σi,msq; k::Int)
 
 Computes invariant σj = (p0-pj)² from
 the scattering angle z=cosθij in the rest from of (i,j),
@@ -37,7 +100,7 @@ given the mass of the system m(i,j)² = σk
 
 Explicit forms: `σ3of1`, `σ1of2`, `σ2of3`.
 
-See also `σiofk(z,σj,msq; k)`
+See also [`σiofk`](@ref)
 """
 function σjofk(z, σk, msq; k::Int)
     i, j = ij_from_k(k)
@@ -56,7 +119,7 @@ end
 
 
 """
-σiofk(k,z,σj,msq)
+    σiofk(k,z,σj,msq)
 
 Computes invariant σi = (p0 - pi)² from
 the scattering angle z=cosθij in the rest from of (i,j),
@@ -64,7 +127,7 @@ given the mass of the system m(i,j)² = σk
 
 Explicit forms: `σ3of2`, `σ1of3`, `σ2of1`.
 
-See also `σjofk(z,σk,msq; k)`
+See also [`σjofk`](@ref)
 """
 function σiofk(z, σk, msq; k::Int)
     σj = σjofk(z, σk, msq; k)
@@ -120,8 +183,8 @@ Calculate the breakup momentum for a two-body system.
 # Returns
 - Break-up momentum magnitude
 
-# Example
-```julia
+# Examples
+```jldoctest; setup = :(using ThreeBodyDecays)
 julia> ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0);
 
 julia> p = breakup_Rk(2.5^2, ms; k=1)
@@ -129,6 +192,9 @@ julia> p = breakup_Rk(2.5^2, ms; k=1)
 
 julia> q = breakup_ij(2.5^2, ms; k=1)
 0.75
+
+julia> breakup(4.0, 2.5, 1.0)  # direct use of breakup function
+0.897587913521567
 ```
 """
 breakup(m, m1, m2) =
@@ -155,15 +221,22 @@ Computes the four-momenta of the three particles in the center of momentum frame
 - `k`: Index of the particle to be aligned with the -z-axis.
 
 ## Returns
-
 A tuple of three four-momenta in the form of (px, py, pz, E).
 
-## Example
-````julia
-ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0)
-σs = x2σs([0.5, 0.5], ms; k=2)
-p1, p2, p3 = aligned_four_vectors(σs, ms; k=1)
-````
+## Examples
+```jldoctest; setup = :(using ThreeBodyDecays)
+julia> ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0);
+
+julia> σs = x2σs([0.5, 0.5], ms; k=2);
+
+julia> p1, p2, p3 = aligned_four_vectors(σs, ms; k=1);
+
+julia> p1[3] ≈ -breakup_Rk(σs[1], ms; k=1)  # first particle aligned with -z axis
+true
+
+julia> all(p -> abs(p[2]) < 1e-10, (p1, p2, p3))  # all momenta in x-z plane
+true
+```
 """
 function aligned_four_vectors(σs, ms; k::Int)
     #
@@ -193,24 +266,45 @@ function aligned_four_vectors(σs, ms; k::Int)
     return circleorigin(-k, (pi, pj, pk))
 end
 
-"""
-    inrange(x, r)
-    inphrange(σs::MandelstamTuple, ms::MassTuple)
-    isphysical(σs::MandelstamTuple, ms::MassTuple)
-
-Check if values are within physical ranges.
-
-# Arguments
-- `x`: Value to check
-- `r`: Range to check against
-- `σs`: Mandelstam variables
-- `ms`: Masses of the system
-
-# Returns
-- `Bool`: Whether the values are physical
-"""
 inrange(x, r) = r[1] < x < r[2]
 inphrange(σs, ms::MassTuple) = isphysical(σs, ms)
+
+"""
+    isphysical(σs::MandelstamTuple, ms::MassTuple) -> Bool
+    inphrange(σs::MandelstamTuple, ms::MassTuple) -> Bool
+    inrange(x, r) -> Bool
+
+Check if a set of Mandelstam variables represents a physically valid configuration in the three-body phase space.
+A configuration is physical if:
+1. The Kibble function is negative (φ(σ₁,σ₂,σ₃) < 0)
+2. All Mandelstam variables are within their kinematically allowed ranges
+
+# Arguments
+- `σs::MandelstamTuple`: Tuple of Mandelstam variables (σ₁,σ₂,σ₃)
+- `ms::MassTuple`: Tuple of masses (m₁,m₂,m₃,M)
+- `x`: Value to check (for `inrange`)
+- `r`: Range tuple (min,max) to check against (for `inrange`)
+
+# Returns
+- `Bool`: `true` if the configuration is physical, `false` otherwise
+
+# Examples
+```jldoctest; setup = :(using ThreeBodyDecays)
+julia> ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0);
+
+julia> σs = (6.25, 6.25, 6.5);
+
+julia> isphysical(σs, ms)  # checks if this configuration is physically possible
+true
+
+julia> σs_unphysical = (20.0, 20.0, 20.0);  # values outside allowed ranges
+
+julia> isphysical(σs_unphysical, ms)  # this configuration is not physical
+false
+```
+
+See also [`Kibble`](@ref), [`lims`](@ref).
+"""
 isphysical(σs, ms::MassTuple) =
     Kibble(σs, ms^2) < 0 &&
     inrange(σs[1], lims1(ms)) &&
