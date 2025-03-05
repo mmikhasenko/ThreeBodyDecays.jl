@@ -33,15 +33,31 @@ ThreeBodyMasses(; m1, m2, m3, m0) = ThreeBodyMasses(m1, m2, m3; m0)
 """
     lims(ms::MassTuple; k::Int)
     lims(k::Int, ms::MassTuple)
+    lims1(ms::MassTuple)
+    lims2(ms::MassTuple)
+    lims3(ms::MassTuple)
 
-Calculate the kinematic limits for the k-th Mandelstam variable.
+Calculate the kinematic limits (boundaries) for the Mandelstam variables σᵢ in a three-body decay.
+For each pair of particles (i,j), the invariant mass squared σₖ = (pᵢ + pⱼ)² must lie within physical limits:
+- Lower bound: (mᵢ + mⱼ)² (threshold for producing particles i and j)
+- Upper bound: (M - mₖ)² (maximum energy available when particle k recoils)
 
 # Arguments
-- `ms::MassTuple`: Masses of the system
-- `k::Int`: Index of the variable (1, 2, or 3)
+- `ms`: Tuple of masses (m₁,m₂,m₃,M)
+- `k`: Index specifying which pair of particles (1,2,3)
 
 # Returns
-- `Tuple{T,T}`: Lower and upper limits for the variable
+- Tuple (min,max) of the allowed range for σₖ
+
+# Example
+```julia
+ms = ThreeBodyMasses(1.0, 1.0, 1.0; m0=4.0)
+lims1(ms)  # limits for σ₁ = (p₂ + p₃)²
+lims2(ms)  # limits for σ₂ = (p₃ + p₁)²
+lims3(ms)  # limits for σ₃ = (p₁ + p₂)²
+```
+
+See also [`isphysical`](@ref), [`Kibble`](@ref).
 """
 function lims(ms::MassTuple; k::Int)
     i, j = ij_from_k(k)

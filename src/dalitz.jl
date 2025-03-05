@@ -21,13 +21,13 @@ polardalitz2invariants(θ, expansion_point::Tuple) =
     ) .+ expansion_point
 
 function invariants(σx, σy; iσx, iσy, ms)
-    iσx == 1 && iσy == 2 && return Invariants(ms, σ1 = σx, σ2 = σy)
-    iσx == 2 && iσy == 1 && return Invariants(ms, σ1 = σy, σ2 = σx)
-    iσx == 1 && iσy == 3 && return Invariants(ms, σ1 = σx, σ3 = σy)
-    iσx == 3 && iσy == 1 && return Invariants(ms, σ1 = σy, σ3 = σx)
-    iσx == 3 && iσy == 2 && return Invariants(ms, σ2 = σy, σ3 = σx)
-    return Invariants(ms, σ2 = σx, σ3 = σy) # σx = 2 && σy = 3
-    # error()
+    iσx == 1 && iσy == 2 && return Invariants(ms; σ1 = σx, σ2 = σy)
+    iσx == 2 && iσy == 1 && return Invariants(ms; σ2 = σx, σ1 = σy)
+    iσx == 1 && iσy == 3 && return Invariants(ms; σ1 = σx, σ3 = σy)
+    iσx == 3 && iσy == 1 && return Invariants(ms; σ3 = σx, σ1 = σy)
+    iσx == 3 && iσy == 2 && return Invariants(ms; σ3 = σx, σ2 = σy)
+    # remaining case σx = 2 && σy = 3
+    return Invariants(ms; σ2 = σx, σ3 = σy)
 end
 
 """
@@ -42,7 +42,7 @@ Calculate the border of the Dalitz plot.
 # Returns
 - `Vector{MandelstamTuple{T}}`: Points on the border
 """
-function border(ms::MassTuple{T}; Nx::Int = 300) where {T}
+function border(ms::MassTuple{T}; Nx::Int = DEFAULT_BORDER_POINTS) where {T}
     # Calculate a physically valid expansion point
     expansion_point = let
         f = 0.5
@@ -93,8 +93,8 @@ end
     iσx = 1,
     iσy = 2,
     grid_size = 100,
-    xlims = lims(iσx, ms),
-    ylims = lims(iσy, ms),
+    xlims = lims(ms; k = iσx),
+    ylims = lims(ms; k = iσy),
 )
     #
     σxv = range(xlims..., length = grid_size + 1) |> shift_by_half
