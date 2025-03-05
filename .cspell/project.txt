@@ -18,6 +18,7 @@ guidefontvalign
 helicities
 helicity
 imag
+intergand
 issequential
 jldoctest
 JPAC

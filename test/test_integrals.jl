@@ -48,7 +48,7 @@ end
         sum(range(-1, 1, Nb)) do z
             integrand = project_cosθij_intergand(I, ms, z; k)
             quadgk(integrand, 0, 1)[1] * 2 / Nb
-        end for k in 1:3
+        end for k = 1:3
     ]
 
     # Integration over σk
@@ -56,7 +56,7 @@ end
         sum(range(lims(ms; k)..., Nb)) do σk
             integrand = projection_integrand(I, ms, σk; k)
             quadgk(integrand, 0, 1)[1] * diff(collect(lims(ms; k)))[1] / Nb
-        end for k in 1:3
+        end for k = 1:3
     ]
 
     # Both methods should give approximately the same result
