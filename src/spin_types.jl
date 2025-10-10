@@ -89,7 +89,7 @@ Compute the tensor product of two parities or spin-parity states.
 ⊗(p1::Char, p2::Char) = p1 == p2 ? '+' : '-'
 ⊗(jp1::SpinParity, jp2::SpinParity) = [
     SpinParity(two_j, ⊗(jp1.p, jp2.p)) for
-    two_j ∈ abs(jp1.two_j - jp2.two_j):2:abs(jp1.two_j + jp2.two_j)
+    two_j ∈ abs(jp1.two_j-jp2.two_j):2:abs(jp1.two_j+jp2.two_j)
 ]
 
 """
