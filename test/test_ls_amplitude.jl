@@ -3,6 +3,7 @@ using Test
 
 using ThreeBodyDecays.Parameters
 using BenchmarkTools
+using Random
 
 @testset "LS amplitude scalars" begin
     tbs = ThreeBodySystem(2.0, 1.0, 1.5; m0 = 6.0)
@@ -133,4 +134,43 @@ end
     @test A_2103 ≈ A[end, end, end, end] ≈ 25.650736877020776
     A_m2m103 = amplitude(model, σs, [-2, -1, 0, 3])
     @test A_m2m103 ≈ A[1, 1, end, end] ≈ -14.353968898544204
+end
+
+
+
+
+
+struct FF
+    R::Float64
+end
+function (ff::FF)(m0sq, m1sq, m2sq)
+    m0, m1, m2 = sqrt.((m0sq, m1sq, m2sq))
+    p = breakup(m0, m1, m2)
+    z = p * ff.R
+    z = p / sqrt(1 + z^2)
+end
+
+@testset "VertexFunction constructor" begin
+    @test VertexFunction(RecouplingLS((2, 1))) isa VertexFunction
+    @test VertexFunction(RecouplingLS((2, 1)), FF(1.5)) isa VertexFunction
+end
+
+
+Random.seed!(1234)
+@testset "VertexFunction representation property" begin
+    ms = ThreeBodyMasses(0.938, 0.49367, 0.13957; m0 = 2.46867)
+    tbs = ThreeBodySystem(ms, ThreeBodySpins(1, 1, 1; two_h0 = 1))
+
+    # Test that VertexFunction preserves representation property
+    dc = DecayChain(;
+        k = 1,
+        two_j = 2,
+        Xlineshape = σ -> 1.0,
+        HRk = VertexFunction(RecouplingLS((2, 1)), FF(1.5)),
+        Hij = VertexFunction(RecouplingLS((2, 1)), FF(1.5)),
+        tbs,
+    )
+
+    σs = randomPoint(tbs.ms)
+    @test amplitude(dc, σs, randomPoint(tbs.two_js)) ≈ 0.006994 atol = 1e-4
 end
