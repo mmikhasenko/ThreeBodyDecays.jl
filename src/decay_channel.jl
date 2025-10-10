@@ -135,12 +135,12 @@ function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     two_js_HRk = (two_js[4], two_j, two_js[k])
     #
     VRk = [
-        amplitude(HRk, (two_m1, two_m2), two_js_HRk) * phase(two_js[k] - two_m2) # particle-2 convention
+        amplitude(HRk.h, (two_m1, two_m2), two_js_HRk) * phase(two_js[k] - two_m2) # particle-2 convention
         for two_m1 ∈ (-two_j):2:two_j, two_m2 ∈ (-two_js[k]):2:two_js[k]
     ]
     #
     Vij = [
-        amplitude(Hij, (two_m1, two_m2), two_js_Hij) * phase(two_js[j] - two_m2) # particle-2 convention
+        amplitude(Hij.h, (two_m1, two_m2), two_js_Hij) * phase(two_js[j] - two_m2) # particle-2 convention
         for two_m1 ∈ (-two_js[i]):2:two_js[i], two_m2 ∈ (-two_js[j]):2:two_js[j]
     ]
     #
@@ -148,7 +148,9 @@ function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     Δ_zk = div(two_j - two_js[4] - two_js[k], 2) - 1
     Δ_ij = div(two_j - two_js[i] + two_js[j], 2) + 1
     #
-    lineshape = dc.Xlineshape(σs[k])
+    lineshape =
+        dc.Xlineshape(σs[k]) * HRk.ff(ms²[4], σs[k], ms²[k]) * Hij.ff(σs[k], ms²[i], ms²[j])
+
     F0 = zeros(typeof(lineshape), Tuple(two_js) .+ 1)
     F = permutedims(F0, (i, j, k, 4))
     #

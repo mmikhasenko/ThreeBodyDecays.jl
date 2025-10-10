@@ -45,7 +45,7 @@ struct NoFormFactor end
     VertexFunction{R<:Recoupling,F}
 
 A struct that contains a recoupling and a form factor.
-Two constructors:
+There are two constructors:
 ```julia
 VertexFunction(h::Recoupling)        # translates to a trivial form factor
 VertexFunction(h::Recoupling, ff::F) # with a form factor
@@ -58,4 +58,4 @@ struct VertexFunction{R<:Recoupling,F}
     ff::F
 end
 VertexFunction(h::Recoupling) = VertexFunction(h, NoFormFactor())
-amplitude(V::VertexFunction{R,NoFormFactor}, args...) where {R} = amplitude(V.h, args...)
+(ff::NoFormFactor)(m0, m1, m2) = one(typeof(m0))
