@@ -134,13 +134,33 @@ function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     two_js_Hij = (two_j, two_js[i], two_js[j])
     two_js_HRk = (two_js[4], two_j, two_js[k])
     #
+    # Calculate form factors if needed
+    energy = σs[k]  # invariant mass squared of the resonance
+    masses = tbs.ms
+    
     VRk = [
-        amplitude(HRk, (two_m1, two_m2), two_js_HRk) * phase(two_js[k] - two_m2) # particle-2 convention
+        if HRk.ff isa NoFormFactor
+            amplitude(HRk, (two_m1, two_m2), two_js_HRk) * phase(two_js[k] - two_m2)
+        elseif HRk.ff isa EnergyDependentFormFactor
+            amplitude(HRk, (two_m1, two_m2), two_js_HRk, energy, masses) * phase(two_js[k] - two_m2)
+        elseif HRk.ff isa MassDependentFormFactor
+            amplitude(HRk, (two_m1, two_m2), two_js_HRk, masses) * phase(two_js[k] - two_m2)
+        else
+            amplitude(HRk, (two_m1, two_m2), two_js_HRk) * phase(two_js[k] - two_m2)
+        end
         for two_m1 ∈ -two_j:2:two_j, two_m2 ∈ -two_js[k]:2:two_js[k]
     ]
     #
     Vij = [
-        amplitude(Hij, (two_m1, two_m2), two_js_Hij) * phase(two_js[j] - two_m2) # particle-2 convention
+        if Hij.ff isa NoFormFactor
+            amplitude(Hij, (two_m1, two_m2), two_js_Hij) * phase(two_js[j] - two_m2)
+        elseif Hij.ff isa EnergyDependentFormFactor
+            amplitude(Hij, (two_m1, two_m2), two_js_Hij, energy, masses) * phase(two_js[j] - two_m2)
+        elseif Hij.ff isa MassDependentFormFactor
+            amplitude(Hij, (two_m1, two_m2), two_js_Hij, masses) * phase(two_js[j] - two_m2)
+        else
+            amplitude(Hij, (two_m1, two_m2), two_js_Hij) * phase(two_js[j] - two_m2)
+        end
         for two_m1 ∈ -two_js[i]:2:two_js[i], two_m2 ∈ -two_js[j]:2:two_js[j]
     ]
     #
