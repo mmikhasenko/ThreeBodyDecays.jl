@@ -1,14 +1,14 @@
 abstract type AbstractDecayChain end
 
-@with_kw struct DecayChain{X,T} <: AbstractDecayChain
+@with_kw struct DecayChain{X,T,R1<:Recoupling,R2<:Recoupling} <: AbstractDecayChain
     k::Int
     #
     two_j::Int # isobar spin
     #
     Xlineshape::X # lineshape
     #
-    HRk::Recoupling
-    Hij::Recoupling
+    HRk::R1
+    Hij::R2
     #
     tbs::T # the structure with masses and spins
 end
