@@ -89,7 +89,7 @@ Compute the tensor product of two parities or spin-parity states.
 ⊗(p1::Char, p2::Char) = p1 == p2 ? '+' : '-'
 ⊗(jp1::SpinParity, jp2::SpinParity) = [
     SpinParity(two_j, ⊗(jp1.p, jp2.p)) for
-    two_j ∈ abs(jp1.two_j - jp2.two_j):2:abs(jp1.two_j + jp2.two_j)
+    two_j ∈ abs(jp1.two_j-jp2.two_j):2:abs(jp1.two_j+jp2.two_j)
 ]
 
 """
@@ -108,9 +108,9 @@ Convert a string representation of spin-parity to a SpinParity object.
 """
 function str2jp(pin::AbstractString)
     p = filter(x -> x != '^', pin)
-    !(contains(p, '/')) && return SpinParity(x2(p[1:end-1]), p[end])
-    p[end-2:end-1] != "/2" && error("the string should be `x/2±`, while it is $(p)")
-    two_j = Meta.parse(p[1:end-3])
+    !(contains(p, '/')) && return SpinParity(x2(p[1:(end-1)]), p[end])
+    p[(end-2):(end-1)] != "/2" && error("the string should be `x/2±`, while it is $(p)")
+    two_j = Meta.parse(p[1:(end-3)])
     !(typeof(two_j) <: Int) && error("the string should be `x/2±`, while it is $(p)")
     return SpinParity(two_j, p[end])
 end

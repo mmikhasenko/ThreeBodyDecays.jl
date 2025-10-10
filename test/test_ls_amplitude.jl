@@ -102,7 +102,7 @@ const model = let
                 tbs,
                 Xlineshape = identity,
                 HRk = RecouplingLS(two_LS) |> VertexFunction,
-                Hij = RecouplingLS(two_ls) |> VertexFunction
+                Hij = RecouplingLS(two_ls) |> VertexFunction,
             )
         end
         ci = ones(Float64, length(chains))

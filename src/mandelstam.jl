@@ -135,6 +135,6 @@ function y2σs(y, ms::MassTuple; k::Int = last(findmin(Tuple(ms))))
     return MandelstamTuple{typeof(ms.m0)}(σt)
 end
 
-circleorigin(k, t) = (t[mod(k, 3)+1], t[mod(k + 1, 3)+1], t[mod(k - 1, 3)+1])
+circleorigin(k, t) = (t[mod(k, 3)+1], t[mod(k+1, 3)+1], t[mod(k-1, 3)+1])
 
 fitin(y, (a, b)) = a + y * (b - a)

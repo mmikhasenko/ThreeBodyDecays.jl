@@ -52,7 +52,7 @@ Generate a random point in the phase space.
 - For system: Random DalitzPlotPoint
 """
 randomPoint(ms::MassTuple) = x2σs(rand(2), ms; k = 3)
-randomPoint(two_js::SpinTuple) = SpinTuple([rand(-j:2:j) for j in two_js])
+randomPoint(two_js::SpinTuple) = SpinTuple([rand((-j):2:j) for j in two_js])
 
 function randomPoint(tbs::ThreeBodySystem)
     DalitzPlotPoint(σs = randomPoint(tbs.ms), two_λs = randomPoint(tbs.two_js))

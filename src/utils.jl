@@ -86,4 +86,4 @@ v = [1, 2, 3, 4]
 shift_by_half(v)  # returns [1.5, 2.5, 3.5]
 ```
 """
-shift_by_half(v) = v[1:end-1] .+ first(diff(v)) / 2
+shift_by_half(v) = v[1:(end-1)] .+ first(diff(v)) / 2

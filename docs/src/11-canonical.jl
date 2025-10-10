@@ -62,7 +62,7 @@ function A_canonical(chain, angles, two_ms)
     two_mi, two_mj, two_mk, two_m0 = two_ms[i], two_ms[j], two_ms[k], two_ms[4]
 
     @unpack two_j = chain
-    value = sum(-two_j:2:two_j) do two_m
+    value = sum((-two_j):2:two_j) do two_m
         A_node_canonical(angles_HRk, (two_m, two_mk, two_m0), (two_j, two_jk, two_j0), two_LS) * A_node_canonical(
             angles_Hij,
             (two_mi, two_mj, two_m),

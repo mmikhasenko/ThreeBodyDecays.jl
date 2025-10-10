@@ -136,12 +136,12 @@ function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     #
     VRk = [
         amplitude(HRk, (two_m1, two_m2), two_js_HRk) * phase(two_js[k] - two_m2) # particle-2 convention
-        for two_m1 ∈ -two_j:2:two_j, two_m2 ∈ -two_js[k]:2:two_js[k]
+        for two_m1 ∈ (-two_j):2:two_j, two_m2 ∈ (-two_js[k]):2:two_js[k]
     ]
     #
     Vij = [
         amplitude(Hij, (two_m1, two_m2), two_js_Hij) * phase(two_js[j] - two_m2) # particle-2 convention
-        for two_m1 ∈ -two_js[i]:2:two_js[i], two_m2 ∈ -two_js[j]:2:two_js[j]
+        for two_m1 ∈ (-two_js[i]):2:two_js[i], two_m2 ∈ (-two_js[j]):2:two_js[j]
     ]
     #
     # shifts are computed from matching div(two_j+two_λ, 2)+1 for every index
@@ -294,4 +294,4 @@ amplitude(dc::AbstractDecayChain, dpp::DalitzPlotPoint; kw...) =
 #
 summed_over_polarization(fn, two_js) = σs -> sum(fn(σs, two_λs) for two_λs in itr(two_js))
 #
-itr(two_js) = Iterators.ProductIterator(Tuple([-two_j:2:two_j for two_j in two_js]))
+itr(two_js) = Iterators.ProductIterator(Tuple([(-two_j):2:two_j for two_j in two_js]))
