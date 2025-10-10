@@ -1,6 +1,6 @@
 abstract type AbstractDecayChain end
 
-@with_kw struct DecayChain{X,T,R1<:Recoupling,R2<:Recoupling} <: AbstractDecayChain
+@with_kw struct DecayChain{X,T,R1<:VertexFunction,R2<:VertexFunction} <: AbstractDecayChain
     k::Int
     #
     two_j::Int # isobar spin
@@ -61,8 +61,8 @@ function DecayChainLS(;
         Xlineshape,
         tbs,
         _jp.two_j,
-        Hij = RecouplingLS(two_ls),
-        HRk = RecouplingLS(two_LS),
+        Hij = RecouplingLS(two_ls) |> VertexFunction,
+        HRk = RecouplingLS(two_LS) |> VertexFunction,
     )
 end
 
@@ -111,8 +111,8 @@ function DecayChainsLS(;
             Xlineshape,
             tbs,
             _jp.two_j,
-            Hij = RecouplingLS(two_ls),
-            HRk = RecouplingLS(two_LS),
+            Hij = RecouplingLS(two_ls) |> VertexFunction,
+            HRk = RecouplingLS(two_LS) |> VertexFunction,
         ) for (two_ls, two_LS) in ls_LS_matrix
     ]
 end

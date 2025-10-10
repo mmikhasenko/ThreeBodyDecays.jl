@@ -52,13 +52,13 @@ chains = let
             jp.two_j,
             tbs,
             Xlineshape,
-            HRk = RecouplingLS(two_LS),
-            Hij = RecouplingLS(two_ls),
+            HRk = RecouplingLS(two_LS) |> VertexFunction,
+            Hij = RecouplingLS(two_ls) |> VertexFunction,
         )
     end
 end
 
-sort_by_Ll(chains) = sort(chains, by = x -> x.Hij.two_ls[1] * 10 + x.HRk.two_ls[1])
+sort_by_Ll(chains) = sort(chains, by = x -> x.Hij.h.two_ls[1] * 10 + x.HRk.h.two_ls[1])
 
 @testset "DecayChainsLS: all decay chains" begin
     @test sort_by_Ll(vec(chains)) == sort_by_Ll(
@@ -101,8 +101,8 @@ const model = let
                 two_jp.two_j,
                 tbs,
                 Xlineshape = identity,
-                HRk = RecouplingLS(two_LS),
-                Hij = RecouplingLS(two_ls),
+                HRk = RecouplingLS(two_LS) |> VertexFunction,
+                Hij = RecouplingLS(two_ls) |> VertexFunction
             )
         end
         ci = ones(Float64, length(chains))
