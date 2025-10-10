@@ -42,41 +42,6 @@ amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
 struct NoFormFactor end
 
 """
-    EnergyDependentFormFactor{F}
-
-A form factor that depends on energy (invariant mass) and particle masses.
-The form factor function `f` should accept:
-- `energy`: The invariant mass squared (energy squared)
-- `masses`: A `MassTuple` containing the particle masses
-
-# Example
-```julia
-# Blatt-Weisskopf form factor
-ff = EnergyDependentFormFactor((energy, masses) -> 1.0 / (1.0 + energy / masses.m0^2))
-```
-"""
-struct EnergyDependentFormFactor{F}
-    f::F
-end
-
-"""
-    MassDependentFormFactor{F}
-
-A form factor that depends only on particle masses (not energy).
-The form factor function `f` should accept:
-- `masses`: A `MassTuple` containing the particle masses
-
-# Example
-```julia
-# Mass-dependent coupling
-ff = MassDependentFormFactor((masses) -> masses.m0 / (masses.m1 + masses.m2))
-```
-"""
-struct MassDependentFormFactor{F}
-    f::F
-end
-
-"""
     VertexFunction{R<:Recoupling,F}
 
 A struct that contains a recoupling and a form factor.
@@ -94,18 +59,3 @@ struct VertexFunction{R<:Recoupling,F}
 end
 VertexFunction(h::Recoupling) = VertexFunction(h, NoFormFactor())
 amplitude(V::VertexFunction{R,NoFormFactor}, args...) where {R} = amplitude(V.h, args...)
-
-# Form factor amplitude methods
-function amplitude(V::VertexFunction{R,EnergyDependentFormFactor}, 
-                  (two_λa, two_λb), (two_j, two_ja, two_jb), energy, masses) where {R}
-    base_amplitude = amplitude(V.h, (two_λa, two_λb), (two_j, two_ja, two_jb))
-    form_factor = V.ff.f(energy, masses)
-    return base_amplitude * form_factor
-end
-
-function amplitude(V::VertexFunction{R,MassDependentFormFactor}, 
-                  (two_λa, two_λb), (two_j, two_ja, two_jb), masses) where {R}
-    base_amplitude = amplitude(V.h, (two_λa, two_λb), (two_j, two_ja, two_jb))
-    form_factor = V.ff.f(masses)
-    return base_amplitude * form_factor
-end
