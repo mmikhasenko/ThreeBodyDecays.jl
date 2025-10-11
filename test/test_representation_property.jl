@@ -16,16 +16,16 @@ using Test
     @test sum(
         sum(
             wignerD(s, λ, ν, τ1[3], τ1[2], τ1[5]) * wignerd(s, ν, μ, cosζ31_for0(σs, ms^2))
-            for ν ∈ -s:s
-        ) ≈ wignerD(s, λ, μ, τ3[3], τ3[2], τ3[5]) for λ ∈ -s:s, μ ∈ -s:s
+            for ν ∈ (-s):s
+        ) ≈ wignerD(s, λ, μ, τ3[3], τ3[2], τ3[5]) for λ ∈ (-s):s, μ ∈ (-s):s
     ) == (2s + 1)^2
     #
     @test sum(
         sum(
             wignerD(s, λ, ν, τ1[3], τ1[2], τ1[5]) *
             wignerd(s, ν, μ, cosζ12_for0(σs, ms^2)) * # angle is negative
-            (mod(ν - μ, 2) == 1 ? -1 : 1) for ν ∈ -s:s
-        ) ≈ wignerD(s, λ, μ, τ2[3], τ2[2], τ2[5]) for λ ∈ -s:s, μ ∈ -s:s
+            (mod(ν - μ, 2) == 1 ? -1 : 1) for ν ∈ (-s):s
+        ) ≈ wignerD(s, λ, μ, τ2[3], τ2[2], τ2[5]) for λ ∈ (-s):s, μ ∈ (-s):s
     ) == (2s + 1)^2
     #
 
@@ -36,18 +36,18 @@ using Test
         sum(
             wignerD_doublearg(two_j, two_λ, two_ν, τ1[3], τ1[2], τ1[5]) *
             wignerd_doublearg(two_j, two_ν, two_μ, cosζ31_for0(σs, ms^2)) for
-            two_ν ∈ -two_j:2:two_j
+            two_ν ∈ (-two_j):2:two_j
         ) ≈ wignerD_doublearg(two_j, two_λ, two_μ, τ3[3], τ3[2], τ3[5]) for
-        two_λ ∈ -two_j:2:two_j, two_μ ∈ -two_j:2:two_j
+        two_λ ∈ (-two_j):2:two_j, two_μ ∈ (-two_j):2:two_j
     ) == (two_j + 1)^2
 
     @test sum(
         sum(
             wignerD_doublearg(two_j, two_λ, two_ν, τ1[3], τ1[2], τ1[5]) *
             wignerd_doublearg(two_j, two_ν, two_μ, cosζ12_for0(σs, ms^2)) *
-            (mod(two_ν - two_μ, 4) == 2 ? -1 : 1) for two_ν ∈ -two_j:2:s
+            (mod(two_ν - two_μ, 4) == 2 ? -1 : 1) for two_ν ∈ (-two_j):2:s
         ) ≈ wignerD_doublearg(two_j, two_λ, two_μ, τ2[3], τ2[2], τ2[5]) for
-        two_λ ∈ -two_j:2:two_j, two_μ ∈ -two_j:2:two_j
+        two_λ ∈ (-two_j):2:two_j, two_μ ∈ (-two_j):2:two_j
     ) == (two_j + 1)^2
 
 end

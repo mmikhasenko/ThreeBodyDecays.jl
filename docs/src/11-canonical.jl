@@ -50,8 +50,8 @@ end;
 # The `A_canonical` function calculates the amplitude for the entire decay chain in the canonical formalism.
 function A_canonical(chain, angles, two_ms)
     @unpack Hij, HRk = chain
-    two_LS = HRk.two_ls
-    two_ls = Hij.two_ls
+    two_LS = HRk.h.two_ls
+    two_ls = Hij.h.two_ls
     @unpack angles_Hij, angles_HRk = angles
 
     @unpack k = chain
@@ -62,7 +62,7 @@ function A_canonical(chain, angles, two_ms)
     two_mi, two_mj, two_mk, two_m0 = two_ms[i], two_ms[j], two_ms[k], two_ms[4]
 
     @unpack two_j = chain
-    value = sum(-two_j:2:two_j) do two_m
+    value = sum((-two_j):2:two_j) do two_m
         A_node_canonical(angles_HRk, (two_m, two_mk, two_m0), (two_j, two_jk, two_j0), two_LS) * A_node_canonical(
             angles_Hij,
             (two_mi, two_mj, two_m),

@@ -1,14 +1,14 @@
 abstract type AbstractDecayChain end
 
-@with_kw struct DecayChain{X,T} <: AbstractDecayChain
+@with_kw struct DecayChain{X,T,R1<:VertexFunction,R2<:VertexFunction} <: AbstractDecayChain
     k::Int
     #
     two_j::Int # isobar spin
     #
     Xlineshape::X # lineshape
     #
-    HRk::Recoupling
-    Hij::Recoupling
+    HRk::R1
+    Hij::R2
     #
     tbs::T # the structure with masses and spins
 end
@@ -61,8 +61,8 @@ function DecayChainLS(;
         Xlineshape,
         tbs,
         _jp.two_j,
-        Hij = RecouplingLS(two_ls),
-        HRk = RecouplingLS(two_LS),
+        Hij = RecouplingLS(two_ls) |> VertexFunction,
+        HRk = RecouplingLS(two_LS) |> VertexFunction,
     )
 end
 
@@ -111,8 +111,8 @@ function DecayChainsLS(;
             Xlineshape,
             tbs,
             _jp.two_j,
-            Hij = RecouplingLS(two_ls),
-            HRk = RecouplingLS(two_LS),
+            Hij = RecouplingLS(two_ls) |> VertexFunction,
+            HRk = RecouplingLS(two_LS) |> VertexFunction,
         ) for (two_ls, two_LS) in ls_LS_matrix
     ]
 end
@@ -135,20 +135,22 @@ function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     two_js_HRk = (two_js[4], two_j, two_js[k])
     #
     VRk = [
-        amplitude(HRk, (two_m1, two_m2), two_js_HRk) * phase(two_js[k] - two_m2) # particle-2 convention
-        for two_m1 ∈ -two_j:2:two_j, two_m2 ∈ -two_js[k]:2:two_js[k]
+        amplitude(HRk.h, (two_m1, two_m2), two_js_HRk) * phase(two_js[k] - two_m2) # particle-2 convention
+        for two_m1 ∈ (-two_j):2:two_j, two_m2 ∈ (-two_js[k]):2:two_js[k]
     ]
     #
     Vij = [
-        amplitude(Hij, (two_m1, two_m2), two_js_Hij) * phase(two_js[j] - two_m2) # particle-2 convention
-        for two_m1 ∈ -two_js[i]:2:two_js[i], two_m2 ∈ -two_js[j]:2:two_js[j]
+        amplitude(Hij.h, (two_m1, two_m2), two_js_Hij) * phase(two_js[j] - two_m2) # particle-2 convention
+        for two_m1 ∈ (-two_js[i]):2:two_js[i], two_m2 ∈ (-two_js[j]):2:two_js[j]
     ]
     #
     # shifts are computed from matching div(two_j+two_λ, 2)+1 for every index
     Δ_zk = div(two_j - two_js[4] - two_js[k], 2) - 1
     Δ_ij = div(two_j - two_js[i] + two_js[j], 2) + 1
     #
-    lineshape = dc.Xlineshape(σs[k])
+    lineshape =
+        dc.Xlineshape(σs[k]) * HRk.ff(ms²[4], σs[k], ms²[k]) * Hij.ff(σs[k], ms²[i], ms²[j])
+
     F0 = zeros(typeof(lineshape), Tuple(two_js) .+ 1)
     F = permutedims(F0, (i, j, k, 4))
     #
@@ -294,4 +296,4 @@ amplitude(dc::AbstractDecayChain, dpp::DalitzPlotPoint; kw...) =
 #
 summed_over_polarization(fn, two_js) = σs -> sum(fn(σs, two_λs) for two_λs in itr(two_js))
 #
-itr(two_js) = Iterators.ProductIterator(Tuple([-two_j:2:two_j for two_j in two_js]))
+itr(two_js) = Iterators.ProductIterator(Tuple([(-two_j):2:two_j for two_j in two_js]))

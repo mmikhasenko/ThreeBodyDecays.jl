@@ -37,3 +37,25 @@ end
 
 amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
     jls_coupling(two_ja, two_λa, two_jb, two_λb, two_j, cs.two_ls[1], cs.two_ls[2])
+
+
+struct NoFormFactor end
+
+"""
+    VertexFunction{R<:Recoupling,F}
+
+A struct that contains a recoupling and a form factor.
+There are two constructors:
+```julia
+VertexFunction(h::Recoupling)        # translates to a trivial form factor
+VertexFunction(h::Recoupling, ff::F) # with a form factor
+# amplitude(V::VertexFunction{<:Recoupling, yourF}, args...) where {yourF} needs to be defined
+```
+
+"""
+struct VertexFunction{R<:Recoupling,F}
+    h::R
+    ff::F
+end
+VertexFunction(h::Recoupling) = VertexFunction(h, NoFormFactor())
+(ff::NoFormFactor)(m0², m1², m2²) = one(typeof(m0²))

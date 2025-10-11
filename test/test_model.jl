@@ -16,8 +16,8 @@ model = let
         k = 1,
         two_j,
         Xlineshape = σ -> 1 / (4.1^2 - σ - 0.1im),
-        Hij = RecouplingLS((two_j, 0)),
-        HRk = RecouplingLS((two_j, two_j)),
+        Hij = RecouplingLS((two_j, 0)) |> VertexFunction,
+        HRk = RecouplingLS((two_j, two_j)) |> VertexFunction,
         tbs,
     )
     ch2 = DecayChain(ch1; k = 2)

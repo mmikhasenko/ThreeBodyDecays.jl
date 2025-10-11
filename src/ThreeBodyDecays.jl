@@ -61,6 +61,7 @@ export possible_coupling_schemes, complete_l_s_L_S
 include("coupling_schemes.jl")
 
 export Recoupling, NoRecoupling, ParityRecoupling, RecouplingLS
+export VertexFunction, NoFormFactor
 include("recouplings.jl")
 
 export AbstractDecayChain, DecayChain, DecayChainLS, DecayChainsLS

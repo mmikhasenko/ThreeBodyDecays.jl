@@ -88,21 +88,21 @@ end
 Λs = (Λ1520, Λ1690, Λ1810);
 
 # chains-3, i.e. (1+2): Pentaquarks with the lowest ls, LS
-Pc4312 = DecayChainLS(
+Pc4312 = DecayChainLS(;
     k = 3,
     Xlineshape = BW(4.312, 0.015),
     jp = jp"1/2+",
     Ps = Conserving,
     tbs = tbs,
 )
-Pc4440 = DecayChainLS(
+Pc4440 = DecayChainLS(;
     k = 3,
     Xlineshape = BW(4.440, 0.010),
     jp = jp"1/2+",
     Ps = Conserving,
     tbs = tbs,
 )
-Pc4457 = DecayChainLS(
+Pc4457 = DecayChainLS(;
     k = 3,
     Xlineshape = BW(4.457, 0.020),
     jp = jp"3/2+",

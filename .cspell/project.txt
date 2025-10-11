@@ -1,3 +1,5 @@
+atol
+Blatt
 Breit
 cffinit
 Clebsch
@@ -25,6 +27,7 @@ JPAC
 Källén
 latexstring
 lims
+Lineshapes
 markdownlint
 Mikhasenko
 minorticks
@@ -51,6 +54,7 @@ typeof
 unphysical
 Utopic
 vcat
+Weisskopf
 wignerd
 xlab
 xlim
