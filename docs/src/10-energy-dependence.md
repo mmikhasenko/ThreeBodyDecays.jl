@@ -1,4 +1,4 @@
-# Energy dependence of the amplitude
+# [Energy dependence of the amplitude](@id energy_dependence)
 
 Any helicity amplitude depends on a set of discrete indices (the spin projections) and energy kinematic variables that determine the energies, momenta, and angles of particles involved in the decay.
 
