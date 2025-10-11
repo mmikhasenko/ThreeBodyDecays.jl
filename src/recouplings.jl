@@ -58,4 +58,4 @@ struct VertexFunction{R<:Recoupling,F}
     ff::F
 end
 VertexFunction(h::Recoupling) = VertexFunction(h, NoFormFactor())
-(ff::NoFormFactor)(m0, m1, m2) = one(typeof(m0))
+(ff::NoFormFactor)(m0², m1², m2²) = one(typeof(m0²))
