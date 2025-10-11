@@ -35,7 +35,8 @@ chain1 = DecayChain(;
     tbs)
 ```
 
-The `VertexFunction` struct holds a recoupling scheme and a form factor. These can be any custom objects with defined dispatch methods.
+Many common models for the propagators and form factors are available in `HadronicLineshapes.jl`.
+Alternatively, you can use lambda functions for simple cases, define any custom objects with dispatch methods as follows:
 
 ```julia
 # Custom recoupling
@@ -56,5 +57,3 @@ struct MyPropagator
 end
 (prop::MyPropagator)(σk)  # to defined
 ```
-
-Alternatively, you can use lambda functions for simple cases, or leverage `HadronicLineshapes.jl` which provides useful primitives for common hadronic resonance models.
