@@ -87,18 +87,40 @@ end
     return (intensity, ms)
 end
 
-@recipe function f(
-    intensity::Function,
-    ms::MassTuple;
-    iσx = 1,
-    iσy = 2,
-    grid_size = 100,
-    xlims = lims(ms; k = iσx),
-    ylims = lims(ms; k = iσy),
-)
+# Helper function to process xlims/ylims which can be tuples with :auto
+function process_lims(lim_tuple, default_lims)
+    if lim_tuple isa Tuple && length(lim_tuple) == 2
+        lower = lim_tuple[1] === :auto ? default_lims[1] : lim_tuple[1]
+        upper = lim_tuple[2] === :auto ? default_lims[2] : lim_tuple[2]
+        return (lower, upper)
+    else
+        return lim_tuple
+    end
+end
+
+@recipe function f(intensity::Function, ms::MassTuple)
+    # Extract parameters from plotattributes with defaults
+    iσx = get(plotattributes, :iσx, 1)
+    iσy = get(plotattributes, :iσy, 2)
+    grid_size = get(plotattributes, :grid_size, 100)
+    xpoints = get(plotattributes, :xpoints, nothing)
+    ypoints = get(plotattributes, :ypoints, nothing)
+    xlims_input = get(plotattributes, :xlims, lims(ms; k = iσx))
+    ylims_input = get(plotattributes, :ylims, lims(ms; k = iσy))
+    
+    # Determine the number of grid points for x and y
+    nx = xpoints !== nothing ? xpoints : grid_size
+    ny = ypoints !== nothing ? ypoints : grid_size
+    
+    # Process xlims and ylims to handle :auto
+    default_xlims = lims(ms; k = iσx)
+    default_ylims = lims(ms; k = iσy)
+    processed_xlims = process_lims(xlims_input, default_xlims)
+    processed_ylims = process_lims(ylims_input, default_ylims)
+    
     #
-    σxv = range(xlims..., length = grid_size + 1) |> shift_by_half
-    σyv = range(ylims..., length = grid_size + 1) |> shift_by_half
+    σxv = range(processed_xlims..., length = nx + 1) |> shift_by_half
+    σyv = range(processed_ylims..., length = ny + 1) |> shift_by_half
     #
     values = [
         (#
@@ -118,6 +140,8 @@ end
     DalitzPlot # only for documentation, see example below
     plot(intensity, ms)
     plot(ms, intensity)
+    dalitzplot(ms, intensity)
+    dalitzplot(intensity, ms)
 
 A plotting recipe for `DalitzPlot`.
 
@@ -132,8 +156,10 @@ a specified range of invariants. The plot provides insights into the kinematic r
 - `iσx`: Index of the first invariant to use for the x-axis, `1->m23²`, `2->m31²`, and `3->m12²`. Defaults to 1.
 - `iσy`: Index of the second invariant to use for the y-axis. Defaults to 2.
 - `grid_size`: The resolution of the plot grid. Higher values result in finer detail. Defaults to 100.
-- `xlims`: Limits for the x-axis in terms of the invariant range. Defaults to `lims(iσx, ms)` (calculated automatically).
-- `ylims`: Limits for the y-axis in terms of the invariant range. Defaults to `lims(iσy, ms)` (calculated automatically).
+- `xpoints`: Number of points for the x-axis grid. Overrides `grid_size` for x-axis if provided.
+- `ypoints`: Number of points for the y-axis grid. Overrides `grid_size` for y-axis if provided.
+- `xlims`: Limits for the x-axis in terms of the invariant range. Defaults to `lims(iσx, ms)` (calculated automatically). Can be a tuple with `:auto` for automatic limits (e.g., `(:auto, 4.4)`).
+- `ylims`: Limits for the y-axis in terms of the invariant range. Defaults to `lims(iσy, ms)` (calculated automatically). Can be a tuple with `:auto` for automatic limits (e.g., `(2.2, :auto)`).
 
 # Output:
 The recipe generates:
@@ -147,6 +173,25 @@ Just call a plot command,
 ```julia
 plot(intensity, ms)
 plot(ms, intensity)
+dalitzplot(ms, intensity)
+dalitzplot(intensity, ms)
 ```
 """
-struct DalitzPlot end
+# User plot for dalitzplot function (this also creates the DalitzPlot struct)
+@userplot DalitzPlot
+
+@recipe function f(dp::DalitzPlot)
+    # Extract arguments - can be (ms, intensity) or (intensity, ms)
+    if length(dp.args) == 2
+        arg1, arg2 = dp.args
+        if arg1 isa MassTuple
+            ms, intensity = arg1, arg2
+        else
+            intensity, ms = arg1, arg2
+        end
+        # Use the existing recipe by returning the intensity and ms
+        return intensity, ms
+    else
+        error("dalitzplot requires exactly 2 arguments: (ms, intensity) or (intensity, ms)")
+    end
+end
