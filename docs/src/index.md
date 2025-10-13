@@ -13,11 +13,11 @@ The implementation is based on a research paper, "Dalitz-plot decomposition for 
 ## Documentation
 
 - **[Energy dependence of the amplitude](@ref energy_dependence)** - Understanding how helicity amplitudes depend on energy kinematic variables
-- **[Tutorial](@ref tutorial)** - Getting started with ThreeBodyDecays.jl
-- **[Canonical examples](@ref canonical)** - Common usage patterns and examples
-- **[Contributing guidelines](@ref contributing)** - How to contribute to the project
-- **[Developer documentation](@ref dev_docs)** - Technical details for developers
-- **[Reference](@ref reference)** - Complete API reference
+- **[Tutorial](30-tutorial.md)** - Getting started with ThreeBodyDecays.jl
+- **[Canonical examples](31-canonical.md)** - Common usage patterns and examples
+- **[Contributing guidelines](90-contributing.md)** - How to contribute to the project
+- **[Developer documentation](91-developer.md)** - Technical details for developers
+- **[Reference](95-reference.md)** - Complete API reference
 
 ## Contributors
 
