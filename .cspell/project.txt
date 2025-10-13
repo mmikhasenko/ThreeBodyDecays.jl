@@ -10,8 +10,10 @@ cosζj
 cosζk
 Dalitz
 dalitzplot
+dalitzprojection
 doublearg
 eachslice
+fillalpha
 findmin
 getindex
 getproperty
@@ -59,6 +61,7 @@ vcat
 Weisskopf
 wignerd
 xbins
+xguide
 xlab
 xlim
 Xlineshape
