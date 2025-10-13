@@ -70,7 +70,7 @@ end
     intensity = σs -> 1.0
 
     # Test that the recipe can generate data for different k values
-    for k in 1:3
+    for k = 1:3
         # Test that projection integrand works correctly
         σk_mid = sum(lims(ms; k)) / 2
         integrand = projection_integrand(intensity, ms, σk_mid; k)
