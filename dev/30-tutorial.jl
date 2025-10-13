@@ -148,13 +148,21 @@ plot(
     plot(border12(masses(model)), xlab = "σ₂ (GeV²)", ylab = "σ₁ (GeV²)"),
 )
 
-# The matrix element as a function of the kinematic variables
-# can be visualized by passing an amplitude function and the kinematic mass object.
+# Visualize the matrix element as a function of kinematic variables:
 
 plot(masses(model), σs -> abs2(amplitude(Pc4312, σs, (2, -1, 0, 1))))
-plot(masses(model), Base.Fix1(unpolarized_intensity, model); iσx = 1, iσy = 3)
+dalitzplot(
+    masses(model),
+    Base.Fix1(unpolarized_intensity, model);
+    iσx = 1,
+    iσy = 3,
+    xlim = (2.0, 4.0),
+    ylim = (20.0, 27.0),
+    xbins = 100,
+    ybins = 120,
+)
 
-# The projections of the Dalitz Plot can be computed numerically using integration routine, e.g. `QuadGK`.
+# Compute Dalitz plot projections numerically:
 
 plot(4.2, 4.6) do e1
     I = Base.Fix1(unpolarized_intensity, model)
