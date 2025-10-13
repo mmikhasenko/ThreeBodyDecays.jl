@@ -20,14 +20,14 @@ theme(
     xlim = (:auto, :auto),
     ylim = (:auto, :auto),
     grid = false,
-)
+);
 
 # ## Setting up Kinematics
 
 # First, let's define the masses and spin of particles:
 
-ms = ThreeBodyMasses(3.09, 0.938, 0.49367; m0 = 5.62)
-tbs = ThreeBodySystem(; ms, two_js = ThreeBodySpins(2, 1, 0; two_h0 = 1))
+ms = ThreeBodyMasses(3.09, 0.938, 0.49367; m0 = 5.62);
+tbs = ThreeBodySystem(; ms, two_js = ThreeBodySpins(2, 1, 0; two_h0 = 1));
 
 # ## Phase Space Boundaries
 
@@ -39,7 +39,7 @@ plot(
     ylab = "σ₁ [GeV²]",
     title = "Phase Space Boundary",
     aspect_ratio = 1,
-)
+);
 
 # The `dalitzplot` and `dalitzprojection` recipes provide a flexible way to
 # visualize three-body decay models. The key parameters are:
@@ -53,7 +53,7 @@ plot(
 # - First arguments: Mass tuple and intensity function
 # - Last argument: Integration function (e.g., `quadgk` from QuadGK.jl)
 # - `k`: Which invariant to project onto (1, 2, or 3)
-# - `bins`: Number of points in the projection
+# - `bins`: Number of bins in the projection
 # - `xlims`: Custom axis limits (use `:auto` for automatic)
 
 
@@ -66,12 +66,12 @@ struct BW
     m::Float64
     Γ::Float64
 end
-(bw::BW)(σ::Number) = 1 / (bw.m^2 - σ - 1im * bw.m * bw.Γ)
+(bw::BW)(σ::Number) = 1 / (bw.m^2 - σ - 1im * bw.m * bw.Γ);
 
 # Create decay chains for Lambda resonances:
 
 # parities, needed only to identify available couplings
-Ps = ThreeBodyParities('-', '+', '-'; P0 = '+')
+Ps = ThreeBodyParities('-', '+', '-'; P0 = '+');
 
 const model = ThreeBodyDecay(
     ["Λ1520", "Λ1690"] .=> zip(
@@ -81,7 +81,7 @@ const model = ThreeBodyDecay(
             DecayChainLS(; k = 1, Xlineshape = BW(1.685, 0.050), jp = jp"1/2+", Ps, tbs),
         ],
     ),
-)
+);
 
 # ## Dalitz Plot Visualization
 
