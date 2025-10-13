@@ -87,18 +87,38 @@ end
     return (intensity, ms)
 end
 
+# Helper function to process xlims/ylims which can be tuples with :auto
+function process_lims(lim_tuple, default_lims)
+    if lim_tuple isa Tuple && length(lim_tuple) == 2
+        lower = lim_tuple[1] === :auto ? default_lims[1] : lim_tuple[1]
+        upper = lim_tuple[2] === :auto ? default_lims[2] : lim_tuple[2]
+        return (lower, upper)
+    else
+        return lim_tuple
+    end
+end
+
 @recipe function f(
     intensity::Function,
-    ms::MassTuple;
+    ms::MassTuple,
+    args...;
+    xbins = 100,
+    ybins = 100,
     iσx = 1,
     iσy = 2,
-    grid_size = 100,
-    xlims = lims(ms; k = iσx),
-    ylims = lims(ms; k = iσy),
+    xlims = (:auto, :auto),
+    ylims = (:auto, :auto),
 )
-    #
-    σxv = range(xlims..., length = grid_size + 1) |> shift_by_half
-    σyv = range(ylims..., length = grid_size + 1) |> shift_by_half
+    # Process xlims and ylims to handle :auto
+    default_xlims = lims(ms; k = iσx)
+    default_ylims = lims(ms; k = iσy)
+    processed_xlims = process_lims(xlims, default_xlims)
+    processed_ylims = process_lims(ylims, default_ylims)
+    # +1 and shift by half gets the right picture:
+    #   values are computed in the middle of the bin
+    #   the bin edge extends exactly to the specified limits
+    σxv = range(processed_xlims..., length = xbins+1) |> shift_by_half
+    σyv = range(processed_ylims..., length = ybins+1) |> shift_by_half
     #
     values = [
         (#
@@ -114,26 +134,37 @@ end
 end
 
 
+# User plot for dalitzplot function (this also creates the DalitzPlot struct)
+@userplot DalitzPlot
+
 """
-    DalitzPlot # only for documentation, see example below
-    plot(intensity, ms)
+    plot(intensity, ms;
+        xbins = 100,
+        ybins = 100,
+        iσx = 1, iσy = 2,
+        xlims = (:auto, :auto),
+        ylims = (:auto, :auto)
+    )
+    # also
     plot(ms, intensity)
+    dalitzplot(ms, intensity)
+    dalitzplot(intensity, ms)
 
-A plotting recipe for `DalitzPlot`.
+A plotting recipe for a Dalitz plot.
 
-This recipe generates a Dalitz plot as a heatmap, visualizing the intensity of a function over
-a specified range of invariants. The plot provides insights into the kinematic regions of a three-body decay or similar processes.
+This recipe generates a Dalitz plot as a heatmap, visualizing the intensity of a function over a specified range of invariants.
 
 # Parameters:
-- `intensity::Function`: A real function of the invariants, `(m23², m31², m12²)`, returning the intensity at a given kinematic point.
-- `ms::MassTuple`: A tuple representing the masses of the particles involved in the system.
+- `intensity::Function`: A real function of the invariants, `(m23², m31², m12²)`, returning a value at a given kinematic point.
+- `ms::MassTuple`: A tuple representing the masses of the particles involved in the system, used for determination of the borders and function dispatch.
 
 # Keyword Arguments:
 - `iσx`: Index of the first invariant to use for the x-axis, `1->m23²`, `2->m31²`, and `3->m12²`. Defaults to 1.
 - `iσy`: Index of the second invariant to use for the y-axis. Defaults to 2.
-- `grid_size`: The resolution of the plot grid. Higher values result in finer detail. Defaults to 100.
-- `xlims`: Limits for the x-axis in terms of the invariant range. Defaults to `lims(iσx, ms)` (calculated automatically).
-- `ylims`: Limits for the y-axis in terms of the invariant range. Defaults to `lims(iσy, ms)` (calculated automatically).
+- `xbins`: Number of points for the x-axis grid.
+- `ybins`: Number of points for the y-axis grid.
+- `xlims`: Limits for the x-axis in terms of the invariant range. Defaults to `lims(iσx, ms)` (calculated automatically). Can be a tuple with `:auto` for automatic limits (e.g., `(:auto, 4.4)`).
+- `ylims`: Limits for the y-axis in terms of the invariant range. Defaults to `lims(iσy, ms)` (calculated automatically). Can be a tuple with `:auto` for automatic limits (e.g., `(2.2, :auto)`).
 
 # Output:
 The recipe generates:
@@ -147,6 +178,25 @@ Just call a plot command,
 ```julia
 plot(intensity, ms)
 plot(ms, intensity)
+dalitzplot(ms, intensity)
+dalitzplot(intensity, ms)
 ```
 """
-struct DalitzPlot end
+dalitzplot
+
+
+@recipe function f(dp::DalitzPlot, args...)
+    # Extract arguments - can be (ms, intensity) or (intensity, ms)
+    if length(dp.args) == 2
+        arg1, arg2 = dp.args
+        if arg1 isa MassTuple
+            ms, intensity = arg1, arg2
+        else
+            intensity, ms = arg1, arg2
+        end
+        # Use the existing recipe by returning the intensity and ms
+        return intensity, ms
+    else
+        error("dalitzplot requires exactly 2 arguments: (ms, intensity) or (intensity, ms)")
+    end
+end

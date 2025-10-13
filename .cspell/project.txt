@@ -9,6 +9,7 @@ cosζ
 cosζj
 cosζk
 Dalitz
+dalitzplot
 doublearg
 eachslice
 findmin
@@ -52,13 +53,16 @@ subchannel
 sumrules
 typeof
 unphysical
+userplot
 Utopic
 vcat
 Weisskopf
 wignerd
+xbins
 xlab
 xlim
 Xlineshape
+ybins
 ylab
 ylim
 zenodo
