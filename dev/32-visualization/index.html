@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Visualization Tutorial · ThreeBodyDecays.jl</title><meta name="title" content="Visualization Tutorial · ThreeBodyDecays.jl"/><meta property="og:title" content="Visualization Tutorial · ThreeBodyDecays.jl"/><meta property="twitter:title" content="Visualization Tutorial · ThreeBodyDecays.jl"/><meta name="description" content="Documentation for ThreeBodyDecays.jl."/><meta property="og:description" content="Documentation for ThreeBodyDecays.jl."/><meta property="twitter:description" content="Documentation for ThreeBodyDecays.jl."/><meta property="og:url" content="https://mmikhasenko.github.io/ThreeBodyDecays.jl/32-visualization/"/><meta property="twitter:url" content="https://mmikhasenko.github.io/ThreeBodyDecays.jl/32-visualization/"/><link rel="canonical" href="https://mmikhasenko.github.io/ThreeBodyDecays.jl/32-visualization/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">ThreeBodyDecays.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">ThreeBodyDecays</a></li><li><a class="tocitem" href="../10-energy-dependence/">Energy dependence of the amplitude</a></li><li><a class="tocitem" href="../30-tutorial/">Tutorial</a></li><li><a class="tocitem" href="../31-canonical/">Canonical formalism</a></li><li class="is-active"><a class="tocitem" href>Visualization Tutorial</a><ul class="internal"><li><a class="tocitem" href="#Setting-up-Kinematics"><span>Setting up Kinematics</span></a></li><li><a class="tocitem" href="#Phase-Space-Boundaries"><span>Phase Space Boundaries</span></a></li><li><a class="tocitem" href="#Setting-up-the-model"><span>Setting up the model</span></a></li><li><a class="tocitem" href="#Dalitz-Plot-Visualization"><span>Dalitz Plot Visualization</span></a></li><li><a class="tocitem" href="#Dalitz-Plot-Projections"><span>Dalitz Plot Projections</span></a></li><li><a class="tocitem" href="#Comparing-Multiple-Projections"><span>Comparing Multiple Projections</span></a></li></ul></li><li><a class="tocitem" href="../90-contributing/">Contributing guidelines</a></li><li><a class="tocitem" href="../91-developer/">Developer documentation</a></li><li><a class="tocitem" href="../95-reference/">Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Visualization Tutorial</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Visualization Tutorial</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/mmikhasenko/ThreeBodyDecays.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/mmikhasenko/ThreeBodyDecays.jl/blob/main/docs/src/32-visualization.jl#" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Visualization-Tutorial"><a class="docs-heading-anchor" href="#Visualization-Tutorial">Visualization Tutorial</a><a id="Visualization-Tutorial-1"></a><a class="docs-heading-anchor-permalink" href="#Visualization-Tutorial" title="Permalink"></a></h1><p>This tutorial demonstrates how to visualize three-body decay models using Dalitz plots and Dalitz plot projections. We&#39;ll use the same Λb ⟶ J/ψ p K decay example from the main tutorial.</p><pre><code class="language-julia hljs">using ThreeBodyDecays
+using Plots
+using QuadGK</code></pre><pre><code class="language-julia hljs">theme(
+    :wong,
+    frame = :box,
+    lab = &quot;&quot;,
+    minorticks = true,
+    guidefontvalign = :top,
+    guidefonthalign = :right,
+    xlim = (:auto, :auto),
+    ylim = (:auto, :auto),
+    grid = false,
+);</code></pre><h2 id="Setting-up-Kinematics"><a class="docs-heading-anchor" href="#Setting-up-Kinematics">Setting up Kinematics</a><a id="Setting-up-Kinematics-1"></a><a class="docs-heading-anchor-permalink" href="#Setting-up-Kinematics" title="Permalink"></a></h2><p>First, let&#39;s define the masses and spin of particles:</p><pre><code class="language-julia hljs">ms = ThreeBodyMasses(3.09, 0.938, 0.49367; m0 = 5.62);
+tbs = ThreeBodySystem(; ms, two_js = ThreeBodySpins(2, 1, 0; two_h0 = 1));</code></pre><h2 id="Phase-Space-Boundaries"><a class="docs-heading-anchor" href="#Phase-Space-Boundaries">Phase Space Boundaries</a><a id="Phase-Space-Boundaries-1"></a><a class="docs-heading-anchor-permalink" href="#Phase-Space-Boundaries" title="Permalink"></a></h2><p>You can also visualize the phase space boundaries:</p><pre><code class="language-julia hljs">plot(
+    border31(ms),
+    xlab = &quot;σ₃ [GeV²]&quot;,
+    ylab = &quot;σ₁ [GeV²]&quot;,
+    title = &quot;Phase Space Boundary&quot;,
+    aspect_ratio = 1,
+);</code></pre><p>The <code>dalitzplot</code> and <code>dalitzprojection</code> recipes provide a flexible way to visualize three-body decay models. The key parameters are:</p><p><strong>For <code>dalitzplot</code>:</strong></p><ul><li><code>iσx</code>, <code>iσy</code>: Choose which invariants to plot (1, 2, or 3)</li><li><code>xbins</code>, <code>ybins</code>: Resolution of the plot</li><li><code>xlims</code>, <code>ylims</code>: Custom axis limits (use <code>:auto</code> for automatic)</li></ul><p><strong>For <code>dalitzprojection</code>:</strong></p><ul><li>First arguments: Mass tuple and intensity function</li><li>Last argument: Integration function (e.g., <code>quadgk</code> from QuadGK.jl)</li><li><code>k</code>: Which invariant to project onto (1, 2, or 3)</li><li><code>bins</code>: Number of bins in the projection</li><li><code>xlims</code>: Custom axis limits (use <code>:auto</code> for automatic)</li></ul><h2 id="Setting-up-the-model"><a class="docs-heading-anchor" href="#Setting-up-the-model">Setting up the model</a><a id="Setting-up-the-model-1"></a><a class="docs-heading-anchor-permalink" href="#Setting-up-the-model" title="Permalink"></a></h2><p>For a simple model, we will use a Breit-Wigner lineshape:</p><pre><code class="language-julia hljs">struct BW
+    m::Float64
+    Γ::Float64
+end
+(bw::BW)(σ::Number) = 1 / (bw.m^2 - σ - 1im * bw.m * bw.Γ);</code></pre><p>Create decay chains for Lambda resonances:</p><p>parities, needed only to identify available couplings</p><pre><code class="language-julia hljs">Ps = ThreeBodyParities(&#39;-&#39;, &#39;+&#39;, &#39;-&#39;; P0 = &#39;+&#39;);
+
+const model = ThreeBodyDecay(
+    [&quot;Λ1520&quot;, &quot;Λ1690&quot;] .=&gt; zip(
+        [1.0, 1.5],
+        [
+            DecayChainLS(; k = 1, Xlineshape = BW(1.5195, 0.0156), jp = jp&quot;3/2+&quot;, Ps, tbs),
+            DecayChainLS(; k = 1, Xlineshape = BW(1.685, 0.050), jp = jp&quot;1/2+&quot;, Ps, tbs),
+        ],
+    ),
+);</code></pre><h2 id="Dalitz-Plot-Visualization"><a class="docs-heading-anchor" href="#Dalitz-Plot-Visualization">Dalitz Plot Visualization</a><a id="Dalitz-Plot-Visualization-1"></a><a class="docs-heading-anchor-permalink" href="#Dalitz-Plot-Visualization" title="Permalink"></a></h2><p>The Dalitz plot shows the intensity distribution across the phase space. We can create a Dalitz plot using the <code>dalitzplot</code> recipe:</p><pre><code class="language-julia hljs">dalitzplot(
+    masses(model),
+    Base.Fix1(unpolarized_intensity, model);
+    iσx = 1,
+    iσy = 3,
+    xbins = 100,
+    ybins = 100,
+    xlab = &quot;σ₁ = m²(J/ψ p) [GeV²]&quot;,
+    ylab = &quot;σ₃ = m²(p K) [GeV²]&quot;,
+    title = &quot;Dalitz Plot: Λb → J/ψ p K&quot;,
+)</code></pre><img src="68727713.svg" alt="Example block output"/><p>You can also specify custom limits:</p><pre><code class="language-julia hljs">dalitzplot(
+    masses(model),
+    Base.Fix1(unpolarized_intensity, model);
+    iσx = 2,
+    iσy = 1,
+    ylims = (2.0, 3.5),
+    xbins = 120,
+    ybins = 120,
+    xlab = &quot;σ₂ = m²(J/ψ K) [GeV²]&quot;,
+    ylab = &quot;σ₁ = m²(J/ψ p) [GeV²]&quot;,
+)</code></pre><img src="ba1cdb1f.svg" alt="Example block output"/><h2 id="Dalitz-Plot-Projections"><a class="docs-heading-anchor" href="#Dalitz-Plot-Projections">Dalitz Plot Projections</a><a id="Dalitz-Plot-Projections-1"></a><a class="docs-heading-anchor-permalink" href="#Dalitz-Plot-Projections" title="Permalink"></a></h2><p>Projections are 1D plots obtained by integrating the Dalitz plot intensity over one invariant mass coordinate. This is useful for visualizing features that may be clearer in 1D.</p><p>Project onto σ₁ (m²(J/ψ p)):</p><pre><code class="language-julia hljs">p1 = dalitzprojection(
+    masses(model),
+    Base.Fix1(unpolarized_intensity, model),
+    quadgk;
+    k = 1,
+    bins = 300,
+    xlims = (2.0, 3.5),
+    fill = true,
+    fillalpha = 0.5,
+    xlab = &quot;σ₁ = m²(J/ψ p) [GeV²]&quot;,
+    ylab = &quot;Integrated Intensity&quot;,
+    title = &quot;Projection onto σ₁ (zoomed)&quot;,
+)</code></pre><img src="a3f2b680.svg" alt="Example block output"/><p>Project onto σ₂ (m²(J/ψ K)):</p><pre><code class="language-julia hljs">p2 = dalitzprojection(
+    masses(model),
+    Base.Fix1(unpolarized_intensity, model),
+    quadgk;
+    k = 2,
+    bins = 100,
+    fill = true,
+    fillalpha = 0.5,
+    xlab = &quot;σ₂ = m²(J/ψ K) [GeV²]&quot;,
+    ylab = &quot;Integrated Intensity&quot;,
+    title = &quot;Projection onto σ₂&quot;,
+)</code></pre><img src="f638a819.svg" alt="Example block output"/><p>Project onto σ₃ (m²(p K)) with custom limits:</p><pre><code class="language-julia hljs">p3 = dalitzprojection(
+    masses(model),
+    Base.Fix1(unpolarized_intensity, model),
+    quadgk;
+    k = 3,
+    fill = true,
+    fillalpha = 0.5,
+    bins = 150,
+    xlab = &quot;σ₃ = m²(p K) [GeV²]&quot;,
+    ylab = &quot;Integrated Intensity&quot;,
+    title = &quot;Projection onto σ₃&quot;,
+)</code></pre><img src="0c3e5f88.svg" alt="Example block output"/><h2 id="Comparing-Multiple-Projections"><a class="docs-heading-anchor" href="#Comparing-Multiple-Projections">Comparing Multiple Projections</a><a id="Comparing-Multiple-Projections-1"></a><a class="docs-heading-anchor-permalink" href="#Comparing-Multiple-Projections" title="Permalink"></a></h2><p>You can compare projections from different models or resonances:</p><pre><code class="language-julia hljs">plot(
+    p1,
+    p2,
+    p3,
+    layout = (1, 3),
+    size = (1200, 400),
+    bottom_margin = 6Plots.PlotMeasures.mm,
+)</code></pre><img src="bdba2aa4.svg" alt="Example block output"/><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../31-canonical/">« Canonical formalism</a><a class="docs-footer-nextpage" href="../90-contributing/">Contributing guidelines »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Monday 13 October 2025 21:06">Monday 13 October 2025</span>. Using Julia version 1.12.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
