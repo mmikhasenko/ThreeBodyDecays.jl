@@ -98,29 +98,27 @@ function process_lims(lim_tuple, default_lims)
     end
 end
 
-@recipe function f(intensity::Function, ms::MassTuple)
-    # Extract parameters from plotattributes with defaults
-    iσx = get(plotattributes, :iσx, 1)
-    iσy = get(plotattributes, :iσy, 2)
-    grid_size = get(plotattributes, :grid_size, 100)
-    xpoints = get(plotattributes, :xpoints, nothing)
-    ypoints = get(plotattributes, :ypoints, nothing)
-    xlims_input = get(plotattributes, :xlims, lims(ms; k = iσx))
-    ylims_input = get(plotattributes, :ylims, lims(ms; k = iσy))
-    
-    # Determine the number of grid points for x and y
-    nx = xpoints !== nothing ? xpoints : grid_size
-    ny = ypoints !== nothing ? ypoints : grid_size
-    
+@recipe function f(
+    intensity::Function,
+    ms::MassTuple,
+    args...;
+    xbins = 100,
+    ybins = 100,
+    iσx = 1,
+    iσy = 2,
+    xlims = (:auto, :auto),
+    ylims = (:auto, :auto),
+)
     # Process xlims and ylims to handle :auto
     default_xlims = lims(ms; k = iσx)
     default_ylims = lims(ms; k = iσy)
-    processed_xlims = process_lims(xlims_input, default_xlims)
-    processed_ylims = process_lims(ylims_input, default_ylims)
-    
-    #
-    σxv = range(processed_xlims..., length = nx + 1) |> shift_by_half
-    σyv = range(processed_ylims..., length = ny + 1) |> shift_by_half
+    processed_xlims = process_lims(xlims, default_xlims)
+    processed_ylims = process_lims(ylims, default_ylims)
+    # +1 and shift by half gets the right picture:
+    #   values are computed in the middle of the bin
+    #   the bin edge extends exactly to the specified limits
+    σxv = range(processed_xlims..., length = xbins+1) |> shift_by_half
+    σyv = range(processed_ylims..., length = ybins+1) |> shift_by_half
     #
     values = [
         (#
@@ -136,28 +134,35 @@ end
 end
 
 
+# User plot for dalitzplot function (this also creates the DalitzPlot struct)
+@userplot DalitzPlot
+
 """
-    DalitzPlot # only for documentation, see example below
-    plot(intensity, ms)
+    plot(intensity, ms;
+        xbins = 100,
+        ybins = 100,
+        iσx = 1, iσy = 2,
+        xlims = (:auto, :auto),
+        ylims = (:auto, :auto)
+    )
+    # also
     plot(ms, intensity)
     dalitzplot(ms, intensity)
     dalitzplot(intensity, ms)
 
-A plotting recipe for `DalitzPlot`.
+A plotting recipe for a Dalitz plot.
 
-This recipe generates a Dalitz plot as a heatmap, visualizing the intensity of a function over
-a specified range of invariants. The plot provides insights into the kinematic regions of a three-body decay or similar processes.
+This recipe generates a Dalitz plot as a heatmap, visualizing the intensity of a function over a specified range of invariants.
 
 # Parameters:
-- `intensity::Function`: A real function of the invariants, `(m23², m31², m12²)`, returning the intensity at a given kinematic point.
-- `ms::MassTuple`: A tuple representing the masses of the particles involved in the system.
+- `intensity::Function`: A real function of the invariants, `(m23², m31², m12²)`, returning a value at a given kinematic point.
+- `ms::MassTuple`: A tuple representing the masses of the particles involved in the system, used for determination of the borders and function dispatch.
 
 # Keyword Arguments:
 - `iσx`: Index of the first invariant to use for the x-axis, `1->m23²`, `2->m31²`, and `3->m12²`. Defaults to 1.
 - `iσy`: Index of the second invariant to use for the y-axis. Defaults to 2.
-- `grid_size`: The resolution of the plot grid. Higher values result in finer detail. Defaults to 100.
-- `xpoints`: Number of points for the x-axis grid. Overrides `grid_size` for x-axis if provided.
-- `ypoints`: Number of points for the y-axis grid. Overrides `grid_size` for y-axis if provided.
+- `xbins`: Number of points for the x-axis grid.
+- `ybins`: Number of points for the y-axis grid.
 - `xlims`: Limits for the x-axis in terms of the invariant range. Defaults to `lims(iσx, ms)` (calculated automatically). Can be a tuple with `:auto` for automatic limits (e.g., `(:auto, 4.4)`).
 - `ylims`: Limits for the y-axis in terms of the invariant range. Defaults to `lims(iσy, ms)` (calculated automatically). Can be a tuple with `:auto` for automatic limits (e.g., `(2.2, :auto)`).
 
@@ -177,10 +182,10 @@ dalitzplot(ms, intensity)
 dalitzplot(intensity, ms)
 ```
 """
-# User plot for dalitzplot function (this also creates the DalitzPlot struct)
-@userplot DalitzPlot
+dalitzplot
 
-@recipe function f(dp::DalitzPlot)
+
+@recipe function f(dp::DalitzPlot, args...)
     # Extract arguments - can be (ms, intensity) or (intensity, ms)
     if length(dp.args) == 2
         arg1, arg2 = dp.args
