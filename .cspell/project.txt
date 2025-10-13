@@ -13,6 +13,7 @@ dalitzplot
 dalitzprojection
 doublearg
 eachslice
+fillalpha
 findmin
 getindex
 getproperty
