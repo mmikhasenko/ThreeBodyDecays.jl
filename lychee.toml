@@ -1,11 +1,10 @@
 exclude = [
-  "@ref",
-  "^https://github.com/.*/releases/tag/v.*$",
-  "^https://doi.org/FIXME$",
-  "^https://mmikhasenko.github.io/ThreeBodyDecays.jl/stable$",
-  "zenodo.org/badge/DOI/FIXME$"
+    "@ref",
+    "^https://github.com/.*/releases/tag/v.*$",
+    "^https://mmikhasenko.github.io/ThreeBodyDecays.jl/stable$",
+    # Ignore literate-generated pages referenced during source checks
+    "^file://.*/docs/src/30-tutorial\\.md$",
+    "^file://.*/docs/src/31-canonical\\.md$",
 ]
 
-exclude_path = [
-  "docs/build"
-]
+exclude_path = ["docs/build"]
