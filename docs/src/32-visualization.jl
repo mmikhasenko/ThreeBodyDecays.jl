@@ -29,14 +29,12 @@ theme(
 ms = ThreeBodyMasses(3.09, 0.938, 0.49367; m0 = 5.62)
 tbs = ThreeBodySystem(; ms, two_js = ThreeBodySpins(2, 1, 0; two_h0 = 1))
 
-
-
 # ## Phase Space Boundaries
 
 # You can also visualize the phase space boundaries:
 
 plot(
-    border31(masses(model)),
+    border31(ms),
     xlab = "σ₃ [GeV²]",
     ylab = "σ₁ [GeV²]",
     title = "Phase Space Boundary",
@@ -52,7 +50,8 @@ plot(
 # - `xlims`, `ylims`: Custom axis limits (use `:auto` for automatic)
 #
 # **For `dalitzprojection`:**
-# - First argument: Integration function (e.g., `quadgk` from QuadGK.jl)
+# - First arguments: Mass tuple and intensity function
+# - Last argument: Integration function (e.g., `quadgk` from QuadGK.jl)
 # - `k`: Which invariant to project onto (1, 2, or 3)
 # - `bins`: Number of points in the projection
 # - `xlims`: Custom axis limits (use `:auto` for automatic)
@@ -71,14 +70,15 @@ end
 
 # Create decay chains for Lambda resonances:
 
+# parities, needed only to identify available couplings
 Ps = ThreeBodyParities('-', '+', '-'; P0 = '+')
 
 const model = ThreeBodyDecay(
     ["Λ1520", "Λ1690"] .=> zip(
         [1.0, 1.5],
         [
-            DecayChainLS(k = 1, Xlineshape = BW(1.5195, 0.0156), jp = jp"3/2+", Ps, tbs),
-            DecayChainLS(k = 1, Xlineshape = BW(1.685, 0.050), jp = jp"1/2+", Ps, tbs),
+            DecayChainLS(; k = 1, Xlineshape = BW(1.5195, 0.0156), jp = jp"3/2+", Ps, tbs),
+            DecayChainLS(; k = 1, Xlineshape = BW(1.685, 0.050), jp = jp"1/2+", Ps, tbs),
         ],
     ),
 )
@@ -123,9 +123,9 @@ dalitzplot(
 # Project onto σ₁ (m²(J/ψ p)):
 
 p1 = dalitzprojection(
-    quadgk,
     masses(model),
-    Base.Fix1(unpolarized_intensity, model);
+    Base.Fix1(unpolarized_intensity, model),
+    quadgk;
     k = 1,
     bins = 300,
     xlims = (2.0, 3.5),
@@ -133,15 +133,15 @@ p1 = dalitzprojection(
     fillalpha = 0.5,
     xlab = "σ₁ = m²(J/ψ p) [GeV²]",
     ylab = "Integrated Intensity",
-    title = "Projection onto σ₁",
+    title = "Projection onto σ₁ (zoomed)",
 )
 
 # Project onto σ₂ (m²(J/ψ K)):
 
 p2 = dalitzprojection(
-    quadgk,
     masses(model),
-    Base.Fix1(unpolarized_intensity, model);
+    Base.Fix1(unpolarized_intensity, model),
+    quadgk;
     k = 2,
     bins = 100,
     fill = true,
@@ -154,20 +154,27 @@ p2 = dalitzprojection(
 # Project onto σ₃ (m²(p K)) with custom limits:
 
 p3 = dalitzprojection(
-    quadgk,
     masses(model),
-    Base.Fix1(unpolarized_intensity, model);
+    Base.Fix1(unpolarized_intensity, model),
+    quadgk;
     k = 3,
     fill = true,
     fillalpha = 0.5,
     bins = 150,
     xlab = "σ₃ = m²(p K) [GeV²]",
     ylab = "Integrated Intensity",
-    title = "Projection onto σ₃ (zoomed)",
+    title = "Projection onto σ₃",
 )
 
 # ## Comparing Multiple Projections
 
 # You can compare projections from different models or resonances:
 
-plot(p1, p2, p3, layout = (1, 3), size = (900, 300), bottom_margin = 6Plots.PlotMeasures.mm)
+plot(
+    p1,
+    p2,
+    p3,
+    layout = (1, 3),
+    size = (1200, 400),
+    bottom_margin = 6Plots.PlotMeasures.mm,
+)

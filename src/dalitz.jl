@@ -190,14 +190,16 @@ dalitzplot
     if length(dp.args) == 2
         arg1, arg2 = dp.args
         if arg1 isa MassTuple
-            ms, intensity = arg1, arg2
+            ms, function_of_σs = arg1, arg2
         else
-            intensity, ms = arg1, arg2
+            function_of_σs, ms = arg1, arg2
         end
-        # Use the existing recipe by returning the intensity and ms
-        return intensity, ms
+        # Use the existing recipe by returning the function_of_σs and ms
+        return function_of_σs, ms
     else
-        error("dalitzplot requires exactly 2 arguments: (ms, intensity) or (intensity, ms)")
+        error(
+            "dalitzplot requires exactly 2 arguments: (ms, function_of_σs) or (function_of_σs, ms)",
+        )
     end
 end
 
@@ -206,46 +208,41 @@ end
 @userplot DalitzProjection
 
 """
-    dalitzprojection(quadgk, ms, intensity;
-        k = 1,
+    dalitzprojection(function_of_σs, ms, integrator;
+        k, # must be specified
         bins = 100,
         xlims = (:auto, :auto)
     )
     # also
-    dalitzprojection(quadgk, intensity, ms; k = 1)
+    dalitzprojection(ms, function_of_σs, integrator; k = 1)
 
 A plotting recipe for Dalitz plot projections.
 
-This recipe generates a 1D projection of the Dalitz plot intensity by integrating 
-over one of the invariant mass coordinates, visualizing the intensity as a function 
+This recipe generates a 1D projection of the Dalitz plot function_of_σs by integrating
+over one of the invariant mass coordinates, visualizing the function_of_σs as a function
 of a single kinematic variable.
 
 # Parameters:
-- `integrator`: A numerical integration function (e.g., `quadgk` from QuadGK.jl). 
-  The integrator should accept `(function, lower_limit, upper_limit)` and return 
-  a tuple where the first element is the integral value.
 - `ms::MassTuple`: A tuple representing the masses of the particles involved in the system.
-- `intensity::Function`: A real function of the invariants, `(m23², m31², m12²)`, 
+- `function_of_σs::Function`: A real function of the invariants, `(m23², m31², m12²)`,
   returning a value at a given kinematic point.
+- `integrator`: A numerical integration function (e.g., `quadgk` from QuadGK.jl).
+  The integrator should accept `(function, lower_limit, upper_limit)` and return
+  a tuple where the first element is the integral value.
 
 # Keyword Arguments:
-- `k`: Index of the invariant to project onto (1, 2, or 3). The projection integrates 
-  over the other two coordinates. Defaults to 1.
-- `bins`: Number of points for the projection axis. Defaults to 100.
-- `xlims`: Limits for the projection axis in terms of the invariant range. 
-  Defaults to `lims(ms; k)` (calculated automatically). Can be a tuple with `:auto` 
+- `k`: Index of the invariant to project onto (1, 2, or 3). The projection integrates
+  over the other two coordinates.
+- `bins`: Number of bins for the projection axis. Defaults to 100.
+- `xlims`: Minimal and maximal values of the bin edges for the projection axis in terms of the invariant range.
+  Defaults to `lims(ms; k)` (calculated automatically). Can be a tuple with `:auto`
   for automatic limits (e.g., `(:auto, 4.4)`).
-
-# Output:
-The recipe generates:
-1. A range of invariant values for the projection axis.
-2. A 1D array of integrated intensity values.
 
 # Usage:
 ```julia
 using QuadGK
-dalitzprojection(quadgk, ms, intensity; k = 1)
-dalitzprojection(quadgk, intensity, ms; k = 3, bins = 150)
+dalitzprojection(ms, function_of_σs, quadgk; k = 1)
+dalitzprojection(function_of_σs, ms, quadgk; k = 3, bins = 150)
 ```
 
 # Example:
@@ -255,56 +252,57 @@ using Plots
 using QuadGK
 
 ms = ThreeBodyMasses(0.938, 0.493, 0.0; m0 = 5.62)
-intensity = σs -> 1.0  # constant intensity
+function_of_σs = σs -> 1.0  # constant function_of_σs
 
 # Project onto σ₁
-dalitzprojection(quadgk, ms, intensity; k = 1, bins = 100)
+dalitzprojection(ms, function_of_σs, quadgk; k = 1, bins = 100)
 
 # Project onto σ₃ with custom limits
-dalitzprojection(quadgk, ms, intensity; k = 3, xlims = (20.0, 26.0))
+dalitzprojection(ms, function_of_σs, quadgk; k = 3, xlims = (20.0, 26.0))
 ```
 """
 dalitzprojection
 
 @recipe function f(
-    dproj::DalitzProjection,
+    dalitz_projection::DalitzProjection,
     args...;
-    k::Int = 1,
+    k::Int,
     bins::Int = 100,
     xlims = (:auto, :auto),
 )
-    # Extract arguments - can be (integrator, ms, intensity) or (integrator, intensity, ms)
-    if length(dproj.args) == 3
-        integrator = dproj.args[1]
-        arg2, arg3 = dproj.args[2], dproj.args[3]
-        
-        if arg2 isa MassTuple
-            ms, intensity = arg2, arg3
+    # Extract arguments - can be (ms, function_of_σs, integrator) or (function_of_σs, ms, integrator)
+    if length(dalitz_projection.args) == 3
+        integrator = dalitz_projection.args[3]  # integrator is now the last argument
+        arg1, arg2 = dalitz_projection.args[1], dalitz_projection.args[2]
+
+        if arg1 isa MassTuple
+            ms, function_of_σs = arg1, arg2
         else
-            intensity, ms = arg2, arg3
+            function_of_σs, ms = arg1, arg2
         end
     else
-        error("dalitzprojection requires exactly 3 arguments: (integrator, ms, intensity) or (integrator, intensity, ms)")
+        error(
+            "dalitzprojection requires exactly 3 arguments: (ms, function_of_σs, integrator) or (function_of_σs, ms, integrator)",
+        )
     end
-    
+
     # Process xlims to handle :auto
-    default_xlims = lims(ms; k = k)
+    default_xlims = lims(ms; k)
     processed_xlims = process_lims(xlims, default_xlims)
-    
+
     # Generate the range of σk values
-    σk_range = range(processed_xlims..., length = bins)
-    
+    σk_range = range(processed_xlims..., length = bins+1) |> shift_by_half
+
     # Compute the projection for each σk
     projection_values = map(σk_range) do σk
-        integrand = projection_integrand(intensity, ms, σk; k = k)
+        integrand = projection_integrand(function_of_σs, ms, σk; k)
         result = integrator(integrand, 0, 1)
         result[1]  # Extract the integral value from the result tuple
     end
-    
+
     # Set up the plot
     seriestype := :path
     xguide --> "σ$k"
-    yguide --> "Integrated Intensity"
-    
+
     σk_range, projection_values
 end

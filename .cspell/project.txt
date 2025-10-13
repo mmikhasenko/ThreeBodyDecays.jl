@@ -61,6 +61,7 @@ vcat
 Weisskopf
 wignerd
 xbins
+xguide
 xlab
 xlim
 Xlineshape
