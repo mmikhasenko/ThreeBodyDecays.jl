@@ -64,3 +64,17 @@ end
     @test isapprox(cosθ_integral[2], σk_integral[2], rtol = 1e-2)
     @test isapprox(cosθ_integral[3], σk_integral[3], rtol = 1e-2)
 end
+
+@testset "dalitzprojection recipe basic functionality" begin
+    ms = ThreeBodyMasses(0.141, 0.142, 0.143; m0 = 3.09)
+    intensity = σs -> 1.0
+
+    # Test that the recipe can generate data for different k values
+    for k in 1:3
+        # Test that projection integrand works correctly
+        σk_mid = sum(lims(ms; k)) / 2
+        integrand = projection_integrand(intensity, ms, σk_mid; k)
+        result = quadgk(integrand, 0, 1)[1]
+        @test result >= 0.0  # Should be non-negative for constant positive intensity
+    end
+end

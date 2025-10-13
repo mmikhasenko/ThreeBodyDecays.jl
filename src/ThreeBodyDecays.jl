@@ -42,6 +42,8 @@ include("phase_space.jl")
 export border31, border12, border23, border13, border21, border32, border
 export DalitzPlot # just a docstring
 export dalitzplot # user plot function
+export DalitzProjection # just a docstring
+export dalitzprojection # user plot function
 include("dalitz.jl")
 
 # Wigner Rotations - zeta angles

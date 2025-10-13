@@ -10,6 +10,7 @@ cosζj
 cosζk
 Dalitz
 dalitzplot
+dalitzprojection
 doublearg
 eachslice
 findmin
