@@ -82,4 +82,8 @@ export phase_space_integrand
 export projection_integrand, project_cosθij_intergand
 include("integrand.jl")
 
+# Dalitz to Unit Circle Conformal Mapping
+export dalitzmap, DalitzMap
+include("dalitz_disk/api.jl")
+
 end  # module ThreeBodyDecays
