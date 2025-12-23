@@ -4,7 +4,6 @@ authors = ["Misha Mikhasenko <mikhail.mikhasenko@cern.ch>"]
 version = "0.13.0"
 
 [deps]
-JET = "c3a54625-cd67-489e-a8e7-0a5a0ff4e31b"
 Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 PartialWaveFunctions = "793d2195-304b-438e-bbb1-bc33c872ac39"
 PolynomialRoots = "3a141323-8675-5d76-9d11-e1df1406c778"
@@ -15,7 +14,6 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Tullio = "bc48ee85-29a4-5162-ae0b-a64e1601d4bc"
 
 [compat]
-JET = "0.9.20"
 Parameters = "0.12.0"
 PartialWaveFunctions = "0.2.0"
 PolynomialRoots = "1.0.0"

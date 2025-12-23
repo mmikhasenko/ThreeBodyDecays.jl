@@ -21,6 +21,7 @@ dalitzprojection
 Deadend
 Deadends
 doublearg
+eachcol
 eachslice
 fillalpha
 findmin
