@@ -140,12 +140,16 @@ map = dalitzmap(ms)
 w = map(σs)  # |w| < 1 for physical points
 ```
 """
-function dalitzmap(ms::MassTuple{T}; method::Symbol = :zipper) where {T}
+function dalitzmap(
+    ms::MassTuple{T};
+    method::Symbol = :zipper,
+    preserve_coverage::Bool = true,
+) where {T}
     # Construct all components
     bf = BoundaryFunction(ms)
     dm = DemocraticMap(ms)
     zm = ZipperMap(bf, dm; n = 200)
-    mt = normalize_landmarks(bf, dm, zm)
+    mt = normalize_landmarks(bf, dm, zm; preserve_coverage = preserve_coverage)
 
     return DalitzMap(ms, bf, dm, zm, mt)
 end

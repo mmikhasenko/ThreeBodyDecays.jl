@@ -4,6 +4,7 @@ authors = ["Misha Mikhasenko <mikhail.mikhasenko@cern.ch>"]
 version = "0.13.0"
 
 [deps]
+ConformalMaps = "226e0482-2e74-5b70-8460-0a87d2a092cc"
 Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 PartialWaveFunctions = "793d2195-304b-438e-bbb1-bc33c872ac39"
 PolynomialRoots = "3a141323-8675-5d76-9d11-e1df1406c778"
@@ -14,6 +15,7 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Tullio = "bc48ee85-29a4-5162-ae0b-a64e1601d4bc"
 
 [compat]
+ConformalMaps = "0.0.3"
 Parameters = "0.12.0"
 PartialWaveFunctions = "0.2.0"
 PolynomialRoots = "1.0.0"
