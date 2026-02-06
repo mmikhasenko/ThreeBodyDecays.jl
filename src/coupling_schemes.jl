@@ -182,6 +182,42 @@ filter_qn!(possible_qn, constraints::NamedTuple) =
         end
     end
 #
+"""
+    complete_l_s_L_S(jp::SpinParity, two_js::SpinTuple, Ps::ParityTuple, constraints; k)
+    complete_l_s_L_S(jp::SpinParity, two_js::SpinTuple, Ps_list::AbstractArray{ParityTuple}, constraints; k)
+
+Complete an (optionally partial) LS-coupling specification by attaching the unique allowed
+values of `(l, s, L, S)` consistent with the quantum-number constraints.
+
+This helper supports “fill in the missing pieces” workflows: you provide a resonance
+spin-parity `jp`, the full system spins/parities, a spectator index `k`, and a `constraints`
+named tuple. The function filters the allowed couplings and:
+
+- errors if no coupling is consistent,
+- errors if multiple couplings remain and `constraints` is incomplete,
+- returns `constraints` extended with `l, s, L, S` (as strings like `"1/2"`, `"2"`).
+
+# Arguments
+- `jp`: Spin-parity of the isobar/resonance.
+- `two_js`: System spins as a [`SpinTuple`](@ref).
+- `Ps`: System parities as a [`ParityTuple`](@ref), or `Ps_list` to try multiple parity assignments.
+- `constraints`: A named tuple that may contain any subset of `(; l, s, L, S)`.
+- `k`: Spectator index selecting the decay topology.
+
+# Returns
+- A named tuple equal to `constraints` with fields `l, s, L, S` attached.
+
+# Example
+```julia
+two_js = ThreeBodySpins(1, 1, 0; two_h0 = 2)
+Ps = ThreeBodyParities('+', '+', '+'; P0 = '-')
+
+data = complete_l_s_L_S(jp"1-", two_js, Ps, (;); k = 1)
+data.l, data.s, data.L, data.S
+```
+
+See also [`possible_lsLS`](@ref), [`possible_l_s_L_S`](@ref).
+"""
 function complete_l_s_L_S(
     jp::SpinParity,
     two_js::SpinTuple,

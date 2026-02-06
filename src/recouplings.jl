@@ -1,4 +1,21 @@
+"""
+    Recoupling
+
+Abstract supertype for recoupling schemes used inside [`VertexFunction`](@ref).
+
+Concrete subtypes implement `amplitude(::Recoupling, (two_λa, two_λb), (two_j, two_ja, two_jb))`,
+which provides the spin/helicity-dependent factor for a given vertex.
+"""
 abstract type Recoupling end
+
+"""
+    NoRecoupling(two_λa, two_λb)
+
+Trivial recoupling: select a single helicity configuration.
+
+The corresponding `amplitude` is 1 only when the requested helicities match the stored
+`two_λa`, `two_λb`, and 0 otherwise.
+"""
 @with_kw struct NoRecoupling <: Recoupling
     two_λa::Int
     two_λb::Int
@@ -7,6 +24,15 @@ end
 amplitude(cs::NoRecoupling, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
     (cs.two_λa == two_λa) * (cs.two_λb == two_λb)
 
+"""
+    ParityRecoupling(two_λa, two_λb, ηηηphasesign)
+    ParityRecoupling(two_λa, two_λb, topology::Pair{SpinParity,Tuple{SpinParity,SpinParity}})
+
+Parity-related recoupling that connects `(λa, λb)` with `(-λa, -λb)`
+according to the intrinsic-parity phase of the two-body vertex.
+
+This is commonly used to enforce parity constraints in helicity amplitudes.
+"""
 @with_kw struct ParityRecoupling <: Recoupling
     two_λa::Int
     two_λb::Int
@@ -31,6 +57,14 @@ function amplitude(cs::ParityRecoupling, (two_λa, two_λb), (two_j, two_ja, two
     return 0
 end
 
+"""
+    RecouplingLS(two_ls)
+
+LS-recoupling for a two-body vertex.
+
+Stores `(two_l, two_s)` (i.e. twice the orbital angular momentum and twice the total spin)
+and evaluates the corresponding LS/helicity recoupling coefficient via [`jls_coupling`](@ref).
+"""
 @with_kw struct RecouplingLS <: Recoupling
     two_ls::Tuple{Int,Int}
 end
@@ -39,6 +73,13 @@ amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
     jls_coupling(two_ja, two_λa, two_jb, two_λb, two_j, cs.two_ls[1], cs.two_ls[2])
 
 
+"""
+    NoFormFactor()
+
+Trivial form-factor functor used by default inside [`VertexFunction`](@ref).
+
+Calling `NoFormFactor()(...)` always returns 1, i.e. no kinematic suppression.
+"""
 struct NoFormFactor end
 
 """

@@ -1,3 +1,16 @@
+"""
+    ThreeBodyDecay
+
+Model for a three-body decay amplitude defined as a coherent sum of decay chains.
+
+The model stores:
+- `chains`: an `SVector` of [`AbstractDecayChain`](@ref) objects,
+- `couplings`: complex (or real) coefficients multiplying each chain,
+- `names`: labels for the chains (typically resonance names).
+
+Evaluate with [`amplitude`](@ref) and summarize over spin projections with
+[`unpolarized_intensity`](@ref).
+"""
 @with_kw struct ThreeBodyDecay{N,T<:AbstractDecayChain,L<:Number,S<:AbstractString}
     chains::SVector{N,T}
     couplings::SVector{N,L}
@@ -75,8 +88,26 @@ function getindex(model::ThreeBodyDecay, key...)
 end
 
 length(model::ThreeBodyDecay{N}) where {N} = N
+
+"""
+    system(model::ThreeBodyDecay) -> ThreeBodySystem
+
+Return the [`ThreeBodySystem`](@ref) associated with `model` (taken from the first chain).
+"""
 system(model::ThreeBodyDecay) = first(model.chains).tbs
+
+"""
+    masses(model::ThreeBodyDecay) -> MassTuple
+
+Convenience wrapper for `masses(system(model))`.
+"""
 masses(model::ThreeBodyDecay) = masses(system(model))
+
+"""
+    spins(model::ThreeBodyDecay) -> SpinTuple
+
+Convenience wrapper for `spins(system(model))`.
+"""
 spins(model::ThreeBodyDecay) = spins(system(model))
 
 """

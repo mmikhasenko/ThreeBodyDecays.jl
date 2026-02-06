@@ -135,6 +135,22 @@ function y2σs(y, ms::MassTuple; k::Int = last(findmin(Tuple(ms))))
     return MandelstamTuple{typeof(ms.m0)}(σt)
 end
 
+"""
+    circleorigin(k, t)
+
+Apply a cyclic permutation to a 3-tuple `t` with an origin/handedness convention used across
+the package.
+
+This is a small utility used to re-order invariant tuples `(σ1, σ2, σ3)`
+depending on which index is treated as “special” (often a spectator index `k`).
+
+# Arguments
+- `k`: An integer shift parameter (typically `±1`, `±2`, `±3` in this package).
+- `t`: A 3-tuple.
+
+# Returns
+- A 3-tuple containing the permuted elements of `t`.
+"""
 circleorigin(k, t) = (t[mod(k, 3)+1], t[mod(k+1, 3)+1], t[mod(k-1, 3)+1])
 
 fitin(y, (a, b)) = a + y * (b - a)

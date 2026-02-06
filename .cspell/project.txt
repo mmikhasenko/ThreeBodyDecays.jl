@@ -11,10 +11,12 @@ cosζk
 Dalitz
 dalitzplot
 dalitzprojection
+docstrings
 doublearg
 eachslice
 fillalpha
 findmin
+fname
 getindex
 getproperty
 Gordan
@@ -29,6 +31,7 @@ jldoctest
 JPAC
 Källén
 latexstring
+libexec
 lims
 Lineshapes
 markdownlint
@@ -38,8 +41,10 @@ minusone
 minusphi
 Misha
 mmikhasenko
+mpre
 multibody
 orcid
+parameterizations
 pentaquarks
 pipx
 quadgk
@@ -58,6 +63,7 @@ unphysical
 userplot
 Utopic
 vcat
+virtualenv
 Weisskopf
 wignerd
 xbins
