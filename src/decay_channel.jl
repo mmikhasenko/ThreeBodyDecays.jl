@@ -162,7 +162,7 @@ The aligned amplitude is built as ``F = V \\cdot d \\cdot V`` (vertex–Wigner�
 
 ```math
 F_{λ_i λ_j λ_k λ_0}(\\sigma_k, \\theta_{ij}) =
-\\mathcal{N}_J \\; \\mathcal{L}(\\sigma_k) \\;
+n_J \\; \\mathcal{L}(\\sigma_k) \\;
 V^{0 \\to Rk}_{λ_0 λ_R λ_k} \\;
 d^J_{λ_R λ_{R'}}(\\theta_{ij}) \\;
 V^{R \\to ij}_{λ_i λ_j}
@@ -174,13 +174,13 @@ V^{R \\to ij}_{λ_i λ_j}
 - ``V^{R \\to ij}_{λ_i λ_j}``: vertex for isobar decay into the two-body pair ``(i,j)``.
 - ``\\mathcal{L}(\\sigma_k)``: lineshape and form-factor product for the chain (from `Xlineshape`,
   `HRk.ff`, `Hij.ff`; see [`VertexFunction`](@ref)).
-- ``\\mathcal{N}_J = \\sqrt{2J+1}``: normalization.
+- ``n_J = \\sqrt{2J+1}``: normalization.
 
 The resonance projections are fixed by the external helicities:
 ``λ_R = λ_0 + λ_k`` and ``λ_{R'} = λ_i - λ_j``
 (the index shifts `Δ_zk`, `Δ_ij` implement this matching).
 
-The full helicity amplitude is then ``d^0 \\cdot F \\cdot d^1 \\, d^2 \\, d^3`` (see [`amplitude`](@ref)):
+The full helicity amplitude is then ``d_0 \\cdot F \\cdot d_1 \\, d_2 \\, d_3`` (see [`amplitude`](@ref)):
 one Wigner ``d`` for the parent and three for the final-state particles, rotating from aligned
 (``\\lambda'``) to helicity (``\\lambda``).
 """
@@ -235,10 +235,10 @@ end
     amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2, 3, 1))
 
 Helicity amplitude ``A_{λ_1 λ_2 λ_3 λ_0}`` for the given decay chain and kinematics.
-Masses for particles 0–3 are fixed by the mass tuple `ms` (see [`MassTuple`](@ref),
+Masses for particles 0-3 are fixed by the mass tuple `ms` (see [`MassTuple`](@ref),
 [`ThreeBodySystem`](@ref)).
 
-The implementation uses the structure ``d^0 \\cdot F \\cdot d^1 \\, d^2 \\, d^3``: the aligned amplitude
+The implementation uses the structure ``d_0 \\cdot F \\cdot d_1 \\, d_2 \\, d_3``: the aligned amplitude
 ``F_{\\lambda'}`` (see [`aligned_amplitude`](@ref), built as ``V \\cdot d \\cdot V``) is sandwiched between
 Wigner small-``d`` matrices that rotate from the aligned frame (``\\lambda'``) to the helicity
 frame (``\\lambda``):
