@@ -12,6 +12,8 @@ Dalitz
 dalitzplot
 dalitzprojection
 docstrings
+doctest
+doctests
 doublearg
 eachslice
 fillalpha
