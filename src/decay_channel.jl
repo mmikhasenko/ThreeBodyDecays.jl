@@ -157,29 +157,32 @@ and ``\\theta_{ij}`` for the decay angle between the parent and the isobar in th
 Masses for particles 0–3 are fixed by the mass tuple `ms` (see [`MassTuple`](@ref),
 [`ThreeBodySystem`](@ref)), but are not shown explicitly in the formulas.
 
-The aligned amplitude is built as **F₀ = V·d·V** (vertex–Wigner–vertex), with projections
-``\\lambda_0, \\lambda_1, \\lambda_2, \\lambda_3`` for the parent and the three final-state particles:
+The aligned amplitude is built as ``F = V \\cdot d \\cdot V`` (vertex–Wigner–vertex), with helicities
+``\\lambda_a`` (``a = 0,1,2,3``) for the parent and the three final-state particles:
 
 ```math
-F_0(\\lambda_i, \\lambda_j, \\lambda_k, \\lambda_0 \\,;\\, \\sigma_k, \\theta_{ij}) =
-\\mathcal{N}_J \\, \\mathcal{L}(\\sigma_k) \\, V_{0 \\to Rk}(\\lambda_0, \\lambda_R, \\lambda_k) \\,
-d^J_{\\lambda_R \\lambda_R'}(\\theta_{ij}) \\, V_{R \\to ij}(\\lambda_i, \\lambda_j)
+F_{λ_i λ_j λ_k λ_0}(\\sigma_k, \\theta_{ij}) =
+\\mathcal{N}_J \\; \\mathcal{L}(\\sigma_k) \\;
+V^{0 \\to Rk}_{λ_0 λ_R λ_k} \\;
+d^J_{λ_R λ_{R'}}(\\theta_{ij}) \\;
+V^{R \\to ij}_{λ_i λ_j}
 ```
 
-- **V_{0→Rk}**: vertex for parent decay into isobar + spectator (see [`VertexFunction`](@ref),
+- ``V^{0 \\to Rk}_{λ_0 λ_R λ_k}``: vertex for parent decay into isobar + spectator (see [`VertexFunction`](@ref),
   [`Recoupling`](@ref)).
-- **d^J(θ_{ij})**: Wigner small-d for the angle between parent and isobar frames.
-- **V_{R→ij}**: vertex for isobar decay into the two-body pair ``(i,j)``.
-- **\\mathcal{L}(\\sigma_k)**: lineshape and form-factor product for the chain (from `Xlineshape`,
+- ``d^J_{λ_R λ_{R'}}(\\theta_{ij})``: Wigner small-d for the angle between parent and isobar frames.
+- ``V^{R \\to ij}_{λ_i λ_j}``: vertex for isobar decay into the two-body pair ``(i,j)``.
+- ``\\mathcal{L}(\\sigma_k)``: lineshape and form-factor product for the chain (from `Xlineshape`,
   `HRk.ff`, `Hij.ff`; see [`VertexFunction`](@ref)).
-- **\\mathcal{N}_J = \\sqrt{2J+1}**: normalization used in the implementation.
+- ``\\mathcal{N}_J = \\sqrt{2J+1}``: normalization.
 
-The resonance projections are fixed by the external projections in the code:
-``\\lambda_R = \\lambda_0 + \\lambda_k`` and ``\\lambda_R' = \\lambda_i - \\lambda_j``.
+The resonance projections are fixed by the external helicities:
+``λ_R = λ_0 + λ_k`` and ``λ_{R'} = λ_i - λ_j``
+(the index shifts `Δ_zk`, `Δ_ij` implement this matching).
 
-The full helicity amplitude is then **d₀ · F₀ · d₁ d₂ d₃** (see [`amplitude`](@ref)): one Wigner d
-for the parent and three for the final-state particles, rotating from aligned (``\\lambda'``)
-to helicity (``\\lambda``).
+The full helicity amplitude is then ``d^0 \\cdot F \\cdot d^1 \\, d^2 \\, d^3`` (see [`amplitude`](@ref)):
+one Wigner ``d`` for the parent and three for the final-state particles, rotating from aligned
+(``\\lambda'``) to helicity (``\\lambda``).
 """
 function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     @unpack k, tbs, two_j, HRk, Hij = dc
@@ -231,26 +234,26 @@ end
 """
     amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2, 3, 1))
 
-Helicity amplitude ``A(\\lambda_1, \\lambda_2, \\lambda_3, \\lambda_0)`` for the given decay chain
-and kinematics. Masses for particles 0–3 are fixed by the mass tuple `ms` (see
-[`MassTuple`](@ref), [`ThreeBodySystem`](@ref)).
+Helicity amplitude ``A_{λ_1 λ_2 λ_3 λ_0}`` for the given decay chain and kinematics.
+Masses for particles 0–3 are fixed by the mass tuple `ms` (see [`MassTuple`](@ref),
+[`ThreeBodySystem`](@ref)).
 
-The implementation uses the structure **d₀ · F₀ · d₁ d₂ d₃**: the aligned amplitude
-``F₀(\\lambda'; \\sigma_k, \\theta_{ij})`` (see [`aligned_amplitude`](@ref), built as **V·d·V**) is sandwiched between
-Wigner small-d matrices that rotate from the aligned frame (spin projections ``\\lambda'``) to the
-helicity frame (``\\lambda`` = spin along each particle's momentum):
+The implementation uses the structure ``d^0 \\cdot F \\cdot d^1 \\, d^2 \\, d^3``: the aligned amplitude
+``F_{\\lambda'}`` (see [`aligned_amplitude`](@ref), built as ``V \\cdot d \\cdot V``) is sandwiched between
+Wigner small-``d`` matrices that rotate from the aligned frame (``\\lambda'``) to the helicity
+frame (``\\lambda``):
 
 ```math
-A(\\lambda_1, \\lambda_2, \\lambda_3, \\lambda_0 \\,;\\, \\sigma_k, \\theta_{ij}) =
-\\sum_{\\lambda_0' \\lambda_1' \\lambda_2' \\lambda_3'}
-d^{j_0}_{\\lambda_0 \\lambda_0'}(\\zeta_0) \\;
-F_0(\\lambda_1', \\lambda_2', \\lambda_3', \\lambda_0' \\,;\\, \\sigma_k, \\theta_{ij}) \\;
-d^{j_1}_{\\lambda_1' \\lambda_1}(\\zeta_1) \\;
-d^{j_2}_{\\lambda_2' \\lambda_2}(\\zeta_2) \\;
-d^{j_3}_{\\lambda_3' \\lambda_3}(\\zeta_3)
+A_{λ_1 λ_2 λ_3 λ_0}(\\sigma_k, \\theta_{ij}) =
+\\sum_{λ_0' λ_1' λ_2' λ_3'}
+d^{j_0}_{λ_0 λ_0'}(\\zeta_0) \\;
+F_{λ_1' λ_2' λ_3' λ_0'}(\\sigma_k, \\theta_{ij}) \\;
+d^{j_1}_{λ_1' λ_1}(\\zeta_1) \\;
+d^{j_2}_{λ_2' λ_2}(\\zeta_2) \\;
+d^{j_3}_{λ_3' λ_3}(\\zeta_3)
 ```
 
-So: **d** (parent) × **(V·d·V)** (aligned chain) × **d·d·d** (three final-state particles).
+So: ``d`` (parent) ``\\times`` ``(V \\cdot d \\cdot V)`` (aligned chain) ``\\times`` ``d \\cdot d \\cdot d`` (three final-state particles).
 
 # Arguments
 - `dc::DecayChain`: The decay-chain object.
