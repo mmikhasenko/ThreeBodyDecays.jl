@@ -83,10 +83,15 @@ integers (e.g. `j = 1/2` maps to `2j = 1`).
 - An `Int` (or array of `Int`s) with values `2v`.
 
 # Examples
-```julia
-x2(1/2)          # 1
-x2([0, 1/2, 1])  # [0, 1, 2]
-x2("3/2")        # 3
+```jldoctest
+julia> x2(1 / 2) == 1
+true
+
+julia> x2([0, 1 / 2, 1]) == [0, 1, 2]
+true
+
+julia> x2("3/2") == 3
+true
 ```
 """
 x2(v) = @. Int(2v)
@@ -109,11 +114,18 @@ odd values.
 - A string (or array of strings) representing `s`.
 
 # Examples
-```julia
-d2(0)   # "0"
-d2(1)   # "1/2"
-d2(3)   # "3/2"
-d2([0, 1, 2, 3]) # ["0", "1/2", "1", "3/2"]
+```jldoctest
+julia> d2(0) == "0"
+true
+
+julia> d2(1) == "1/2"
+true
+
+julia> d2(3) == "3/2"
+true
+
+julia> d2([0, 1, 2, 3]) == ["0", "1/2", "1", "3/2"]
+true
 ```
 """
 d2(v) = _d2.(v)
@@ -170,9 +182,18 @@ Parse a spin-parity literal into a [`SpinParity`](@ref).
 This is a convenience macro so you can write compact, readable quantum numbers in code.
 
 # Examples
-```julia
-jp"1/2+"  # SpinParity(1, '+')
-jp"3-"    # SpinParity(6, '-')
+```jldoctest
+julia> jp"1/2+".two_j == 1
+true
+
+julia> jp"1/2+".p == '+'
+true
+
+julia> jp"3-".two_j == 6
+true
+
+julia> jp"3-".p == '-'
+true
 ```
 
 See also [`str2jp`](@ref).

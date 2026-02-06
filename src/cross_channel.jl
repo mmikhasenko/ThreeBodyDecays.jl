@@ -22,10 +22,20 @@ A 5-tuple:
 `(σ3, cosθ3, ϕ3, cosθ12, ϕ12)`.
 
 # Example
-```julia
+```jldoctest
 ms = ThreeBodyMasses(0.5, 0.5, 0.5; m0 = 2.0)
 τ1 = (1.2, 0.1, 0.3, -0.4, 1.0)  # (σ1, cosθ1, ϕ1, cosθ23, ϕ23)
 σ3, cosθ3, ϕ3, cosθ12, ϕ12 = change_basis_3from1(τ1, ms)
+
+(σ3 isa Number) &&
+(cosθ3 isa Number) &&
+(ϕ3 isa Number) &&
+(cosθ12 isa Number) &&
+(ϕ12 isa Number)
+
+# output
+
+true
 ```
 
 See also [`change_basis_1from2`](@ref), [`change_basis_2from3`](@ref).

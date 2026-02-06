@@ -208,12 +208,15 @@ named tuple. The function filters the allowed couplings and:
 - A named tuple equal to `constraints` with fields `l, s, L, S` attached.
 
 # Example
-```julia
-two_js = ThreeBodySpins(1, 1, 0; two_h0 = 2)
-Ps = ThreeBodyParities('+', '+', '+'; P0 = '-')
+```jldoctest
+julia> two_js = ThreeBodySpins(1, 1, 0; two_h0 = 2);
 
-data = complete_l_s_L_S(jp"1-", two_js, Ps, (;); k = 1)
-data.l, data.s, data.L, data.S
+julia> Ps = ThreeBodyParities('+', '+', '+'; P0 = '-');
+
+julia> data = complete_l_s_L_S(jp"1-", two_js, Ps, (; L = 1 / 2, S = 1 / 2); k = 1);
+
+julia> data
+(L = "1/2", S = "1/2", l = "3/2", s = "1/2")
 ```
 
 See also [`possible_lsLS`](@ref), [`possible_l_s_L_S`](@ref).
