@@ -81,6 +81,14 @@ pkg> activate .
 pkg> test
 ```
 
+### Running doctests (without building HTML docs)
+
+This runs only the docstring doctests (no `docs/build`, no rendered pages):
+
+```bash
+julia --project=docs -e 'using ThreeBodyDecays, Documenter; DocMeta.setdocmeta!(ThreeBodyDecays, :DocTestSetup, :(using ThreeBodyDecays); recursive=true); doctest(ThreeBodyDecays; manual=false)'
+```
+
 ## Working on a new issue
 
 We try to keep a linear history in this repo, so it is important to keep your branches up-to-date.

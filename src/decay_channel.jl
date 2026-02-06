@@ -1,5 +1,26 @@
+"""
+    AbstractDecayChain
+
+Abstract supertype for a single three-body decay chain (one isobar topology).
+
+Concrete implementations (e.g. [`DecayChain`](@ref)) can be evaluated via [`amplitude`](@ref).
+"""
 abstract type AbstractDecayChain end
 
+"""
+    DecayChain(; k, two_j, Xlineshape, HRk, Hij, tbs)
+
+Concrete three-body decay chain `0 → (ij)_J k` with an isobar in pair `(i,j)` and
+spectator `k`.
+
+# Keyword arguments
+- `k::Int`: Spectator index (1,2,3), selecting which pair forms the isobar.
+- `two_j::Int`: Twice the isobar spin `2J`.
+- `Xlineshape`: Lineshape function, typically called as `Xlineshape(σk)` with `σk` the isobar invariant.
+- `HRk::VertexFunction`: Vertex for the `0 → R k` decay.
+- `Hij::VertexFunction`: Vertex for the `R → i j` decay.
+- `tbs::ThreeBodySystem`: Masses and spins of the full system.
+"""
 @with_kw struct DecayChain{X,T,R1<:VertexFunction,R2<:VertexFunction} <: AbstractDecayChain
     k::Int
     #
@@ -294,6 +315,28 @@ end
 amplitude(dc::AbstractDecayChain, dpp::DalitzPlotPoint; kw...) =
     amplitude(dc, dpp.σs, dpp.two_λs; kw...)
 #
+"""
+    summed_over_polarization(fn, two_js)
+
+Build a function of kinematics `σs -> ...` by summing `fn(σs, two_λs)` over all helicity
+configurations produced by [`itr`](@ref).
+
+# Arguments
+- `fn`: Function of `(σs, two_λs)`.
+- `two_js`: A `SpinTuple`/tuple of twice-spins defining the helicity ranges.
+
+# Returns
+- A function of `σs` that performs the polarization sum.
+"""
 summed_over_polarization(fn, two_js) = σs -> sum(fn(σs, two_λs) for two_λs in itr(two_js))
 #
+"""
+    itr(two_js)
+
+Return an iterator over all helicity combinations compatible with a `SpinTuple`/`two_js`.
+
+Each element is a tuple `(two_λ1, two_λ2, two_λ3, two_λ0)` with `two_λs ∈ -two_js:2:two_js`.
+
+See also [`summed_over_polarization`](@ref).
+"""
 itr(two_js) = Iterators.ProductIterator(Tuple([(-two_j):2:two_j for two_j in two_js]))

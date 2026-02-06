@@ -187,6 +187,56 @@ cosζk1_for1(k, σs, ms²) = cosζ(wr(k, 1, 1), σs, ms²)
 cosζk2_for2(k, σs, ms²) = cosζ(wr(k, 2, 2), σs, ms²)
 cosζk3_for3(k, σs, ms²) = cosζ(wr(k, 3, 3), σs, ms²)
 
+# Attach docstrings to the exported explicit wrappers.
+for (f, a, b, c) in (
+    (:cosζ21_for1, 2, 1, 1),
+    (:cosζ21_for2, 2, 1, 2),
+    (:cosζ13_for1, 1, 3, 1),
+    (:cosζ13_for3, 1, 3, 3),
+    (:cosζ32_for3, 3, 2, 3),
+    (:cosζ32_for2, 3, 2, 2),
+    (:cosζ12_for3, 1, 2, 3),
+    (:cosζ23_for1, 2, 3, 1),
+    (:cosζ31_for2, 3, 1, 2),
+    (:cosζ12_for0, 1, 2, 0),
+    (:cosζ23_for0, 2, 3, 0),
+    (:cosζ31_for0, 3, 1, 0),
+)
+    fname = f
+    doc = """
+        $fname(σs, ms²)
+
+    Convenience wrapper for `cosζ(wr($a, $b, $c), σs, ms²)`.
+
+    See also [`wr`](@ref), [`cosζ`](@ref).
+    """
+    @eval @doc $doc $fname
+end
+
+@doc """
+    cosζk1_for1(k, σs, ms²)
+
+Convenience wrapper for `cosζ(wr(k, 1, 1), σs, ms²)`.
+
+See also [`wr`](@ref), [`cosζ`](@ref).
+""" cosζk1_for1
+
+@doc """
+    cosζk2_for2(k, σs, ms²)
+
+Convenience wrapper for `cosζ(wr(k, 2, 2), σs, ms²)`.
+
+See also [`wr`](@ref), [`cosζ`](@ref).
+""" cosζk2_for2
+
+@doc """
+    cosζk3_for3(k, σs, ms²)
+
+Convenience wrapper for `cosζ(wr(k, 3, 3), σs, ms²)`.
+
+See also [`wr`](@ref), [`cosζ`](@ref).
+""" cosζk3_for3
+
 """
 Phase for wigner d-functions for clockwise rotations
 """

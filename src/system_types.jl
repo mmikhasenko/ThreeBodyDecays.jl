@@ -17,7 +17,18 @@ ThreeBodySystem(ms::MassTuple) = ThreeBodySystem(ms = ms)
 ThreeBodySystem(m1, m2, m3; m0, two_js = ThreeBodySpins(0, 0, 0; two_h0 = 0)) =
     ThreeBodySystem(ThreeBodyMasses(m1, m2, m3; m0 = m0), two_js)
 
+"""
+    masses(tbs::ThreeBodySystem) -> MassTuple
+
+Return the masses (`MassTuple`) stored in a [`ThreeBodySystem`](@ref).
+"""
 masses(tbs::ThreeBodySystem) = tbs.ms
+
+"""
+    spins(tbs::ThreeBodySystem) -> SpinTuple
+
+Return the spins (`SpinTuple`) stored in a [`ThreeBodySystem`](@ref).
+"""
 spins(tbs::ThreeBodySystem) = tbs.two_js
 
 """

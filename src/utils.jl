@@ -12,10 +12,15 @@ Used extensively in three-body decay calculations to determine the spectator par
 - `Tuple{Int,Int,Int}`: A tuple of indices (i,j,k) where i,j are ordered cyclically from k
 
 # Example
-```julia
-ijk(1) # returns (2, 3, 1)
-ijk(2) # returns (3, 1, 2)
-ijk(3) # returns (1, 2, 3)
+```jldoctest
+julia> ijk(1)
+(2, 3, 1)
+
+julia> ijk(2)
+(3, 1, 2)
+
+julia> ijk(3)
+(1, 2, 3)
 ```
 """
 ijk(k::Int) = (k + 1, k + 2, k) |> x -> mod.(x, Ref(Base.OneTo(3)))
@@ -29,9 +34,12 @@ A utility type and macro for handling -1 powers in calculations.
 The macro creates a `minusone` instance that returns -1 when raised to odd powers and 1 when raised to even powers.
 
 # Example
-```julia
-x"-1"^3  # returns -1
-x"-1"^2  # returns 1
+```jldoctest
+julia> minusone()^3
+-1
+
+julia> minusone()^2
+1
 ```
 """
 struct minusone end
@@ -55,10 +63,15 @@ For l = 0,1,2,3,4,5 returns S,P,D,F,G,H respectively. For l ≥ 6 returns the fi
 - `Char`: The spectroscopic notation for the given angular momentum
 
 # Example
-```julia
-letterL(0)  # returns 'S'
-letterL(1)  # returns 'P'
-letterL("2")  # returns 'D'
+```jldoctest
+julia> letterL(0) == 'S'
+true
+
+julia> letterL(1) == 'P'
+true
+
+julia> letterL("2") == 'D'
+true
 ```
 """
 function letterL(l::Int)
@@ -81,9 +94,14 @@ Used in plotting and binning operations to center values between grid points.
 - Vector of values shifted by half the step size
 
 # Example
-```julia
-v = [1, 2, 3, 4]
-shift_by_half(v)  # returns [1.5, 2.5, 3.5]
+```jldoctest
+julia> v = [1, 2, 3, 4];
+
+julia> shift_by_half(v)
+3-element Vector{Float64}:
+ 1.5
+ 2.5
+ 3.5
 ```
 """
 shift_by_half(v) = v[1:(end-1)] .+ first(diff(v)) / 2

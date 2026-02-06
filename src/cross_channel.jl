@@ -4,6 +4,42 @@
 # recoupling function
 # two options for the type:
 #   - either all arguments are Float64 or energy variables are complex
+"""
+    change_basis_3from1(τ1, ms::MassTuple)
+    change_basis_3from1(σ1, cosθ1, ϕ1, cosθ23, ϕ23, m1sq, m2sq, m3sq, s)
+
+Change kinematic variables between different two-body “channel” parameterizations.
+
+The long-argument form assumes a channel-1 description of a three-body configuration:
+`σ1` plus a set of cosine/azimuth angles in the relevant rest frames. It returns the
+corresponding channel-3 invariant and angles.
+
+The short form `change_basis_3from1(τ1, ms)` accepts a tuple `τ1 = (σ1, cosθ1, ϕ1, cosθ23, ϕ23)`
+and a [`MassTuple`](@ref) `ms`.
+
+# Returns
+A 5-tuple:
+`(σ3, cosθ3, ϕ3, cosθ12, ϕ12)`.
+
+# Example
+```jldoctest
+ms = ThreeBodyMasses(0.5, 0.5, 0.5; m0 = 2.0)
+τ1 = (1.2, 0.1, 0.3, -0.4, 1.0)  # (σ1, cosθ1, ϕ1, cosθ23, ϕ23)
+σ3, cosθ3, ϕ3, cosθ12, ϕ12 = change_basis_3from1(τ1, ms)
+
+(σ3 isa Number) &&
+(cosθ3 isa Number) &&
+(ϕ3 isa Number) &&
+(cosθ12 isa Number) &&
+(ϕ12 isa Number)
+
+# output
+
+true
+```
+
+See also [`change_basis_1from2`](@ref), [`change_basis_2from3`](@ref).
+"""
 function change_basis_3from1(σ1, cosθ1, ϕ1, cosθ23, ϕ23, m1sq, m2sq, m3sq, s)
     # calculate σ3 in (23) frame
     m1 = sqrt(m1sq)
@@ -85,7 +121,19 @@ end
 
 change_basis_3from1(τ1, ms::MassTuple) =
     change_basis_3from1(τ1..., ms.m1^2, ms.m2^2, ms.m3^2, ms.m0^2)
+
+"""
+    change_basis_1from2(τ2, ms::MassTuple)
+
+Convenience wrapper for a channel permutation, implemented via [`change_basis_3from1`](@ref).
+"""
 change_basis_1from2(τ2, ms::MassTuple) =
     change_basis_3from1(τ2..., ms.m2^2, ms.m3^2, ms.m1^2, ms.m0^2)
+
+"""
+    change_basis_2from3(τ3, ms::MassTuple)
+
+Convenience wrapper for a channel permutation, implemented via [`change_basis_3from1`](@ref).
+"""
 change_basis_2from3(τ3, ms::MassTuple) =
     change_basis_3from1(τ3..., ms.m3^2, ms.m1^2, ms.m2^2, ms.m0^2)

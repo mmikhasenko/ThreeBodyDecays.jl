@@ -38,6 +38,7 @@ makedocs(;
     authors = "Misha Mikhasenko <mikhail.mikhasenko@cern.ch> and contributors",
     repo = "https://github.com/mmikhasenko/ThreeBodyDecays.jl/blob/{commit}{path}#{line}",
     sitename = "ThreeBodyDecays.jl",
+    doctest = true,
     format = Documenter.HTML(;
         canonical = "https://mmikhasenko.github.io/ThreeBodyDecays.jl",
         repolink = "https://github.com/mmikhasenko/ThreeBodyDecays.jl",

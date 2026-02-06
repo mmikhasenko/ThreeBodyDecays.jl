@@ -267,6 +267,13 @@ function aligned_four_vectors(σs, ms; k::Int)
 end
 
 inrange(x, r) = r[1] < x < r[2]
+
+"""
+    inphrange(σs, ms::MassTuple) -> Bool
+
+Alias for [`isphysical`](@ref). Kept for backwards compatibility and readability in code
+that treats the allowed region as a “phase-space range”.
+"""
 inphrange(σs, ms::MassTuple) = isphysical(σs, ms)
 
 """

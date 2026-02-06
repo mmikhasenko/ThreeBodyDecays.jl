@@ -75,12 +75,22 @@ end
 
 # border13, border12, border21, border23, border32
 for (i, j) in ((1, 2), (2, 1), (2, 3), (3, 2), (3, 1), (1, 3))
-    eval(
-        quote
-            $(Symbol(:border, i, j))(ms; Nx::Int = DEFAULT_BORDER_POINTS) =
-                NamedTuple{$(Symbol(:σ, i), Symbol(:σ, j))}.(border(ms; Nx))
-        end,
-    )
+    fname = Symbol(:border, i, j)
+    names = (Symbol(:σ, i), Symbol(:σ, j))
+    doc = """
+        $fname(ms; Nx::Int = DEFAULT_BORDER_POINTS)
+
+    Convenience wrapper around [`border`](@ref) that returns only two selected invariants.
+
+    `$fname(ms)` returns a vector of named tuples `(; σ$i, σ$j)` describing the Dalitz-plot
+    boundary projected onto the `(σ$i, σ$j)` plane.
+
+    See also [`border`](@ref).
+    """
+    @eval begin
+        @doc $doc $fname
+        $fname(ms; Nx::Int = DEFAULT_BORDER_POINTS) = NamedTuple{$names}.(border(ms; Nx))
+    end
 end
 
 @recipe function f(ms::MassTuple, intensity::Function)
