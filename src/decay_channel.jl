@@ -1,3 +1,10 @@
+"""
+    AbstractDecayChain
+
+Abstract supertype for a single three-body decay chain (one isobar topology).
+
+Concrete implementations (e.g. [`DecayChain`](@ref)) can be evaluated via [`amplitude`](@ref).
+"""
 abstract type AbstractDecayChain end
 
 """
