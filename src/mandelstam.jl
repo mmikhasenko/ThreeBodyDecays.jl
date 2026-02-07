@@ -2,6 +2,8 @@
     MandelstamTuple{T}
 
 A named tuple representing Mandelstam variables `(; σ1, σ2, σ3)` for a three-body system.
+
+Primarily created via [`Invariants`](@ref).
 """
 const MandelstamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3),NTuple{3,T}}
 

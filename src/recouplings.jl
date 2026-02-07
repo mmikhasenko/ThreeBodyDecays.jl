@@ -32,6 +32,15 @@ Parity-related recoupling that connects `(λa, λb)` with `(-λa, -λb)`
 according to the intrinsic-parity phase of the two-body vertex.
 
 This is commonly used to enforce parity constraints in helicity amplitudes.
+
+The amplitude for input helicities ``λ₁, λ₂`` (in half-integer units, use `two_λa = 2λ₁`, etc.) is:
+
+```math
+A(λ₁, λ₂) = δ_{λ₁,λ_a} δ_{λ₂,λ_b} + η \\, δ_{λ₁,-λ_a} δ_{λ₂,-λ_b}
+```
+
+where ``η = ±1`` is the parity phase (``η = +1`` when `ηηηphaseisplus` is true).
+Only the configurations ``(λ₁,λ₂) = (λ_a,λ_b)`` or ``(-λ_a,-λ_b)`` give a non-zero result.
 """
 @with_kw struct ParityRecoupling <: Recoupling
     two_λa::Int
@@ -64,6 +73,17 @@ LS-recoupling for a two-body vertex.
 
 Stores `(two_l, two_s)` (i.e. twice the orbital angular momentum and twice the total spin)
 and evaluates the corresponding LS/helicity recoupling coefficient via [`jls_coupling`](@ref).
+
+For input helicities ``λ₁, λ₂`` (particles with spins ``j_a, j_b`` coupling to total ``j``), the amplitude is:
+
+```math
+A(\\lambda_1, \\lambda_2) = \\sqrt{\\frac{2l+1}{2j+1}} \\;
+\\langle j_a, \\lambda_1; j_b, {-}\\lambda_2 \\mid s, \\lambda_1{-}\\lambda_2 \\rangle
+\\langle l, 0; s, \\lambda_1{-}\\lambda_2 \\mid j, \\lambda_1{-}\\lambda_2 \\rangle
+```
+
+where ``(l, s)`` are the orbital and total spin from `two_ls`, and the kets use the usual
+Clebsch–Gordan convention (twice-angular-momentum arguments in the code).
 """
 @with_kw struct RecouplingLS <: Recoupling
     two_ls::Tuple{Int,Int}

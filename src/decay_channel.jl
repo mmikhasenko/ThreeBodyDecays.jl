@@ -60,6 +60,7 @@ DecayChainLS(
     Ps = ThreeBodyParities('+', '+', '+'; P0 = '+'),
     tbs = ThreeBodySystem(1.0, 2.0, 3.0; m0 = 4.0)
 )
+```
 """
 function DecayChainLS(;
     k,
@@ -115,6 +116,7 @@ DecayChainsLS(
         ThreeBodySpins(1, 2, 0; h0=3)
     )
 )
+```
 """
 function DecayChainsLS(;
     k,
@@ -143,6 +145,45 @@ wignerd_doublearg_sign(two_j, two_λ1, two_λ2, cosθ, ispositive) =
     (ispositive ? 1 : x"-1"^div(two_λ1 - two_λ2, 2)) *
     wignerd_doublearg(two_j, two_λ1, two_λ2, cosθ)
 #
+"""
+    aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
+
+Amplitude in the **aligned frame** (quantisation axis = decay axis), as a function of spin
+projections ``\\lambda_a`` along that axis.
+
+Kinematics enter through the invariants `σs::MandelstamTuple` (see [`MandelstamTuple`](@ref) or
+[`Invariants`](@ref)). We use ``\\sigma_k`` for the invariant mass squared of the ``(i,j)`` pair,
+and ``\\theta_{ij}`` for the decay angle between the parent and the isobar in that channel.
+Masses for particles 0–3 are fixed by the mass tuple `ms` (see [`MassTuple`](@ref),
+[`ThreeBodySystem`](@ref)), but are not shown explicitly in the formulas.
+
+The aligned amplitude is built as ``F = V \\cdot d \\cdot V`` (vertex–Wigner–vertex), with helicities
+``\\lambda_a`` (``a = 0,1,2,3``) for the parent and the three final-state particles:
+
+```math
+F_{λ_i λ_j λ_k λ_0}(\\sigma_k, \\theta_{ij}) =
+n_J \\; \\mathcal{L}(\\sigma_k) \\;
+V^{0 \\to Rk}_{λ_0 λ_R λ_k} \\;
+d^J_{λ_R λ_{R'}}(\\theta_{ij}) \\;
+V^{R \\to ij}_{λ_i λ_j}
+```
+
+- ``V^{0 \\to Rk}_{λ_0 λ_R λ_k}``: vertex for parent decay into isobar + spectator (see [`VertexFunction`](@ref),
+  [`Recoupling`](@ref)).
+- ``d^J_{λ_R λ_{R'}}(\\theta_{ij})``: Wigner small-d for the angle between parent and isobar frames.
+- ``V^{R \\to ij}_{λ_i λ_j}``: vertex for isobar decay into the two-body pair ``(i,j)``.
+- ``\\mathcal{L}(\\sigma_k)``: lineshape and form-factor product for the chain (from `Xlineshape`,
+  `HRk.ff`, `Hij.ff`; see [`VertexFunction`](@ref)).
+- ``n_J = \\sqrt{2J+1}``: normalization.
+
+The resonance projections are fixed by the external helicities:
+``λ_R = λ_0 + λ_k`` and ``λ_{R'} = λ_i - λ_j``
+(the index shifts `Δ_zk`, `Δ_ij` implement this matching).
+
+The full helicity amplitude is then ``d_0 \\cdot F \\cdot d_1 \\, d_2 \\, d_3`` (see [`amplitude`](@ref)):
+one Wigner ``d`` for the parent and three for the final-state particles, rotating from aligned
+(``\\lambda'``) to helicity (``\\lambda``).
+"""
 function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     @unpack k, tbs, two_j, HRk, Hij = dc
     i, j = ij_from_k(k)
@@ -193,16 +234,35 @@ end
 """
     amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2, 3, 1))
 
-Compute the total amplitude for a given decay chain and kinematic configuration.
+Helicity amplitude ``A_{λ_1 λ_2 λ_3 λ_0}`` for the given decay chain and kinematics.
+Masses for particles 0-3 are fixed by the mass tuple `ms` (see [`MassTuple`](@ref),
+[`ThreeBodySystem`](@ref)).
+
+The implementation uses the structure ``d_0 \\cdot F \\cdot d_1 \\, d_2 \\, d_3``: the aligned amplitude
+``F_{\\lambda'}`` (see [`aligned_amplitude`](@ref), built as ``V \\cdot d \\cdot V``) is sandwiched between
+Wigner small-``d`` matrices that rotate from the aligned frame (``\\lambda'``) to the helicity
+frame (``\\lambda``):
+
+```math
+A_{λ_1 λ_2 λ_3 λ_0}(\\sigma_k, \\theta_{ij}) =
+\\sum_{λ_0' λ_1' λ_2' λ_3'}
+d^{j_0}_{λ_0 λ_0'}(\\zeta_0) \\;
+F_{λ_1' λ_2' λ_3' λ_0'}(\\sigma_k, \\theta_{ij}) \\;
+d^{j_1}_{λ_1' λ_1}(\\zeta_1) \\;
+d^{j_2}_{λ_2' λ_2}(\\zeta_2) \\;
+d^{j_3}_{λ_3' λ_3}(\\zeta_3)
+```
+
+So: ``d`` (parent) ``\\times`` ``(V \\cdot d \\cdot V)`` (aligned chain) ``\\times`` ``d \\cdot d \\cdot d`` (three final-state particles).
 
 # Arguments
 - `dc::DecayChain`: The decay-chain object.
-- `σs::MandelstamTuple`: Tuple representing Mandelstam variables that describe the kinematic invariants of the process.
-- `two_λs`: A collection of helicity values for the particles involved in the decay.
-- `refζs`: Reference ζ indices for alignment rotations (default is `(1, 2, 3, 1)`).
+- `σs::MandelstamTuple`: Kinematic invariants (three pair squared masses).
+- `two_λs`: Helicity values (twice-helicity convention) for the four particles.
+- `refζs`: Reference indices for the alignment angles ζ (default `(1, 2, 3, 1)`).
 
 # Returns
-- A four-dimensional array of amplitude values.
+- The complex amplitude (scalar) for the requested helicity configuration.
 """
 function amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2, 3, 1))
     @unpack k, tbs, two_j = dc
