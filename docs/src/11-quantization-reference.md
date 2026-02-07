@@ -4,9 +4,7 @@ Particles with spin quantized using the helicity basis require an additional spe
 
 This section explains the concept of the reference kinematics and its implementation in `ThreeBodyDecays.jl`.
 The formalism is presented in detail in the paper
-*"Wigner rotations for cascade reactions"* by K. Habermann and M. Mikhasenko,
-[Phys. Rev. D **111**, 056015 (2025)](https://doi.org/10.1103/PhysRevD.111.056015)
-([INSPIRE](https://inspirehep.net/literature/2827198)).
+*"Wigner rotations for cascade reactions"* by K. Habermann and M. Mikhasenko, ([INSPIRE](https://inspirehep.net/literature/2827198)).
 
 ## The problem: helicity is frame-dependent
 
