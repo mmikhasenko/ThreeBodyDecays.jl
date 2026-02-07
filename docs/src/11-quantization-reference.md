@@ -31,7 +31,7 @@ For the reference topology ``k = 1``, the natural quantization frames for each p
 | **1**    | ``(1,2,3) \to R_y(\pi) \to 1`` |
 | **0**    | Parent rest frame (trivial) |
 
-Here, the arrow ``\to`` stands for the helicity transformation ``[Rz Ry B]^{-1}`` and ``R_y(\pi)`` denotes the rotation by ``\pi`` about the ``y``-axis, which implements the approach to the particle state using the **Jacob-Wick particle-2 convention**: instead of goint directly to the particle's rest frame, one first applies a ``\pi``-rotation to align with the convention where particle 2 in a two-body decay defines the positive ``z``-direction.
+Here, the arrow ``\to`` stands for the helicity transformation ``[Rz Ry B]^{-1}`` and ``R_y(\pi)`` denotes the rotation by ``\pi`` about the ``y``-axis, which implements the approach to the particle state using the **Jacob-Wick particle-2 convention**: instead of going directly to the particle's rest frame, one first applies a ``\pi``-rotation to align with the convention where particle 2 in a two-body decay defines the positive ``z``-direction.
 
 The same logic applies to topologies ``k = 2`` and ``k = 3`` with cyclic permutations of the particle indices.
 
