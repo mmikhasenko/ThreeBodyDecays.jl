@@ -68,7 +68,7 @@ export VertexFunction, NoFormFactor
 include("recouplings.jl")
 
 export AbstractDecayChain, DecayChain, DecayChainLS, DecayChainsLS
-export amplitude, itr, summed_over_polarization, system
+export amplitude, aligned_amplitude, itr, summed_over_polarization, system
 export unpolarized_intensity
 include("decay_channel.jl")
 
