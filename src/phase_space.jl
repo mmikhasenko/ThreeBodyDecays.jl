@@ -199,13 +199,20 @@ julia> breakup(4.0, 2.5, 1.0)  # direct use of breakup function
 """
 breakup(m, m1, m2) =
     sqrt((m - (m1 + m2)) * (m + (m1 + m2)) * (m - (m1 - m2)) * (m + (m1 - m2))) / 2m
-breakup_Rk(σk, ms; k) = breakup(ms[4], sqrt(σk), ms[k])
-function breakup_ij(σk, ms; k)
+#
+breakup_Rk(σk, ms::MassTuple; k) = breakup(ms[4], sqrt(σk), ms[k])
+breakup_Rk(σk, mssq; k) = breakup(sqrt(mssq[4]), sqrt(σk), sqrt(mssq[k]))
+breakup_Rk(ms::MassTuple; k) = σ -> breakup(ms[4], sqrt(σ), ms[k])
+#
+function breakup_ij(σk, ms::MassTuple; k)
     (i, j) = ij_from_k(k)
     return breakup(sqrt(σk), ms[i], ms[j])
 end
-breakup_Rk(ms; k) = σ -> breakup(ms[4], sqrt(σ), ms[k])
-function breakup_ij(ms; k)
+function breakup_ij(σk, mssq; k)
+    (i, j) = ij_from_k(k)
+    return breakup(sqrt(σk), sqrt(mssq[i]), sqrt(mssq[j]))
+end
+function breakup_ij(ms::MassTuple; k)
     (i, j) = ij_from_k(k)
     return σ -> breakup(sqrt(σ), ms[i], ms[j])
 end
@@ -238,10 +245,10 @@ julia> all(p -> abs(p[2]) < 1e-10, (p1, p2, p3))  # all momenta in x-z plane
 true
 ```
 """
-function aligned_four_vectors(σs, ms; k::Int)
+function aligned_four_vectors(σs, ms::MassTuple; k::Int)
     #
     i, j = ij_from_k(k)
-    m0 = ms[4]
+    m0 = ms.m0
     s = m0^2
     #
     mi, mj, mk = ms[i], ms[j], ms[k]
