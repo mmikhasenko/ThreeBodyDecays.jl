@@ -24,6 +24,7 @@ getproperty
 Gordan
 guidefonthalign
 guidefontvalign
+Habermann
 helicities
 helicity
 imag
@@ -32,11 +33,13 @@ issequential
 jldoctest
 JPAC
 Källén
+kets
 latexstring
 libexec
 lims
 Lineshapes
 markdownlint
+mathcal
 Mikhasenko
 minorticks
 minusone
@@ -50,6 +53,7 @@ parameterizations
 pentaquarks
 pipx
 quadgk
+quantisation
 readdir
 Recoupling
 recouplings

@@ -1,8 +1,10 @@
 """
     ParityTuple
 
-A named tuple representing parities of a three-body system.
+A named tuple representing parities of a three-body system, `(; P1, P2, P3, P0)`.
 Contains parities P₁, P₂, P₃ of the decay products and P₀ of the parent particle.
+
+Primarily created via [`ThreeBodyParities`](@ref).
 """
 const ParityTuple = NamedTuple{(:P1, :P2, :P3, :P0),NTuple{4,Char}}
 
