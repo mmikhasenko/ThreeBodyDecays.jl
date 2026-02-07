@@ -113,6 +113,30 @@ end
     @test sum((p1 .+ p2) .^ 2 .* metric) ≈ σs.σ3
 end
 
+using BenchmarkTools
+@testset "Timing: kinematic primitives (BenchmarkTools)" begin
+    msq = ms^2
+    t_cosθ_wrapper = @belapsed cosθ23($σs, $msq)
+    t_cosθ_int = @belapsed cosθij($σs, $msq; k = 1)
+    t_σjofk_wrapper = @belapsed σ3of1(0.5, $σs.σ1, $msq)
+    t_σjofk_int = @belapsed σjofk(0.5, $σs.σ1, $msq; k = 1)
+    t_kibble = @belapsed Kibble($σs, $msq)
+    t_lims_wrapper = @belapsed lims1($ms)
+    t_lims_int = @belapsed lims($ms; k = 1)
+    t_x2σs = @belapsed x2σs([0.5, 0.5], $ms; k = 1)
+    @info "Timing per call (ns):" cosθ_wrapper=round(1e9*t_cosθ_wrapper, digits = 1) cosθ_int=round(
+        1e9*t_cosθ_int,
+        digits = 1,
+    ) σjofk_wrapper=round(1e9*t_σjofk_wrapper, digits = 1) σjofk_int=round(
+        1e9*t_σjofk_int,
+        digits = 1,
+    ) Kibble=round(1e9*t_kibble, digits = 1) lims_wrapper=round(
+        1e9*t_lims_wrapper,
+        digits = 1,
+    ) lims_int=round(1e9*t_lims_int, digits = 1) x2σs=round(1e9*t_x2σs, digits = 1)
+    @test t_cosθ_wrapper < 1
+end
+
 @testset "Aligned four vectors are cyclic" begin
     p1_1, p2_1, p3_1 = aligned_four_vectors(σs, ms; k = 1)
     #

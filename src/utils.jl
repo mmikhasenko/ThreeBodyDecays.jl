@@ -24,6 +24,9 @@ julia> ijk(3)
 ```
 """
 ijk(k::Int) = (k + 1, k + 2, k) |> x -> mod.(x, Ref(Base.OneTo(3)))
+@inline ijk(::Val{1}) = (2, 3, 1)
+@inline ijk(::Val{2}) = (3, 1, 2)
+@inline ijk(::Val{3}) = (1, 2, 3)
 ij_from_k(k::Int) = ijk(k)
 
 """

@@ -77,7 +77,6 @@ function DecayChainLS(;
     two_lsLS_sorted = sort(two_lsLS, by = x -> x.two_LS[1])
     @unpack two_ls, two_LS = two_lsLS_sorted[1]
     #
-    i, j = ij_from_k(k)
     return DecayChain(;
         k,
         Xlineshape,
@@ -186,7 +185,7 @@ one Wigner ``d`` for the parent and three for the final-state particles, rotatin
 """
 function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     @unpack k, tbs, two_j, HRk, Hij = dc
-    i, j = ij_from_k(k)
+    i, j, _ = ij_from_k(k)
     #
     ms² = tbs.ms^2
     cosθ = cosθij(σs, ms²; k)
