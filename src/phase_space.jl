@@ -109,7 +109,7 @@ function σjofk(z, σk, msq; k::Int)
     # σj = (p0-pj)² in the rest frame of (i,j)
     EE4σ = (σk + msq[j] - msq[i]) * (σk + s - msq[k])
     p²q²4σ = Kallen(σk, msq[i], msq[j]) * Kallen(s, σk, msq[k])
-    p²q²4σ = (p²q²4σ < 0) ? 0.0 : p²q²4σ # for numerical errors
+    p²q²4σ = (p²q²4σ < 0) ? zero(p²q²4σ) : p²q²4σ # for numerical errors
     σi = s + msq[j] - (EE4σ - sqrt(p²q²4σ) * z) / (2σk)
     return σi
 end

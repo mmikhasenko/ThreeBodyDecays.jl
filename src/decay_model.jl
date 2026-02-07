@@ -63,6 +63,8 @@ The `descriptor` is a list of pairs, `names .=> zip(couplings, chains)`.
 ThreeBodyDecay("K892" .=> zip([1.0, -1.0, 0.2im], [chain1, chain2, chain3]))
 ```
 """
+ThreeBodyDecay(descriptor::Pair) = ThreeBodyDecay([descriptor])
+
 function ThreeBodyDecay(descriptor)
     N = length(descriptor)
     #
