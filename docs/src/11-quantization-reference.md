@@ -22,12 +22,12 @@ Each decay topology ``k`` naturally defines a reference frame for every particle
 
 For the reference topology ``k = 1``, the natural quantization frames for each particle are:
 
-| Particle | Path from parent rest frame |
-|:--------:|:----------------------------|
-| **2**    | ``(1,2,3) \to (23) \to 2`` |
-| **3**    | ``(1,2,3) \to (23) \to R_y(\pi) \to 3`` |
-| **1**    | ``(1,2,3) \to R_y(\pi) \to 1`` |
-| **0**    | Parent rest frame (trivial) |
+| Particle | Path from parent rest frame                        |
+|:--------:|:---------------------------------------------------|
+| **2**    | ``(1,2,3) \to (23) \to 2``                         |
+| **3**    | ``(1,2,3) \to (23) \to R_y(\pi) \to 3``            |
+| **1**    | ``(1,2,3) \to R_y(\pi) \to 1``                     |
+| **0**    | Parent rest frame (trivial)                        |
 
 Here, the arrow ``\to`` stands for the helicity transformation ``[Rz Ry B]^{-1}`` and ``R_y(\pi)`` denotes the rotation by ``\pi`` about the ``y``-axis, which implements the approach to the particle state using the **Jacob-Wick particle-2 convention**: instead of going directly to the particle's rest frame, one first applies a ``\pi``-rotation to align with the convention where particle 2 in a two-body decay defines the positive ``z``-direction.
 
@@ -80,10 +80,10 @@ The tuple `refζs = (r₁, r₂, r₃, r₀)` means:
 
 ### Common choices
 
-| `refζs` | Description |
-|:--------|:------------|
-| `(1, 1, 1, 1)` | All particles quantized using topology ``k=1``. All helicities refer to the frames defined by the ``0 \to (23)\,1`` chain. |
-| `(1, 2, 3, 1)` | Each final-state particle uses its own "natural" topology (particle ``n`` uses topology ``n``). The parent uses topology 1. This is the **default** in `ThreeBodyDecays.jl`. |
+| `refζs`         | Description                                                                                                                                                                  |
+|:----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `(1, 1, 1, 1)`  | All particles quantized using topology ``k=1``. All helicities refer to the frames defined by the ``0 \to (23)\,1`` chain.                                                   |
+| `(1, 2, 3, 1)`  | Each final-state particle uses its own "natural" topology (particle ``n`` uses topology ``n``). The parent uses topology 1. This is the **default** in `ThreeBodyDecays.jl`. |
 
 The choice `refζs = (1, 1, 1, 1)` is often the most intuitive: it defines a single, common reference topology for all particles. This is equivalent to saying that the helicity states ``|\lambda_1, \lambda_2, \lambda_3, \lambda_0\rangle`` are defined as if the decay always proceeds through the ``k=1`` chain.
 
