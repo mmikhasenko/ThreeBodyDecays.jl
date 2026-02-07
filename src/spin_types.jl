@@ -62,10 +62,14 @@ A structure representing spin and parity of a particle.
 # Examples
 ```jldoctest
 julia> SpinParity(1, '-')
-SpinParity(two_j=1, p='-')
+SpinParity
+  two_j: Int64 1
+  p: Char '-'
 
 julia> SpinParity(2, '+')
-SpinParity(two_j=2, p='+')
+SpinParity
+  two_j: Int64 2
+  p: Char '+'
 ```
 
 A `SpinParity` can also be constructed from a string via [`str2jp`](@ref),
@@ -73,10 +77,14 @@ or using the [`@jp_str`](@ref) string macro:
 
 ```jldoctest
 julia> str2jp("3/2-")
-SpinParity(two_j=3, p='-')
+SpinParity
+  two_j: Int64 3
+  p: Char '-'
 
 julia> jp"1/2+"
-SpinParity(two_j=1, p='+')
+SpinParity
+  two_j: Int64 1
+  p: Char '+'
 ```
 """
 @with_kw struct SpinParity
@@ -198,10 +206,14 @@ String macro for constructing a [`SpinParity`](@ref) literal. Equivalent to call
 # Examples
 ```jldoctest
 julia> jp"1/2+"
-SpinParity(two_j=1, p='+')
+SpinParity
+  two_j: Int64 1
+  p: Char '+'
 
 julia> jp"3-"
-SpinParity(two_j=6, p='-')
+SpinParity
+  two_j: Int64 6
+  p: Char '-'
 ```
 """
 macro jp_str(p)
