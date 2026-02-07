@@ -1,8 +1,10 @@
 """
     MassTuple{T}
 
-A named tuple representing the masses of a three-body system.
+A named tuple representing the masses of a three-body system, `(; m1, m2, m3, m0)`.
 Contains masses m₁, m₂, m₃ of the decay products and m₀ of the parent particle.
+
+Primarily created via [`ThreeBodyMasses`](@ref).
 """
 const MassTuple{T} = NamedTuple{(:m1, :m2, :m3, :m0),NTuple{4,T}}
 

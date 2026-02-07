@@ -1,8 +1,10 @@
 """
     SpinTuple
 
-A named tuple representing the spins of a three-body system.
-Contains twice the helicities of the particles (2h₁, 2h₂, 2h₃, 2h₀).
+A named tuple representing the spins of a three-body system, `(; two_h1, two_h2, two_h3, two_h0)`.
+Contains twice the helicities of the particles.
+
+Primarily created via [`ThreeBodySpins`](@ref).
 """
 const SpinTuple = NamedTuple{(:two_h1, :two_h2, :two_h3, :two_h0),NTuple{4,Int}}
 
