@@ -9,7 +9,8 @@ Primarily created via [`ThreeBodySpins`](@ref).
 const SpinTuple = NamedTuple{(:two_h1, :two_h2, :two_h3, :two_h0),NTuple{4,Int}}
 
 """
-    ThreeBodySpins(two_h1_or_h1, two_h2_or_h2, two_h3_or_h3; h0=nothing, two_h0=nothing)
+    ThreeBodySpins(two_h1, two_h2, two_h3; two_h0)
+    ThreeBodySpins(h1, h2, h3; h0)
 
 Construct a SpinTuple for a three-body system. Depending on the key arguments, `h0` or `two_h0`,
 the position arguments can be either twice the helicity or helicity itself.
@@ -57,6 +58,26 @@ A structure representing spin and parity of a particle.
 # Fields
 - `two_j::Int`: Twice the spin value
 - `p::Char`: Parity ('+' or '-')
+
+# Examples
+```jldoctest
+julia> SpinParity(1, '-')
+SpinParity(two_j=1, p='-')
+
+julia> SpinParity(2, '+')
+SpinParity(two_j=2, p='+')
+```
+
+A `SpinParity` can also be constructed from a string via [`str2jp`](@ref),
+or using the [`@jp_str`](@ref) string macro:
+
+```jldoctest
+julia> str2jp("3/2-")
+SpinParity(two_j=3, p='-')
+
+julia> jp"1/2+"
+SpinParity(two_j=1, p='+')
+```
 """
 @with_kw struct SpinParity
     two_j::Int
@@ -155,16 +176,9 @@ Compute the tensor product of two parities or spin-parity states.
 """
     str2jp(pin::AbstractString)
 
-Convert a string representation of spin-parity to a SpinParity object.
+Parse a string `"x±"` or `"x/2±"` into a [`SpinParity`](@ref).
 
-# Arguments
-- `pin::AbstractString`: String in format "x±" or "x/2±"
-
-# Returns
-- `SpinParity`: The corresponding spin-parity object
-
-# Throws
-- `ErrorException` if the string format is invalid
+See also [`@jp_str`](@ref).
 """
 function str2jp(pin::AbstractString)
     p = filter(x -> x != '^', pin)
@@ -179,26 +193,16 @@ end
     @jp_str "j±"
     @jp_str "j/2±"
 
-Parse a spin-parity literal into a [`SpinParity`](@ref).
-
-This is a convenience macro so you can write compact, readable quantum numbers in code.
+String macro for constructing a [`SpinParity`](@ref) literal. Equivalent to calling [`str2jp`](@ref).
 
 # Examples
 ```jldoctest
-julia> jp"1/2+".two_j == 1
-true
+julia> jp"1/2+"
+SpinParity(two_j=1, p='+')
 
-julia> jp"1/2+".p == '+'
-true
-
-julia> jp"3-".two_j == 6
-true
-
-julia> jp"3-".p == '-'
-true
+julia> jp"3-"
+SpinParity(two_j=6, p='-')
 ```
-
-See also [`str2jp`](@ref).
 """
 macro jp_str(p)
     return str2jp(p)
