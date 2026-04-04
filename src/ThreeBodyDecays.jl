@@ -7,6 +7,8 @@ using RecipesBase
 using Polynomials
 using PolynomialRoots
 using Tullio
+using LinearAlgebra
+using Statistics
 
 import Base: getindex, iterate, length, vcat
 import PartialWaveFunctions: wignerD_doublearg
@@ -74,6 +76,13 @@ include("decay_channel.jl")
 
 export ThreeBodyDecay
 include("decay_model.jl")
+
+export ChainAmplitudeCache, OverlapContribution, OverlapMatrix
+export chain_amplitudes, chain_overlap_matrix, chain_overlap_contribution
+export event_overlap_contributions, event_overlaps, physical_overlap, group_overlap
+export total_intensity, diagonal_integrals, diagonal_contributions
+export fit_fractions, interference_terms, stderr
+include("overlaps.jl")
 
 export change_basis_3from1, change_basis_1from2, change_basis_2from3
 include("cross_channel.jl")
