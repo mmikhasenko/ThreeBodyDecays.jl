@@ -41,6 +41,10 @@ true
 See also [`change_basis_1from2`](@ref), [`change_basis_2from3`](@ref).
 """
 function change_basis_3from1(σ1, cosθ1, ϕ1, cosθ23, ϕ23, m1sq, m2sq, m3sq, s)
+    T = typeof(σ1)
+    _one = one(T)
+    _zero = zero(T)
+    ARBITRARY = _one / 2
     # calculate σ3 in (23) frame
     m1 = sqrt(m1sq)
     sqrt_s = sqrt(s)
@@ -56,40 +60,37 @@ function change_basis_3from1(σ1, cosθ1, ϕ1, cosθ23, ϕ23, m1sq, m2sq, m3sq, 
         )
     # calculate p3 in (23) frame
     p23bu = sqrt(Kallen(σ1, m2sq, m3sq) / (4 * σ1))
-    p3_in23 = [
+    p3_in23 = (
         (σ1 + m3sq - m2sq) / sqrt(4 * σ1),
-        -p23bu * sqrt(1 - cosθ23^2) * cos(ϕ23),
-        -p23bu * sqrt(1 - cosθ23^2) * sin(ϕ23),
+        -p23bu * sqrt(_one - cosθ23^2) * cos(ϕ23),
+        -p23bu * sqrt(_one - cosθ23^2) * sin(ϕ23),
         -p23bu * cosθ23,
-    ]
+    )
     # boost to lab frame from (23) frame
     γ1 = (s + σ1 - m1sq) / sqrt(4 * s * σ1)
-    β1 = sqrt(1.0 - 1.0 / γ1^2)
-    p3_b = [
+    β1 = sqrt(_one - _one / γ1^2)
+    p3_b = (
         γ1 * (p3_in23[1] + β1 * p3_in23[4]),
         p3_in23[2],
         p3_in23[3],
         γ1 * (β1 * p3_in23[1] + p3_in23[4]),
-    ]
+    )
 
     ct1 = cosθ1
-    st1 = sqrt(1.0 - cosθ1^2)
+    st1 = sqrt(_one - cosθ1^2)
     cp1 = cos(ϕ1)
     sp1 = sin(ϕ1)
     # Rz(phi1) * Ry(theta1) * p3_boost
-    p3_rot = [
+    p3_rot = (
         p3_b[1],
         cp1 * ct1 * p3_b[2] + (-sp1) * p3_b[3] + cp1 * st1 * p3_b[4],
         sp1 * ct1 * p3_b[2] + cp1 * p3_b[3] + sp1 * st1 * p3_b[4],
-        -st1 * p3_b[2] + 0 * p3_b[3] + ct1 * p3_b[4],
-    ]
+        -st1 * p3_b[2] + ct1 * p3_b[4],
+    )
 
     cosθ3 = -p3_rot[4] / sqrt(p3_b[2]^2 + p3_b[3]^2 + p3_b[4]^2)
     #
-    ARBITRARY = 0.5
-    ϕ3 =
-        (p3_rot[2] != zero(p3_rot[2])) ? atan(-p3_rot[3], -p3_rot[2]) :
-        ARBITRARY * one(p3_rot[2])
+    ϕ3 = (p3_rot[2] != _zero) ? atan(-p3_rot[3], -p3_rot[2]) : ARBITRARY * _one
 
     cosθ12_n =
         m2sq +
@@ -98,24 +99,22 @@ function change_basis_3from1(σ1, cosθ1, ϕ1, cosθ23, ϕ23, m1sq, m2sq, m3sq, 
     m3 = sqrt(m3sq)
     sqrt_λσ3 = sqrt((sqrt_s - m3)^2 - σ3) * sqrt((sqrt_s + m3)^2 - σ3)
     cosθ12_d = 2 * sqrt(Kallen(σ3, m1sq, m2sq) / (4 * (σ3))) * sqrt_λσ3 / (2 * sqrt(σ3))
-    cosθ12 = cosθ12_d ≈ 0.0 + 0.0im ? 2.0 * ARBITRARY - 1.00 * one(σ1) : cosθ12_n / cosθ12_d
+    cosθ12 = cosθ12_d ≈ _zero ? 2 * ARBITRARY - _one : cosθ12_n / cosθ12_d
 
-    n1 = [0.0, -sqrt(1.0 - cosθ1^2) * cos(ϕ1), -sqrt(1.0 - cosθ1^2) * sin(ϕ1), -cosθ1]
+    sinθ1 = sqrt(_one - cosθ1^2)
+    n1 = (_zero, -sinθ1 * cos(ϕ1), -sinθ1 * sin(ϕ1), -cosθ1)
     ct3 = cosθ3
-    st3 = sqrt(1.0 - cosθ3^2)
+    st3 = sqrt(_one - cosθ3^2)
     cp3 = cos(ϕ3)
     sp3 = sin(ϕ3)
     # Rz(phi23) * Ry(theta23) * p3_boost
-    n1_rot = [
+    n1_rot = (
         n1[1],
         cp3 * ct3 * n1[2] + sp3 * ct3 * n1[3] + (-st3) * n1[4],
-        (-sp3) * n1[2] + cp3 * n1[3] + 0.0 * n1[4],
+        (-sp3) * n1[2] + cp3 * n1[3],
         cp3 * st3 * n1[2] + sp3 * st3 * n1[3] + ct3 * n1[4],
-    ]
-    # println(n1_rot[3], " ", n1_rot[2])
-    ϕ12 =
-        (n1_rot[2] != zero(n1_rot[2])) ? atan(n1_rot[3], n1_rot[2]) :
-        rand() * one(n1_rot[2])
+    )
+    ϕ12 = (n1_rot[2] != _zero) ? atan(n1_rot[3], n1_rot[2]) : ARBITRARY * _one
     return σ3, cosθ3, ϕ3, cosθ12, ϕ12
 end
 

@@ -6,7 +6,10 @@ cffinit
 Clebsch
 colorbar
 compat
+constprop
 cosζ
+cosθ
+cosθij
 cosζj
 cosζk
 Dalitz
@@ -31,6 +34,7 @@ Habermann
 helicities
 helicity
 imag
+inlineable
 intergand
 issequential
 jldoctest
@@ -66,6 +70,7 @@ orcid
 operatorname
 parameterizations
 pentaquarks
+permutedims
 pipx
 pointwise
 quadgk
@@ -85,6 +90,7 @@ submodel
 submodels
 sumrules
 typeof
+Tullio
 unphysical
 userplot
 Utopic
@@ -111,3 +117,4 @@ absρ
 ηηηphasesign
 ρdiag
 ρtilde
+σjofk

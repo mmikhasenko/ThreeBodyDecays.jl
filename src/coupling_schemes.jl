@@ -47,7 +47,7 @@ possible_ls(jp1::AbstractString, jp2::AbstractString; jp::AbstractString) =
     possible_ls(str2jp(jp1), str2jp(jp2); jp = str2jp(jp))
 
 function possible_ls_ij(jp::SpinParity, two_js::SpinTuple, Ps::ParityTuple; k::Int)
-    i, j = ij_from_k(k)
+    i, j, _ = ij_from_k(k)
     return possible_ls(SpinParity(two_js[i], Ps[i]), SpinParity(two_js[j], Ps[j]); jp)
 end
 

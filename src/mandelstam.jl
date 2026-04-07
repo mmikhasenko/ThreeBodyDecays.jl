@@ -129,7 +129,7 @@ end
 See also [`x2σs`](@ref).
 """
 function y2σs(y, ms::MassTuple; k::Int = last(findmin(Tuple(ms))))
-    i, j = ij_from_k(k)
+    i, j, _ = ij_from_k(k)
     σi = fitin(y[1], lims(ms; k = i))
     σj = fitin(y[2], lims(ms; k = j))
     σk = sum(ms^2) - σi - σj

@@ -92,7 +92,7 @@ Kibble(σs, msq) = Kallen(
 
 
 """
-    σjofk(z,σi,msq; k::Int)
+    σjofk(z, σi, msq; k::Int)
 
 Computes invariant σj = (p0-pj)² from
 the scattering angle z=cosθij in the rest from of (i,j),
@@ -102,14 +102,14 @@ Explicit forms: `σ3of1`, `σ1of2`, `σ2of3`.
 
 See also [`σiofk`](@ref)
 """
-function σjofk(z, σk, msq; k::Int)
-    i, j = ij_from_k(k)
+@inline function σjofk(z, σk, msq; k::Int)
+    i, j, _ = ij_from_k(k)
     #
     s = msq[4]
     # σj = (p0-pj)² in the rest frame of (i,j)
     EE4σ = (σk + msq[j] - msq[i]) * (σk + s - msq[k])
     p²q²4σ = Kallen(σk, msq[i], msq[j]) * Kallen(s, σk, msq[k])
-    p²q²4σ = (p²q²4σ < 0) ? 0.0 : p²q²4σ # for numerical errors
+    p²q²4σ = (p²q²4σ < 0) ? zero(p²q²4σ) : p²q²4σ # for numerical errors
     σi = s + msq[j] - (EE4σ - sqrt(p²q²4σ) * z) / (2σk)
     return σi
 end
@@ -119,7 +119,7 @@ end
 
 
 """
-    σiofk(k,z,σj,msq)
+    σiofk(z, σj, msq; k::Int)
 
 Computes invariant σi = (p0 - pi)² from
 the scattering angle z=cosθij in the rest from of (i,j),
@@ -141,15 +141,15 @@ end
 # Scattering angle
 
 """
-cosθij(k,σs,msq)
+    cosθij(σs, msq; k::Int)
 
 Isobar decay angle for the chain-k, i.e.
 an angle of between vectors pi and -pk in the (ij) rest frame.
 
 Explicit forms: `cosθ23`, `cosθ31`, `cosθ12`.
 """
-function cosθij(σs, msq; k::Int)
-    i, j = ij_from_k(k)
+@inline function cosθij(σs, msq; k::Int)
+    i, j, _ = ij_from_k(k)
     #
     s = msq[4]
     EE4σ = (σs[k] + msq[i] - msq[j]) * (s - σs[k] - msq[k])
@@ -200,25 +200,25 @@ julia> breakup(4.0, 2.5, 1.0)  # direct use of breakup function
 breakup(m, m1, m2) =
     sqrt((m - (m1 + m2)) * (m + (m1 + m2)) * (m - (m1 - m2)) * (m + (m1 - m2))) / 2m
 #
-breakup_Rk(σk, ms::MassTuple; k) = breakup(ms[4], sqrt(σk), ms[k])
-breakup_Rk(σk, mssq; k) = breakup(sqrt(mssq[4]), sqrt(σk), sqrt(mssq[k]))
-breakup_Rk(ms::MassTuple; k) = σ -> breakup(ms[4], sqrt(σ), ms[k])
+breakup_Rk(σk, ms::MassTuple; k::Int) = breakup(ms[4], sqrt(σk), ms[k])
+breakup_Rk(σk, mssq; k::Int) = breakup(sqrt(mssq[4]), sqrt(σk), sqrt(mssq[k]))
+breakup_Rk(ms::MassTuple; k::Int) = σ -> breakup(ms[4], sqrt(σ), ms[k])
 #
-function breakup_ij(σk, ms::MassTuple; k)
-    (i, j) = ij_from_k(k)
+function breakup_ij(σk, ms::MassTuple; k::Int)
+    i, j, _ = ij_from_k(k)
     return breakup(sqrt(σk), ms[i], ms[j])
 end
-function breakup_ij(σk, mssq; k)
-    (i, j) = ij_from_k(k)
+function breakup_ij(σk, mssq; k::Int)
+    i, j, _ = ij_from_k(k)
     return breakup(sqrt(σk), sqrt(mssq[i]), sqrt(mssq[j]))
 end
-function breakup_ij(ms::MassTuple; k)
-    (i, j) = ij_from_k(k)
+function breakup_ij(ms::MassTuple; k::Int)
+    i, j, _ = ij_from_k(k)
     return σ -> breakup(sqrt(σ), ms[i], ms[j])
 end
 
 """
-    aligned_four_vectors(σs,ms; k::Int)
+    aligned_four_vectors(σs, ms; k::Int)
 
 Computes the four-momenta of the three particles in the center of momentum frame aligning the k-th particle with the -z-axis.
 
@@ -247,7 +247,7 @@ true
 """
 function aligned_four_vectors(σs, ms::MassTuple; k::Int)
     #
-    i, j = ij_from_k(k)
+    i, j, _ = ij_from_k(k)
     m0 = ms.m0
     s = m0^2
     #

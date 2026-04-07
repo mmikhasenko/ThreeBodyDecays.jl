@@ -61,8 +61,8 @@ lims3(ms)  # limits for σ₃ = (p₁ + p₂)²
 
 See also [`isphysical`](@ref), [`Kibble`](@ref).
 """
-function lims(ms::MassTuple; k::Int)
-    i, j = ij_from_k(k)
+@inline function lims(ms::MassTuple; k::Int)
+    i, j, _ = ij_from_k(k)
     ((ms[i] + ms[j])^2, (ms[4] - ms[k])^2)
 end
 lims(k::Int, ms::MassTuple) = lims(ms; k)

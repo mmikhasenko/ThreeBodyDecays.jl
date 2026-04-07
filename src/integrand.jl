@@ -22,7 +22,7 @@ integrand = phase_space_integrand(function_σs, ms; k)
 """
 function phase_space_integrand(function_σs, ms; k::Int)
     mssq = ms^2
-    i, j = ij_from_k(k)
+    i, j, _ = ij_from_k(k)
     misq, mjsq, mksq, m0sq = mssq[i], mssq[j], mssq[k], mssq[4]
     σk_min, σk_max = lims(ms; k)
     #
@@ -100,7 +100,7 @@ end
 ```
 """
 function project_cosθij_intergand(fs, ms, z; k)
-    i, j = ij_from_k(k)
+    i, j, _ = ij_from_k(k)
     mi, mj, mk, m0 = ms[i], ms[j], ms[k], ms[4]
 
     function integrand(xσk)
