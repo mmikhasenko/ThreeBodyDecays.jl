@@ -6,7 +6,10 @@ cffinit
 Clebsch
 colorbar
 compat
+constprop
 cosζ
+cosθ
+cosθij
 cosζj
 cosζk
 Dalitz
@@ -85,6 +88,7 @@ submodel
 submodels
 sumrules
 typeof
+Tullio
 unphysical
 userplot
 Utopic
@@ -111,3 +115,4 @@ absρ
 ηηηphasesign
 ρdiag
 ρtilde
+σjofk
