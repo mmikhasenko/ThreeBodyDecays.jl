@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Ξc⁺ → Ξ⁻π⁺π⁺ overlaps · ThreeBodyDecays.jl</title><meta name="title" content="Ξc⁺ → Ξ⁻π⁺π⁺ overlaps · ThreeBodyDecays.jl"/><meta property="og:title" content="Ξc⁺ → Ξ⁻π⁺π⁺ overlaps · ThreeBodyDecays.jl"/><meta property="twitter:title" content="Ξc⁺ → Ξ⁻π⁺π⁺ overlaps · ThreeBodyDecays.jl"/><meta name="description" content="Documentation for ThreeBodyDecays.jl."/><meta property="og:description" content="Documentation for ThreeBodyDecays.jl."/><meta property="twitter:description" content="Documentation for ThreeBodyDecays.jl."/><meta property="og:url" content="https://mmikhasenko.github.io/ThreeBodyDecays.jl/33-xic-overlaps/"/><meta property="twitter:url" content="https://mmikhasenko.github.io/ThreeBodyDecays.jl/33-xic-overlaps/"/><link rel="canonical" href="https://mmikhasenko.github.io/ThreeBodyDecays.jl/33-xic-overlaps/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">ThreeBodyDecays.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">ThreeBodyDecays</a></li><li><a class="tocitem" href="../10-energy-dependence/">Energy dependence of the amplitude</a></li><li><a class="tocitem" href="../11-quantization-reference/">Quantization reference frames</a></li><li><a class="tocitem" href="../30-tutorial/">Tutorial</a></li><li><a class="tocitem" href="../31-canonical/">Canonical formalism</a></li><li><a class="tocitem" href="../32-visualization/">Visualization Tutorial</a></li><li class="is-active"><a class="tocitem" href>Ξc⁺ → Ξ⁻π⁺π⁺ overlaps</a><ul class="internal"><li><a class="tocitem" href="#Kinematics-and-quantum-numbers"><span>Kinematics and quantum numbers</span></a></li><li><a class="tocitem" href="#Building-the-model"><span>Building the model</span></a></li><li><a class="tocitem" href="#Model-weighted-Dalitz-sample"><span>Model-weighted Dalitz sample</span></a></li><li><a class="tocitem" href="#Integral-representation-of-overlaps"><span>Integral representation of overlaps</span></a></li><li><a class="tocitem" href="#Normalized-overlap-matrix"><span>Normalized overlap matrix</span></a></li><li><a class="tocitem" href="#Fit-fraction-and-interference-matrix"><span>Fit-fraction and interference matrix</span></a></li><li><a class="tocitem" href="#Reduced-matrix-by-resonance"><span>Reduced matrix by resonance</span></a></li><li><a class="tocitem" href="#Quiz"><span>Quiz</span></a></li></ul></li><li><a class="tocitem" href="../90-contributing/">Contributing guidelines</a></li><li><a class="tocitem" href="../91-developer/">Developer documentation</a></li><li><a class="tocitem" href="../95-reference/">Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Ξc⁺ → Ξ⁻π⁺π⁺ overlaps</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Ξc⁺ → Ξ⁻π⁺π⁺ overlaps</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/mmikhasenko/ThreeBodyDecays.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/mmikhasenko/ThreeBodyDecays.jl/blob/main/docs/src/33-xic-overlaps.jl#" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Ξc-Ξππ-overlaps"><a class="docs-heading-anchor" href="#Ξc-Ξππ-overlaps">Ξc⁺ → Ξ⁻π⁺π⁺ overlaps</a><a id="Ξc-Ξππ-overlaps-1"></a><a class="docs-heading-anchor-permalink" href="#Ξc-Ξππ-overlaps" title="Permalink"></a></h1><p>This tutorial builds a compact model for Ξc⁺ → Ξ⁻ π⁺ π⁺ with three prominent Ξ* resonances: Ξ(1530), Ξ(1620), and Ξ(1690).</p><p>The goal is not a tuned physics model. Instead, we use the model as a transparent object: we inspect its LS content, build an integral representation of the amplitude overlaps, and then reduce the result to quantities that are often discussed in amplitude analyses.</p><pre><code class="language-julia hljs">using ThreeBodyDecays
+using HadronicLineshapes: BreitWigner
+using LinearAlgebra
+using Plots
+using Random
+using Statistics
+
+theme(:boxed);</code></pre><h2 id="Kinematics-and-quantum-numbers"><a class="docs-heading-anchor" href="#Kinematics-and-quantum-numbers">Kinematics and quantum numbers</a><a id="Kinematics-and-quantum-numbers-1"></a><a class="docs-heading-anchor-permalink" href="#Kinematics-and-quantum-numbers" title="Permalink"></a></h2><p>Particle labels are fixed by the mass tuple:</p><ul><li>particle 1: Ξ⁻</li><li>particle 2: π⁺</li><li>particle 3: π⁺</li></ul><p>Therefore σ₂ is the invariant mass squared of particles (3,1), and σ₃ is the invariant mass squared of particles (1,2). These are the two Ξ⁻π⁺ combinations. The pions are identical in charge, so a realistic model should include both pairings.</p><pre><code class="language-julia hljs">const mΞ = 1.32171
+const mπ = 0.13957039
+const mΞc = 2.46771
+
+ms = ThreeBodyMasses(mΞ, mπ, mπ; m0 = mΞc);
+
+two_js, parities_PC = ThreeBodySpinParities(&quot;1/2+&quot;, &quot;0-&quot;, &quot;0-&quot;; jp0 = &quot;1/2+&quot;);
+_, parities_PV = ThreeBodySpinParities(&quot;1/2+&quot;, &quot;0-&quot;, &quot;0-&quot;; jp0 = &quot;1/2-&quot;);
+
+tbs = ThreeBodySystem(ms, two_js);</code></pre><p>The <code>parities_PC</code> and <code>parities_PV</code> objects are a small bookkeeping trick. The weak decay does not force a single parity-conserving LS family, so we include both. This gives two production LS couplings per resonance and per pion pairing in this example.</p><pre><code class="language-julia hljs">const resonances = [
+    (; name = &quot;Ξ(1530)&quot;, jp = &quot;3/2+&quot;, mass = 1.5318, width = 0.0091),
+    (; name = &quot;Ξ(1620)&quot;, jp = &quot;1/2-&quot;, mass = 1.6200, width = 0.0320),
+    (; name = &quot;Ξ(1690)&quot;, jp = &quot;1/2-&quot;, mass = 1.6900, width = 0.0300),
+];</code></pre><h2 id="Building-the-model"><a class="docs-heading-anchor" href="#Building-the-model">Building the model</a><a id="Building-the-model-1"></a><a class="docs-heading-anchor-permalink" href="#Building-the-model" title="Permalink"></a></h2><p><code>HadronicLineshapes.BreitWigner</code> can be passed directly as the energy-dependence of a <code>DecayChainsLS</code> object. The rest is a small map over resonances, the two Ξπ pairings, and the two parity choices.</p><pre><code class="language-julia hljs">function chain_records(resonance)
+    map((2, 3)) do k
+        map(((&quot;PC&quot;, parities_PC), (&quot;PV&quot;, parities_PV))) do (parity_label, Ps)
+            chains = DecayChainsLS(;
+                k,
+                Xlineshape = BreitWigner(resonance.mass, resonance.width),
+                jp = resonance.jp,
+                Ps,
+                tbs,
+            )
+            map(chains) do chain
+                two_ls = chain.Hij.h.two_ls
+                two_LS = chain.HRk.h.two_ls
+                qn = (;
+                    l = d2(two_ls[1]),
+                    s = d2(two_ls[2]),
+                    L = d2(two_LS[1]),
+                    S = d2(two_LS[2]),
+                )
+                (;
+                    name = resonance.name,
+                    parity = parity_label,
+                    k,
+                    label = &quot;$(resonance.name) k=$k $parity_label&quot;,
+                    qn,
+                    chain,
+                )
+            end
+        end
+    end |&gt;
+    Iterators.flatten |&gt;
+    Iterators.flatten |&gt;
+    collect
+end;
+
+records = vcat(chain_records.(resonances)...);</code></pre><p>A first validation step is simply to ask what the model contains. The LS labels use ordinary angular momenta, while the implementation stores doubled quantum numbers internally.</p><pre><code class="language-julia hljs">[(r.label, r.qn) for r in records]</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">12-element Vector{Tuple{String, @NamedTuple{l::String, s::String, L::String, S::String}}}:
+ (&quot;Ξ(1530) k=2 PC&quot;, (l = &quot;1&quot;, s = &quot;1/2&quot;, L = &quot;1&quot;, S = &quot;3/2&quot;))
+ (&quot;Ξ(1530) k=2 PV&quot;, (l = &quot;1&quot;, s = &quot;1/2&quot;, L = &quot;2&quot;, S = &quot;3/2&quot;))
+ (&quot;Ξ(1530) k=3 PC&quot;, (l = &quot;1&quot;, s = &quot;1/2&quot;, L = &quot;1&quot;, S = &quot;3/2&quot;))
+ (&quot;Ξ(1530) k=3 PV&quot;, (l = &quot;1&quot;, s = &quot;1/2&quot;, L = &quot;2&quot;, S = &quot;3/2&quot;))
+ (&quot;Ξ(1620) k=2 PC&quot;, (l = &quot;0&quot;, s = &quot;1/2&quot;, L = &quot;0&quot;, S = &quot;1/2&quot;))
+ (&quot;Ξ(1620) k=2 PV&quot;, (l = &quot;0&quot;, s = &quot;1/2&quot;, L = &quot;1&quot;, S = &quot;1/2&quot;))
+ (&quot;Ξ(1620) k=3 PC&quot;, (l = &quot;0&quot;, s = &quot;1/2&quot;, L = &quot;0&quot;, S = &quot;1/2&quot;))
+ (&quot;Ξ(1620) k=3 PV&quot;, (l = &quot;0&quot;, s = &quot;1/2&quot;, L = &quot;1&quot;, S = &quot;1/2&quot;))
+ (&quot;Ξ(1690) k=2 PC&quot;, (l = &quot;0&quot;, s = &quot;1/2&quot;, L = &quot;0&quot;, S = &quot;1/2&quot;))
+ (&quot;Ξ(1690) k=2 PV&quot;, (l = &quot;0&quot;, s = &quot;1/2&quot;, L = &quot;1&quot;, S = &quot;1/2&quot;))
+ (&quot;Ξ(1690) k=3 PC&quot;, (l = &quot;0&quot;, s = &quot;1/2&quot;, L = &quot;0&quot;, S = &quot;1/2&quot;))
+ (&quot;Ξ(1690) k=3 PV&quot;, (l = &quot;0&quot;, s = &quot;1/2&quot;, L = &quot;1&quot;, S = &quot;1/2&quot;))</code></pre><p>Now attach a reproducible set of complex couplings. In a fit these would be floating parameters. Bose symmetry constrains the two Ξπ pairings: the coefficient for a <code>k=2</code> chain and the matching <code>k=3</code> chain must be the same up to the exchange sign. For two π⁺ bosons we use the symmetric sign.</p><pre><code class="language-julia hljs">coupling_by_resonance_and_parity = Dict(
+    (&quot;Ξ(1530)&quot;, &quot;PC&quot;) =&gt; 1.00 + 0.00im,
+    (&quot;Ξ(1530)&quot;, &quot;PV&quot;) =&gt; 0.35 - 0.20im,
+    (&quot;Ξ(1620)&quot;, &quot;PC&quot;) =&gt; 0.75 - 0.15im,
+    (&quot;Ξ(1620)&quot;, &quot;PV&quot;) =&gt; -0.25 + 0.30im,
+    (&quot;Ξ(1690)&quot;, &quot;PC&quot;) =&gt; 0.55 - 0.25im,
+    (&quot;Ξ(1690)&quot;, &quot;PV&quot;) =&gt; -0.20 - 0.20im,
+);
+
+exchange_sign = +1;
+couplings = [
+    (r.k == 2 ? 1 : exchange_sign) * coupling_by_resonance_and_parity[(r.name, r.parity)] for r in records
+];
+
+[(r.label, couplings[i]) for (i, r) in pairs(records)]
+
+model = ThreeBodyDecay(
+    getproperty.(records, :label) .=&gt; zip(couplings, getproperty.(records, :chain)),
+);</code></pre><p>A pointwise sanity check is cheap and helpful: the unpolarized intensity is real and positive.</p><pre><code class="language-julia hljs">σs0 = randomPoint(ms);
+unpolarized_intensity(model, σs0)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">956.7733455144644</code></pre><h2 id="Model-weighted-Dalitz-sample"><a class="docs-heading-anchor" href="#Model-weighted-Dalitz-sample">Model-weighted Dalitz sample</a><a id="Model-weighted-Dalitz-sample-1"></a><a class="docs-heading-anchor-permalink" href="#Model-weighted-Dalitz-sample" title="Permalink"></a></h2><p>To see where the model puts events, draw random points in the Dalitz square, keep the physical candidates, and then accept them according to the pointwise intensity.</p><pre><code class="language-julia hljs">physical_dalitz_hits = let
+    rng = MersenneTwister(31)
+    candidates = map(1:30_000) do _
+        y2σs(rand(rng, 2), ms)
+    end
+    sample = filter(σs -&gt; isphysical(σs, ms), candidates)
+    ws = unpolarized_intensity.(Ref(model), sample)
+    sample[ws ./ maximum(ws) .&gt; rand(rng, length(ws))]
+end;
+
+p_dalitz = scatter(
+    getindex.(physical_dalitz_hits, 2),
+    getindex.(physical_dalitz_hits, 3);
+    lab = &quot;model sample&quot;,
+    c = 2,
+    alpha = 0.7,
+    markerstrokewidth = 0,
+    markersize = 2.5,
+    aspect_ratio = 1,
+    xlab = &quot;σ₂ = m²(Ξ⁻π⁺) [GeV²]&quot;,
+    ylab = &quot;σ₃ = m²(Ξ⁻π⁺) [GeV²]&quot;,
+    title = &quot;Model-weighted Dalitz sample&quot;,
+)
+plot!(p_dalitz, border23(ms); lab = &quot;&quot;, c = :black, lw = 2)
+
+p_projection = stephist(
+    getindex.(physical_dalitz_hits, 2);
+    bins = 60,
+    fill = 0,
+    alpha = 0.2,
+    lab = &quot;σ₂&quot;,
+    xlab = &quot;m²(Ξ⁻π⁺) [GeV²]&quot;,
+    ylab = &quot;events&quot;,
+    title = &quot;Linked Ξ⁻π⁺ projection&quot;,
+)
+stephist!(
+    p_projection,
+    getindex.(physical_dalitz_hits, 3);
+    bins = 60,
+    fill = 0,
+    alpha = 0.2,
+    lab = &quot;σ₃&quot;,
+)
+
+plot(p_dalitz, p_projection; layout = grid(2, 1; heights = (0.7, 0.3)), size = (760, 820))</code></pre><img src="75e70c51.svg" alt="Example block output"/><h2 id="Integral-representation-of-overlaps"><a class="docs-heading-anchor" href="#Integral-representation-of-overlaps">Integral representation of overlaps</a><a id="Integral-representation-of-overlaps-1"></a><a class="docs-heading-anchor-permalink" href="#Integral-representation-of-overlaps" title="Permalink"></a></h2><p>Write the model as a coherent sum</p><p class="math-container">\[A(\sigma) = \sum_i c_i\, a_i(\sigma).\]</p><p>The integrated intensity is then</p><p class="math-container">\[I = \sum_{ij} c_i^*\, \rho_{ij}\, c_j = c^\dagger \rho c,
+\qquad
+\rho_{ij} = \int d\Phi_3\, a_i(\sigma)^* a_j(\sigma).\]</p><p>The overlap API works with event samples. We generate a small reproducible phase-space sample, cache the stripped chain amplitudes, and use <code>event_overlap_contributions</code> to build the spin-summed overlap objects.</p><pre><code class="language-julia hljs">samples = let
+    rng = MersenneTwister(12)
+    candidates = map(1:3_000) do _
+        y2σs(rand(rng, 2), ms)
+    end
+    filter(σs -&gt; isphysical(σs, ms), candidates)
+end;
+cache = chain_amplitudes(model, samples);
+
+ρ_overlap = mean(event_overlap_contributions(cache));
+ρ = ρ_overlap.matrix;
+
+I_from_matrix = real(model.couplings&#39; * Matrix(ρ) * model.couplings)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">207.8009113920265</code></pre><p>The same object can be made physical by applying the coefficients. The package then knows how to sum diagonal and interference pieces into the total sample intensity.</p><pre><code class="language-julia hljs">physical_ρ = physical_overlap(ρ_overlap, model.couplings);
+total_intensity(physical_ρ)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">207.80091139202653</code></pre><p>As a validation, this agrees with direct evaluation of the model over the same sample. The equality is exact up to floating-point summation order.</p><pre><code class="language-julia hljs">I_direct = mean(σs -&gt; unpolarized_intensity(model, σs), samples)
+
+isapprox(I_from_matrix, I_direct; rtol = 1e-12)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">true</code></pre><h2 id="Normalized-overlap-matrix"><a class="docs-heading-anchor" href="#Normalized-overlap-matrix">Normalized overlap matrix</a><a id="Normalized-overlap-matrix-1"></a><a class="docs-heading-anchor-permalink" href="#Normalized-overlap-matrix" title="Permalink"></a></h2><p>The normalized overlap matrix removes the individual norms:</p><p class="math-container">\[\tilde{\rho}_{ij} =
+\frac{\rho_{ij}}{\sqrt{\rho_{ii}\rho_{jj}}}.\]</p><p>If one of its eigenvalues is close to zero, the basis contains a near-null direction and the coefficients can become ambiguous. If the eigenvalues are comfortably away from zero, this particular basis is numerically healthy.</p><pre><code class="language-julia hljs">ρdiag = real.(diag(ρ));
+ρtilde = Hermitian(Matrix(ρ) ./ sqrt.(ρdiag * ρdiag&#39;));
+
+round.(real.(eigvals(ρtilde)); digits = 4)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">12-element Vector{Float64}:
+ 0.568
+ 0.5862
+ 0.5979
+ 0.6131
+ 0.9961
+ 0.9989
+ 1.0011
+ 1.0038
+ 1.3555
+ 1.3977
+ 1.4182
+ 1.4634</code></pre><p>The diagonal elements are one by construction. Looking at the largest off-diagonal entries tells us which amplitudes overlap most strongly after normalization.</p><pre><code class="language-julia hljs">function largest_overlaps(ρtilde, labels; n = 6)
+    pairs = [
+        (absρ = abs(ρtilde[i, j]), ρij = ρtilde[i, j], i, j) for i in axes(ρtilde, 1)
+        for j = 1:(i-1)
+    ]
+    sort!(pairs, by = x -&gt; x.absρ, rev = true)
+    return [
+        (labels[p.i], labels[p.j], round(p.ρij; digits = 3)) for
+        p in pairs[1:min(n, length(pairs))]
+    ]
+end;
+
+largest_overlaps(ρtilde, model.names)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">6-element Vector{Tuple{String, String, ComplexF64}}:
+ (&quot;Ξ(1690) k=3 PC&quot;, &quot;Ξ(1620) k=3 PC&quot;, 0.121 + 0.39im)
+ (&quot;Ξ(1690) k=3 PV&quot;, &quot;Ξ(1620) k=3 PV&quot;, 0.121 + 0.39im)
+ (&quot;Ξ(1690) k=2 PC&quot;, &quot;Ξ(1620) k=2 PC&quot;, 0.132 + 0.385im)
+ (&quot;Ξ(1690) k=2 PV&quot;, &quot;Ξ(1620) k=2 PV&quot;, 0.132 + 0.385im)
+ (&quot;Ξ(1620) k=3 PC&quot;, &quot;Ξ(1620) k=2 PC&quot;, 0.042 + 0.002im)
+ (&quot;Ξ(1690) k=3 PC&quot;, &quot;Ξ(1620) k=2 PC&quot;, 0.038 + 0.006im)</code></pre><h2 id="Fit-fraction-and-interference-matrix"><a class="docs-heading-anchor" href="#Fit-fraction-and-interference-matrix">Fit-fraction and interference matrix</a><a id="Fit-fraction-and-interference-matrix-1"></a><a class="docs-heading-anchor-permalink" href="#Fit-fraction-and-interference-matrix" title="Permalink"></a></h2><p>A real fit-fraction/interference matrix can be defined by absorbing the couplings into the overlap matrix:</p><p class="math-container">\[N_{ij} = \operatorname{Re}\left[c_i^*\, \rho_{ij}\, c_j\right],
+\qquad
+I = \mathbf{1}^T N \mathbf{1}.\]</p><p>The API does this with <code>physical_overlap</code>: its matrix is the physical numerator matrix in the chain basis. We only take <code>real</code> and divide by the total when we want a conventional fraction matrix.</p><pre><code class="language-julia hljs">N = real.(Matrix(physical_ρ.matrix));
+
+total_intensity(physical_ρ), I_from_matrix
+
+Nfrac = N ./ I_from_matrix;
+
+[(model.names[i], round(Nfrac[i, i]; digits = 4)) for i in eachindex(model.names)]
+
+fit_fractions(physical_ρ; percent = false, sort = false)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">12-element Vector{@NamedTuple{label::String, fraction::Float64}}:
+ (label = &quot;Ξ(1530) k=2 PC_{k=2, ij=(l=1, s=1/2), Rk=(l=1, s=3/2)}&quot;, fraction = 0.24141918370530555)
+ (label = &quot;Ξ(1530) k=2 PV_{k=2, ij=(l=1, s=1/2), Rk=(l=2, s=3/2)}&quot;, fraction = 0.03923061735211216)
+ (label = &quot;Ξ(1530) k=3 PC_{k=3, ij=(l=1, s=1/2), Rk=(l=1, s=3/2)}&quot;, fraction = 0.3735752250552762)
+ (label = &quot;Ξ(1530) k=3 PV_{k=3, ij=(l=1, s=1/2), Rk=(l=2, s=3/2)}&quot;, fraction = 0.0607059740714824)
+ (label = &quot;Ξ(1620) k=2 PC_{k=2, ij=(l=0, s=1/2), Rk=(l=0, s=1/2)}&quot;, fraction = 0.054497657516968646)
+ (label = &quot;Ξ(1620) k=2 PV_{k=2, ij=(l=0, s=1/2), Rk=(l=1, s=1/2)}&quot;, fraction = 0.014206654309979)
+ (label = &quot;Ξ(1620) k=3 PC_{k=3, ij=(l=0, s=1/2), Rk=(l=0, s=1/2)}&quot;, fraction = 0.05933318194754129)
+ (label = &quot;Ξ(1620) k=3 PV_{k=3, ij=(l=0, s=1/2), Rk=(l=1, s=1/2)}&quot;, fraction = 0.015467197003418873)
+ (label = &quot;Ξ(1690) k=2 PC_{k=2, ij=(l=0, s=1/2), Rk=(l=0, s=1/2)}&quot;, fraction = 0.04023252381541865)
+ (label = &quot;Ξ(1690) k=2 PV_{k=2, ij=(l=0, s=1/2), Rk=(l=1, s=1/2)}&quot;, fraction = 0.008818087411598605)
+ (label = &quot;Ξ(1690) k=3 PC_{k=3, ij=(l=0, s=1/2), Rk=(l=0, s=1/2)}&quot;, fraction = 0.041811775215509515)
+ (label = &quot;Ξ(1690) k=3 PV_{k=3, ij=(l=0, s=1/2), Rk=(l=1, s=1/2)}&quot;, fraction = 0.009164224704769207)</code></pre><p>The diagonal entries do not have to sum to one: coherent interference can add or remove intensity. That is a useful sense check rather than a bug.</p><pre><code class="language-julia hljs">sum(diag(Nfrac)), sum(Nfrac)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(0.9584623021093803, 0.9999999999999999)</code></pre><h2 id="Reduced-matrix-by-resonance"><a class="docs-heading-anchor" href="#Reduced-matrix-by-resonance">Reduced matrix by resonance</a><a id="Reduced-matrix-by-resonance-1"></a><a class="docs-heading-anchor-permalink" href="#Reduced-matrix-by-resonance" title="Permalink"></a></h2><p>Often we want a resonance-level summary instead of an LS-amplitude-level summary. <code>group_overlap</code> performs the partial sum over all entries that share a resonance name. That includes both Ξπ pairings and both parity structures for each resonance.</p><pre><code class="language-julia hljs">resonance_ρ = group_overlap(physical_ρ, getproperty.(records, :name));
+resonance_names = resonance_ρ.labels;
+Nres = real.(Matrix(resonance_ρ.matrix)) ./ total_intensity(resonance_ρ);
+
+round.(Nres; digits = 4)
+
+Nres_plot = round.(Nres; digits = 3);
+nres = length(resonance_names);
+pNres = heatmap(
+    1:nres,
+    1:nres,
+    Nres_plot;
+    xticks = (1:nres, resonance_names),
+    yticks = (1:nres, resonance_names),
+    xrotation = 30,
+    aspect_ratio = 1,
+    c = :viridis,
+    xlab = &quot;resonance j&quot;,
+    ylab = &quot;resonance i&quot;,
+    title = &quot;Reduced fit-fraction/interference matrix&quot;,
+    colorbar_title = &quot;Nᵢⱼ&quot;,
+)
+for i in axes(Nres_plot, 1), j in axes(Nres_plot, 2)
+    annotate!(pNres, j, i, text(string(Nres_plot[i, j]), 8, :white))
+end
+pNres</code></pre><img src="133ce1ed.svg" alt="Example block output"/><p>The diagonal elements are the resonance fit fractions in this reduced basis.</p><pre><code class="language-julia hljs">[(resonance_names[i], round(Nres[i, i]; digits = 4)) for i in eachindex(resonance_names)]
+
+fit_fractions(resonance_ρ; percent = false, sort = false)
+
+interference_terms(resonance_ρ; percent = false, sort = false)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">3-element Vector{NamedTuple}:
+ (label_i = &quot;Ξ(1530)&quot;, label_j = &quot;Ξ(1620)&quot;, fraction = 0.003215261277885567)
+ (label_i = &quot;Ξ(1530)&quot;, label_j = &quot;Ξ(1690)&quot;, fraction = 0.002340680385186145)
+ (label_i = &quot;Ξ(1620)&quot;, label_j = &quot;Ξ(1690)&quot;, fraction = 0.030999208065304703)</code></pre><p>This is also easy to validate: the resonance-level matrix still sums to the same total fraction, because reduction is just a partial sum over indices.</p><pre><code class="language-julia hljs">sum(Nres), sum(Nfrac)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(1.0, 0.9999999999999999)</code></pre><h2 id="Quiz"><a class="docs-heading-anchor" href="#Quiz">Quiz</a><a id="Quiz-1"></a><a class="docs-heading-anchor-permalink" href="#Quiz" title="Permalink"></a></h2><p><strong>Q1.</strong> Why do we include both <code>k=2</code> and <code>k=3</code> chains for the same Ξ* resonance?</p><details>
+<summary>Answer</summary>
+
+The two π⁺ particles are identical in charge. Either pion can pair with the
+Ξ⁻ to form the Ξ* isobar, so the model includes both Ξ⁻π⁺ combinations.
+
+</details><p><strong>Q2.</strong> What does a very small eigenvalue of <code>ρtilde</code> mean?</p><details>
+<summary>Answer</summary>
+
+It means that some linear combination of amplitudes has a tiny integrated
+norm. The corresponding couplings can be weakly determined or ambiguous.
+
+</details><p><strong>Q3.</strong> Why are the <code>k=2</code> and <code>k=3</code> couplings tied together?</p><details>
+<summary>Answer</summary>
+
+The two final-state pions are identical bosons. Exchanging them maps one
+Ξ⁻π⁺ pairing into the other, so the paired amplitudes are not independent.
+In this symmetric example their coefficients are equal; in a convention with
+an exchange phase, they would differ only by that fixed sign.
+
+</details><p><strong>Q4.</strong> Why can the sum of diagonal fit fractions be different from one?</p><details>
+<summary>Answer</summary>
+
+The diagonal terms are incoherent contributions. The total intensity also
+contains off-diagonal interference terms, which can be positive or negative.
+
+</details><p><strong>Q5.</strong> Which API choice makes the overlap calculation transparent in this page?</p><details>
+<summary>Answer</summary>
+
+The workflow is split into visible stages: `chain_amplitudes` caches the
+stripped chain amplitudes, `event_overlap_contributions` or
+`chain_overlap_matrix` builds the chain-basis overlaps, `physical_overlap`
+applies couplings, and `group_overlap` reduces the basis. Each object still
+exposes labels and a matrix, so it is easy to inspect the calculation.
+
+</details><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../32-visualization/">« Visualization Tutorial</a><a class="docs-footer-nextpage" href="../90-contributing/">Contributing guidelines »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Tuesday 7 April 2026 20:13">Tuesday 7 April 2026</span>. Using Julia version 1.12.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
