@@ -157,14 +157,14 @@ function _sum_overlap_contributions(xs::AbstractVector{<:OverlapContribution{T}}
     labels = _check_overlap_compatibility(xs)
     acc = zeros(Complex{T}, length(labels), length(labels))
     for x in xs
-        acc .+= Matrix(x.matrix)
+        acc .+= x.matrix
     end
     OverlapContribution(labels, Hermitian(acc, :U))
 end
 
 function Statistics.mean(xs::AbstractVector{<:OverlapContribution{T}}) where {T}
     total = _sum_overlap_contributions(xs)
-    OverlapContribution(total.labels, Hermitian(Matrix(total.matrix) ./ length(xs), :U))
+    OverlapContribution(total.labels, Hermitian(parent(total.matrix) ./ length(xs), :U))
 end
 
 function Statistics.std(
@@ -184,10 +184,14 @@ function Statistics.std(
         ),
     )
 
+    μ_matrix = Matrix(μ.matrix)
     for x in xs
-        Δ = Matrix(x.matrix) .- Matrix(μ.matrix)
-        sre .+= real.(Δ) .^ 2
-        sim .+= imag.(Δ) .^ 2
+        m = x.matrix
+        @inbounds for j = 1:n, i = 1:n
+            Δ = m[i, j] - μ_matrix[i, j]
+            sre[i, j] += real(Δ)^2
+            sim[i, j] += imag(Δ)^2
+        end
     end
 
     (labels = labels, re = sqrt.(sre ./ scale), im = sqrt.(sim ./ scale))
@@ -216,7 +220,7 @@ function physical_overlap(overlap::OverlapContribution, coefficients)
         ),
     )
     weighted = Matrix(overlap.matrix)
-    @inbounds for j in eachindex(coefficients), i in eachindex(coefficients)
+    @inbounds for j in eachindex(coefficients), i = 1:j
         weighted[i, j] = conj(coefficients[i]) * weighted[i, j] * coefficients[j]
     end
     OverlapContribution(overlap.labels, Hermitian(weighted, :U))
