@@ -79,6 +79,7 @@ Registrator
 servedocs
 setdocmeta
 sinθ
+stephist
 subchannel
 submodel
 submodels

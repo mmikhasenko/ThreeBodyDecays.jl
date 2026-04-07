@@ -18,7 +18,7 @@ using Plots
 using Random
 using Statistics
 
-theme(:wong, frame = :box, grid = false);
+theme(:boxed);
 
 # ## Kinematics and quantum numbers
 #
@@ -71,8 +71,15 @@ function chain_records(resonance)
                 Ps,
                 tbs,
             )
-            qns = possible_l_s_L_S(SpinParity(resonance.jp), two_js, Ps; k)
-            map(zip(chains, qns)) do (chain, qn)
+            map(chains) do chain
+                two_ls = chain.Hij.h.two_ls
+                two_LS = chain.HRk.h.two_ls
+                qn = (;
+                    l = d2(two_ls[1]),
+                    s = d2(two_ls[2]),
+                    L = d2(two_LS[1]),
+                    S = d2(two_LS[2]),
+                )
                 (;
                     name = resonance.name,
                     parity = parity_label,
@@ -128,49 +135,57 @@ model = ThreeBodyDecay(
 σs0 = randomPoint(ms);
 unpolarized_intensity(model, σs0)
 
-# ## Phase-space sample
+# ## Model-weighted Dalitz sample
 #
-# The hit-and-miss step is deliberately simple: draw random points in a square,
-# map them to Mandelstam variables with `y2σs`, and keep only the points inside
-# the physical phase space.
+# To see where the model puts events, draw random points in the Dalitz square,
+# keep the physical candidates, and then accept them according to the
+# pointwise intensity.
 
-function random_mandelstam_candidates(ms, nsamples; seed = 12)
-    rng = MersenneTwister(seed)
-    map(1:nsamples) do _
+physical_dalitz_hits = let
+    rng = MersenneTwister(31)
+    candidates = map(1:3_000) do _
         y2σs(rand(rng, 2), ms)
     end
+    sample = filter(σs -> isphysical(σs, ms), candidates)
+    ws = unpolarized_intensity.(Ref(model), sample)
+    sample[ws ./ maximum(ws) .> rand(rng, length(ws))]
 end;
 
-function physical_samples(ms, nsamples = 3_000; seed = 12)
-    filter(σs -> isphysical(σs, ms), random_mandelstam_candidates(ms, nsamples; seed))
-end;
-
-dalitz_candidates = random_mandelstam_candidates(ms, 600; seed = 31);
-dalitz_hits = filter(σs -> isphysical(σs, ms), dalitz_candidates);
-
-scatter(
-    getindex.(dalitz_candidates, 2),
-    getindex.(dalitz_candidates, 3);
-    lab = "rejected",
-    c = :lightgray,
-    alpha = 0.35,
-    markerstrokewidth = 0,
-    markersize = 2,
-    aspect_ratio = 1,
-    xlab = "σ₂ = m²(Ξ⁻π⁺) [GeV²]",
-    ylab = "σ₃ = m²(Ξ⁻π⁺) [GeV²]",
-    title = "Hit-and-miss phase-space sample",
-)
-scatter!(
-    getindex.(dalitz_hits, 2),
-    getindex.(dalitz_hits, 3);
-    lab = "accepted",
+p_dalitz = scatter(
+    getindex.(physical_dalitz_hits, 2),
+    getindex.(physical_dalitz_hits, 3);
+    lab = "model sample",
     c = 2,
     alpha = 0.7,
     markerstrokewidth = 0,
     markersize = 2.5,
+    aspect_ratio = 1,
+    xlab = "σ₂ = m²(Ξ⁻π⁺) [GeV²]",
+    ylab = "σ₃ = m²(Ξ⁻π⁺) [GeV²]",
+    title = "Model-weighted Dalitz sample",
 )
-plot!(border23(ms); lab = "", c = :black, lw = 2)
+plot!(p_dalitz, border23(ms); lab = "", c = :black, lw = 2)
+
+p_projection = stephist(
+    getindex.(physical_dalitz_hits, 2);
+    bins = 60,
+    fill = 0,
+    alpha = 0.2,
+    lab = "σ₂",
+    xlab = "m²(Ξ⁻π⁺) [GeV²]",
+    ylab = "events",
+    title = "Linked Ξ⁻π⁺ projection",
+)
+stephist!(
+    p_projection,
+    getindex.(physical_dalitz_hits, 3);
+    bins = 60,
+    fill = 0,
+    alpha = 0.2,
+    lab = "σ₃",
+)
+
+plot(p_dalitz, p_projection; layout = grid(2, 1; heights = (0.7, 0.3)), size = (760, 820))
 
 # ## Integral representation of overlaps
 #
@@ -192,7 +207,13 @@ plot!(border23(ms); lab = "", c = :black, lw = 2)
 # phase-space sample, cache the stripped chain amplitudes, and use
 # `event_overlap_contributions` to build the spin-summed overlap objects.
 
-samples = physical_samples(ms);
+samples = let
+    rng = MersenneTwister(12)
+    candidates = map(1:3_000) do _
+        y2σs(rand(rng, 2), ms)
+    end
+    filter(σs -> isphysical(σs, ms), candidates)
+end;
 cache = chain_amplitudes(model, samples);
 
 ρ_overlap = mean(event_overlap_contributions(cache));
