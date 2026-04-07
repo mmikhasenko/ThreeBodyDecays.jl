@@ -10,6 +10,8 @@ cosθij
 cuhre
 Dalitz
 deploydocs
+eachindex
+eltype
 fitin
 inphrange
 inrange
@@ -22,6 +24,7 @@ isphysical
 ispositive
 joinpath
 Kallen
+kwargs
 lineshape
 makedocs
 mapslices
@@ -34,6 +37,7 @@ permutedims
 polardalitz
 postprocess
 println
+randn
 rborder
 refζi
 refζj

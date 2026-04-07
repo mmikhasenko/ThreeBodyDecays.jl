@@ -16,9 +16,9 @@
 ## Description
 
 `ThreeBodyDecays.jl` is a Julia package for building hadronic decay models using a cascade reaction.
-Decays with three particles is the main application of the approach, however, it is also found useful in multibody decays where transitions can be factorized to a product of sequential decays with $≤3$ products. Particles can have arbitrary spin.
+Decays with three particles are the main application of the approach; however, it is also useful for multibody decays where transitions can be factorized into a product of sequential decays with $≤3$ products. Particles can have arbitrary spin.
 
-The implementation is based on a research paper, "Dalitz-plot decomposition for three-body decays" by JPAC Collaboration (M. Mikhasenko at al.) [(inspire reference)](http://inspirehep.net/record/1758460).
+The implementation is based on a research paper, "Dalitz-plot decomposition for three-body decays" by the JPAC Collaboration (M. Mikhasenko et al.) [(inspire reference)](http://inspirehep.net/record/1758460).
 
 The code mostly inherits notations of the paper:
 
@@ -43,7 +43,7 @@ The [PRD101 (2020) 3, 034033 paper](http://inspirehep.net/record/1758460) is ava
 
 ## Contributing
 
-If you want to make contributions of any kind, please first that a look into our [contributing guide directly on GitHub](docs/src/90-contributing.md) or the [contributing page on the website](https://mmikhasenko.github.io/ThreeBodyDecays.jl/dev/90-contributing/).
+If you want to contribute, please first take a look at our [contributing guide on GitHub](docs/src/90-contributing.md) or the [contributing page on the website](https://mmikhasenko.github.io/ThreeBodyDecays.jl/dev/90-contributing/).
 
 ---
 
