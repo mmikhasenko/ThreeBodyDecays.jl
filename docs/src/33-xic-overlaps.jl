@@ -143,7 +143,7 @@ unpolarized_intensity(model, σs0)
 
 physical_dalitz_hits = let
     rng = MersenneTwister(31)
-    candidates = map(1:3_000) do _
+    candidates = map(1:30_000) do _
         y2σs(rand(rng, 2), ms)
     end
     sample = filter(σs -> isphysical(σs, ms), candidates)
