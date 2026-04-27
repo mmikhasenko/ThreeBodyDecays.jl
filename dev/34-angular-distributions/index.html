@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Angular distributions for B^0 \to X K with X \to J/\psi + \gamma (X=1^+ and 2^-) · ThreeBodyDecays.jl</title><meta name="title" content="Angular distributions for B^0 \\to X K with X \\to J/\\psi + \\gamma (X=1^+ and 2^-) · ThreeBodyDecays.jl"/><meta property="og:title" content="Angular distributions for B^0 \\to X K with X \\to J/\\psi + \\gamma (X=1^+ and 2^-) · ThreeBodyDecays.jl"/><meta property="twitter:title" content="Angular distributions for B^0 \\to X K with X \\to J/\\psi + \\gamma (X=1^+ and 2^-) · ThreeBodyDecays.jl"/><meta name="description" content="Documentation for ThreeBodyDecays.jl."/><meta property="og:description" content="Documentation for ThreeBodyDecays.jl."/><meta property="twitter:description" content="Documentation for ThreeBodyDecays.jl."/><meta property="og:url" content="https://mmikhasenko.github.io/ThreeBodyDecays.jl/34-angular-distributions/"/><meta property="twitter:url" content="https://mmikhasenko.github.io/ThreeBodyDecays.jl/34-angular-distributions/"/><link rel="canonical" href="https://mmikhasenko.github.io/ThreeBodyDecays.jl/34-angular-distributions/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">ThreeBodyDecays.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">ThreeBodyDecays</a></li><li><a class="tocitem" href="../10-energy-dependence/">Energy dependence of the amplitude</a></li><li><a class="tocitem" href="../11-quantization-reference/">Quantization reference frames</a></li><li><a class="tocitem" href="../12-performance/">Performance notes</a></li><li><a class="tocitem" href="../30-tutorial/">Tutorial</a></li><li><a class="tocitem" href="../31-canonical/">Canonical formalism</a></li><li><a class="tocitem" href="../32-visualization/">Visualization Tutorial</a></li><li><a class="tocitem" href="../33-xic-overlaps/">Ξc⁺ → Ξ⁻π⁺π⁺ overlaps</a></li><li class="is-active"><a class="tocitem" href>Angular distributions for <code>B^0 \to X K</code> with <code>X \to J/\psi + \gamma</code> (<span>$X=1^+$</span> and <span>$2^-$</span>)</a><ul class="internal"><li><a class="tocitem" href="#Reference"><span>Reference</span></a></li></ul></li><li><a class="tocitem" href="../90-contributing/">Contributing guidelines</a></li><li><a class="tocitem" href="../91-developer/">Developer documentation</a></li><li><a class="tocitem" href="../95-reference/">Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Angular distributions for <code>B^0 \to X K</code> with <code>X \to J/\psi + \gamma</code> (<span>$X=1^+$</span> and <span>$2^-$</span>)</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Angular distributions for <code>B^0 \to X K</code> with <code>X \to J/\psi + \gamma</code> (<span>$X=1^+$</span> and <span>$2^-$</span>)</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/mmikhasenko/ThreeBodyDecays.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/mmikhasenko/ThreeBodyDecays.jl/blob/main/docs/src/34-angular-distributions.jl#" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Angular-distributions-for-B0-\\to-X-K-with-X-\\to-J/\\psi-\\gamma-(X1-and-2-)"><a class="docs-heading-anchor" href="#Angular-distributions-for-B0-\\to-X-K-with-X-\\to-J/\\psi-\\gamma-(X1-and-2-)">Angular distributions for <code>B^0 \to X K</code> with <code>X \to J/\psi + \gamma</code> (<span>$X=1^+$</span> and <span>$2^-$</span>)</a><a id="Angular-distributions-for-B0-\\to-X-K-with-X-\\to-J/\\psi-\\gamma-(X1-and-2-)-1"></a><a class="docs-heading-anchor-permalink" href="#Angular-distributions-for-B0-\\to-X-K-with-X-\\to-J/\\psi-\\gamma-(X1-and-2-)" title="Permalink"></a></h1><h2 id="Reference"><a class="docs-heading-anchor" href="#Reference">Reference</a><a id="Reference-1"></a><a class="docs-heading-anchor-permalink" href="#Reference" title="Permalink"></a></h2><p>Helicity-angle distributions for <span>$B \to K\,(J/\psi\,\gamma)$</span> in the X(3872) / <span>$\eta_{c2}$</span> context are discussed in <a href="https://inspirehep.net/literature/3122836">S.~X. Nakamura, <em>Two nearby states in the X(3872) region: Resolving the radiative-decay ratio tension with</em> <span>$\eta_{c2}$</span></a> (<a href="https://inspirehep.net/literature/3122836">INSPIRE</a> <a href="https://inspirehep.net/literature/3122836">3122836</a>), including a two-state scenario with <span>$1^{++}$</span> and <span>$2^{-+}$</span> components.</p><p>The effective Lagrangian in that paper fixes the <span>$LS$</span> (and subchannel <span>$ls$</span>) content: the couplings are those written in the ansatz, not a scan over independent <span>$LS$</span> amplitudes. This script, by contrast, lists <strong>all</strong> parity-conserving <code>ls \times LS</code> assignments that <code>possible_lsLS</code> allows for each <span>$X$</span> spin–parity (one curve per term). The angular shapes can therefore differ from <a href="https://inspirehep.net/literature/3122836">that paper</a> even for the same <span>$J^P$</span>.</p><p>This example sets up <code>B(0^±) -&gt; X K(0^-)</code>, <code>X -&gt; J/psi(1^-) + gamma(1^-)</code>, for <strong>two</strong> choices <code>X=1+</code> and <code>X=2-</code> (the only structural difference in the code). The <code>X</code> decay is in the <code>(1,2)</code> pair (<code>k = 3</code>, spectator kaon: <code>1=J/psi</code>, <code>2=gamma</code>, <code>3=K</code>).</p><p>We scan parity-conserving <code>ls × LS</code> couplings and project the intensity onto <code>cos(theta_12)</code>. The photon sum is transverse only (<code>unpolarized_intensity_excluding_photon_longitudinal</code> below). Masses are arbitrary; we use a light spectator and a heavy parent.</p><pre><code class="language-julia hljs">using ThreeBodyDecays
+using Plots
+using QuadGK</code></pre><p>Transverse photon: sum |A|² over helicities, <strong>excluding</strong> photon <code>two_λ=0</code> (index <code>photon</code> in <code>tbs</code>).</p><pre><code class="language-julia hljs">function unpolarized_intensity_excluding_photon_longitudinal(
+    dc::AbstractDecayChain,
+    σs;
+    photon::Int = 2,
+    kw...,
+)
+    F = amplitude(dc, σs; kw...)
+    @assert 1 &lt;= photon &lt;= 3
+    two_jγ = dc.tbs.two_js[photon]
+    s = zero(eltype(F))
+    for I in CartesianIndices(F)
+        iγ = Tuple(I)[photon]
+        two_λγ = 2 * (iγ - 1) - two_jγ
+        iszero(two_λγ) &amp;&amp; continue
+        s += abs2(F[I])
+    end
+    return s
+end
+
+theme(
+    :wong,
+    frame = :box,
+    grid = false,
+    lab = &quot;&quot;,
+    legendtitlefontsize = 9,
+    guidefontvalign = :top,
+    guidefonthalign = :right,
+    minorticks = true,
+)
+
+const ms = ThreeBodyMasses(1.0, 1.0, 0.5; m0 = 4.0)
+const tbs = ThreeBodySystem(ms, ThreeBodySpins(2, 2, 0; two_h0 = 0))  # J/psi, photon, K
+const k_resonance = 3
+const z_grid = collect(range(-1.0, 1.0; length = 160))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">160-element Vector{Float64}:
+ -1.0
+ -0.9874213836477987
+ -0.9748427672955975
+ -0.9622641509433962
+ -0.949685534591195
+ -0.9371069182389937
+ -0.9245283018867925
+ -0.9119496855345912
+ -0.89937106918239
+ -0.8867924528301887
+  ⋮
+  0.89937106918239
+  0.9119496855345912
+  0.9245283018867925
+  0.9371069182389937
+  0.949685534591195
+  0.9622641509433962
+  0.9748427672955975
+  0.9874213836477987
+  1.0</code></pre><p>Tuple of <code>SpinParity =&gt; title string</code> (only place that differs between the two 2×2 rows).</p><pre><code class="language-julia hljs">const RESONANCE_JPS = (jp&quot;1+&quot; =&gt; &quot;1+&quot;, jp&quot;2-&quot; =&gt; &quot;2-&quot;)
+
+wave_name(two_l::Int) = string(letterL(div(two_l, 2)))
+
+function coupling_label(two_ls, two_LS)
+    l, s = d2(two_ls)
+    L, S = d2(two_LS)
+    return &quot;$(wave_name(two_ls[1]))-wave (l=$(l), s=$(s)); $(wave_name(two_LS[1]))-wave (L=$(L), S=$(S))&quot;
+end
+
+function trapz(xs, ys)
+    return sum((ys[1:(end-1)] .+ ys[2:end]) .* diff(xs)) / 2
+end
+
+function cosθ_projection(chain; z_values = z_grid)
+    intensity = Base.Fix1(unpolarized_intensity_excluding_photon_longitudinal, chain)
+    values = map(z_values) do z
+        quadgk(project_cosθij_intergand(intensity, masses(chain), z; k = chain.k), 0, 1)[1]
+    end
+    values = max.(values, 0.0)
+    return values / trapz(z_values, values)
+end
+
+function all_chains_for_parent(parent_jp::AbstractString, resonance_jp)
+    _, Ps = ThreeBodySpinParities(&quot;1-&quot;, &quot;1-&quot;, &quot;0-&quot;; jp0 = parent_jp)
+    confs = possible_lsLS(resonance_jp, tbs.two_js, Ps; k = k_resonance)
+    chains = map(confs) do (; two_ls, two_LS)
+        DecayChain(;
+            k = k_resonance,
+            two_j = resonance_jp.two_j,
+            Xlineshape = identity,
+            tbs,
+            Hij = VertexFunction(RecouplingLS(two_ls)),
+            HRk = VertexFunction(RecouplingLS(two_LS)),
+        )
+    end
+    labels = [coupling_label(conf.two_ls, conf.two_LS) for conf in confs]
+    return (; chains, labels)
+end
+
+function panel_for_parent(parent_jp::AbstractString, resonance_jp, x_title::AbstractString)
+    data = all_chains_for_parent(parent_jp, resonance_jp)
+    if isempty(data.chains)
+        p = plot(
+            xlim = (-1, 1),
+            ylim = (0, 1),
+            xlabel = &quot;cos(θ₁₂)&quot;,
+            ylabel = &quot;normalized intensity&quot;,
+            title = &quot;X($x_title), parent B $parent_jp&quot;,
+            legend = false,
+        )
+        annotate!(0.0, 0.55, text(&quot;No parity-conserving\nls × LS couplings&quot;, 11, :center))
+        return p
+    end
+
+    p = plot(
+        xlabel = &quot;cos(θ₁₂)&quot;,
+        ylabel = &quot;normalized intensity&quot;,
+        title = &quot;X($x_title), parent B $parent_jp&quot;,
+        legend = :topright,
+        xlim = (-1, 1),
+    )
+    for (chain, label) in zip(data.chains, data.labels)
+        plot!(p, z_grid, cosθ_projection(chain); lw = 2.5, label)
+    end
+    return p
+end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">panel_for_parent (generic function with 1 method)</code></pre><p>Two rows: X = 1+ (top) and 2- (bottom); two columns: B = 0+ and 0-.</p><pre><code class="language-julia hljs">const angular_distribution_plot = let
+    pss = map(Iterators.product(values(RESONANCE_JPS), (&quot;0+&quot;, &quot;0-&quot;))) do (r_pair, pB)
+        r_jp, x_lab = r_pair
+        panel_for_parent(pB, r_jp, x_lab)
+    end
+    plot(
+        pss[1, 1],
+        pss[1, 2],
+        pss[2, 1],
+        pss[2, 2];
+        layout = (2, 2),
+        size = (1200, 800),
+        bottom_margin = 5Plots.PlotMeasures.mm,
+    )
+end
+
+output_path = get(ENV, &quot;TBD_ANGULAR_DISTRIBUTION_PLOT&quot;, &quot;&quot;)
+if !isempty(output_path)
+    mkpath(dirname(output_path))
+    savefig(angular_distribution_plot, output_path)
+    @info &quot;Saved angular-distribution plot&quot; output_path
+end
+
+angular_distribution_plot</code></pre><img src="3155b128.svg" alt="Example block output"/><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../33-xic-overlaps/">« Ξc⁺ → Ξ⁻π⁺π⁺ overlaps</a><a class="docs-footer-nextpage" href="../90-contributing/">Contributing guidelines »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Monday 27 April 2026 13:24">Monday 27 April 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
