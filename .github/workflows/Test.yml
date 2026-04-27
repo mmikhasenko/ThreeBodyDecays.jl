@@ -23,7 +23,8 @@ jobs:
             fail-fast: false
             matrix:
                 version:
-                    - "1.7"
+                    # 1.8+ required for native Julia binaries on macOS aarch64 (macos-latest)
+                    - "1.9"
                     - "1"
                 os:
                     - ubuntu-latest
