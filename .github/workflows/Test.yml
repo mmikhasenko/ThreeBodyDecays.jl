@@ -13,7 +13,8 @@ jobs:
         with:
             os: ${{ matrix.os }}
             version: ${{ matrix.version }}
-            arch: ${{ matrix.arch }}
+            # macOS-latest is arm64; x64 is for ubuntu/windows only
+            arch: ${{ matrix.os == 'macOS-latest' && 'aarch64' || 'x64' }}
             allow_failure: ${{ matrix.allow_failure }}
             run_codecov: ${{ matrix.version == '1' && matrix.os == 'ubuntu-latest' }}
         secrets:
@@ -28,6 +29,4 @@ jobs:
                     - ubuntu-latest
                     - macOS-latest
                     - windows-latest
-                arch:
-                    - x64
                 allow_failure: [false]
