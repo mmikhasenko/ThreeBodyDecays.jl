@@ -5,3 +5,13 @@ Manifest.toml
 docs/build/
 *.rej
 node_modules
+
+# Regenerated from docs/src/*.jl by Literate in docs/make.jl (do not commit)
+docs/src/30-tutorial.md
+docs/src/31-canonical.md
+docs/src/32-visualization.md
+docs/src/33-xic-overlaps.md
+docs/src/34-angular-distributions.md
+
+# Local figure exports (e.g. TBD_ANGULAR_DISTRIBUTION_PLOT)
+docs/figures/
