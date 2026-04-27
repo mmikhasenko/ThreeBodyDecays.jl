@@ -10,14 +10,14 @@ From the `docs` folder, with the `docs/Project.toml` environment:
 julia --project=. make.jl
 ```
 
-`make.jl` runs [Literate.jl](https://github.com/JuliaDocs/Literate.jl) on every `*.jl` file under `src/`, writing matching `*.md` files, then calls `makedocs`.
+`make.jl` runs [Literate.jl](https://github.com/fredrikekre/Literate.jl) on every `*.jl` file under `src/`, writing matching `*.md` files, then calls `makedocs`.
 
 Those generated `3*.md` files are listed in the root `.gitignore` (they are recreated in CI by `docs/make.jl`). Edit the `*.jl` sources only.
 
 ## Page map
 
 | Doc | Source | Role |
-|-----|--------|------|
+| --- | --- | --- |
 | ✓ | `src/index.md` | Site home |
 | ✓ | `src/10-energy-dependence.md` | Energy dependence |
 | ✓ | `src/11-quantization-reference.md` | Quantization / conventions |

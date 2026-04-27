@@ -47,6 +47,7 @@ lightgray
 lims
 Lineshapes
 markdownlint
+makedocs
 markerstrokewidth
 markersize
 mathcal
@@ -111,6 +112,16 @@ ylab
 ylim
 yticks
 zenodo
+ansatz
+confs
+iszero
+legendtitlefontsize
+mkpath
+Nakamura
+savefig
+trapz
+xlabel
+ylabel
 absρ
 ηηηphase
 ηηηphaseisplus
