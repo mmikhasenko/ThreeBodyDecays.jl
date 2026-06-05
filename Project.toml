@@ -17,7 +17,7 @@ Tullio = "bc48ee85-29a4-5162-ae0b-a64e1601d4bc"
 
 [compat]
 LinearAlgebra = "1.9"
-Parameters = "0.12.0"
+Parameters = "0.12.0, 0.13"
 PartialWaveFunctions = "0.2.0"
 PolynomialRoots = "1.0.0"
 Polynomials = "4.0.6"
