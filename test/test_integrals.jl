@@ -44,20 +44,16 @@ end
     # Test integration over cosθ matches phase space integral
     Nb = 500
     # Integration over cosθ
-    cosθ_integral = [
-        sum(range(-1, 1, Nb)) do z
-            integrand = project_cosθij_intergand(I, ms, z; k)
-            quadgk(integrand, 0, 1)[1] * 2 / Nb
-        end for k = 1:3
-    ]
+    cosθ_integral = [sum(range(-1, 1, Nb)) do z
+        integrand = project_cosθij_intergand(I, ms, z; k)
+        quadgk(integrand, 0, 1)[1] * 2 / Nb
+    end for k = 1:3]
 
     # Integration over σk
-    σk_integral = [
-        sum(range(lims(ms; k)..., Nb)) do σk
-            integrand = projection_integrand(I, ms, σk; k)
-            quadgk(integrand, 0, 1)[1] * diff(collect(lims(ms; k)))[1] / Nb
-        end for k = 1:3
-    ]
+    σk_integral = [sum(range(lims(ms; k)..., Nb)) do σk
+        integrand = projection_integrand(I, ms, σk; k)
+        quadgk(integrand, 0, 1)[1] * diff(collect(lims(ms; k)))[1] / Nb
+    end for k = 1:3]
 
     # Both methods should give approximately the same result
     @test isapprox(cosθ_integral[1], σk_integral[1], rtol = 1e-2)
