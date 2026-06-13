@@ -47,7 +47,7 @@ repos:
       rev: v1.38.0
       hooks:
           - id: yamllint
-    - repo: https://github.com/domluna/JuliaFormatter.jl
+    - repo: https://github.com/JuliaEditorSupport/JuliaFormatter.jl
       rev: v2.6.5
       hooks:
           - id: julia-formatter
