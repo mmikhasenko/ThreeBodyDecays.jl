@@ -33,6 +33,7 @@ function possible_ls(jp1::SpinParity, jp2::SpinParity; jp::SpinParity)
     two_ls = Vector{Tuple{Int,Int}}(undef, 0)
     for two_s ∈ abs(jp1.two_j-jp2.two_j):2:abs(jp1.two_j+jp2.two_j)
         for two_l ∈ abs(jp.two_j-two_s):2:abs(jp.two_j+two_s)
+            iseven(two_l) || continue  # orbital angular momentum is integer
             if jp1.p ⊗ jp2.p ⊗ jp.p == (isodd(div(two_l, 2)) ? '-' : '+')
                 push!(two_ls, (two_l, two_s))
             end

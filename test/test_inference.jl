@@ -14,7 +14,7 @@ using ThreeBodyDecays.Parameters
     dc = DecayChainLS(;
         k = 3,
         Xlineshape = σ -> 1 / (4.1^2 - σ - 0.1im),
-        jp = jp"3-",
+        jp = jp"1/2-",
         Ps = ThreeBodyParities('+', '-', '-'; P0 = '+'),
         tbs = tbs,
     )
