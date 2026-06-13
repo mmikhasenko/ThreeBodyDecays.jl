@@ -33,7 +33,7 @@ function possible_ls(jp1::SpinParity, jp2::SpinParity; jp::SpinParity)
     two_ls = Vector{Tuple{Int,Int}}(undef, 0)
     for two_s ∈ abs(jp1.two_j-jp2.two_j):2:abs(jp1.two_j+jp2.two_j)
         for two_l ∈ abs(jp.two_j-two_s):2:abs(jp.two_j+two_s)
-            if jp1.p ⊗ jp2.p ⊗ jp.p == (isodd(div(two_l, 2)) ? '-' : '+')
+            if iseven(two_l) && jp1.p ⊗ jp2.p ⊗ jp.p == (isodd(div(two_l, 2)) ? '-' : '+')
                 push!(two_ls, (two_l, two_s))
             end
         end
@@ -209,14 +209,12 @@ named tuple. The function filters the allowed couplings and:
 
 # Example
 ```jldoctest
-julia> two_js = ThreeBodySpins(1, 1, 0; two_h0 = 2);
+julia> two_js, Ps = ThreeBodySpinParities("1/2+", "0-", "0-"; jp0 = "1/2+");
 
-julia> Ps = ThreeBodyParities('+', '+', '+'; P0 = '-');
-
-julia> data = complete_l_s_L_S(jp"1-", two_js, Ps, (; L = 1 / 2, S = 1 / 2); k = 1);
+julia> data = complete_l_s_L_S(jp"1/2-", two_js, Ps, (; L = 0, S = 1 / 2); k = 2);
 
 julia> data
-(L = "1/2", S = "1/2", l = "3/2", s = "1/2")
+(L = "0", S = "1/2", l = "0", s = "1/2")
 ```
 
 See also [`possible_lsLS`](@ref), [`possible_l_s_L_S`](@ref).

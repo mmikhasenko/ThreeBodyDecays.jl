@@ -76,11 +76,10 @@ function A_canonical(chain, angles, two_ms)
 end;
 
 # The `unpolarized_intensity_canonical` function calculates the unpolarized intensity for the canonical formalism.
-unpolarized_intensity_canonical(chain, angles) =
-    sum(itr(chain.tbs.two_js)) do two_ms
-        A = A_canonical(chain, angles, two_ms)
-        abs2(A)
-    end;
+unpolarized_intensity_canonical(chain, angles) = sum(itr(chain.tbs.two_js)) do two_ms
+    A = A_canonical(chain, angles, two_ms)
+    abs2(A)
+end;
 
 #md # ## Example
 
