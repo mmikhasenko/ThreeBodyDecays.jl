@@ -2,9 +2,13 @@ exclude = [
     "@ref",
     "^https://github.com/.*/releases/tag/v.*$",
     "^https://mmikhasenko.github.io/ThreeBodyDecays.jl/stable$",
+    # Contributor Covenant translations page is intermittently unreachable from CI
+    "^https://www\\.contributor-covenant\\.org/translations$",
     # Ignore literate-generated pages referenced during source checks
     "^file://.*/docs/src/30-tutorial\\.md$",
     "^file://.*/docs/src/31-canonical\\.md$",
 ]
+
+max_retries = 5
 
 exclude_path = ["docs/build"]
