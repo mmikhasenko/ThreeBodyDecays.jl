@@ -134,4 +134,10 @@ if VERSION >= v"1.11-"
 else
     const VertexFunction = Vertex
 end
+
+Core.@doc """
+    VertexFunction
+
+Deprecated alias for [`Vertex`](@ref). Prefer `Vertex` in new code.
+""" VertexFunction
 (ff::NoFormFactor)(m0², m1², m2²) = one(typeof(m0²))
