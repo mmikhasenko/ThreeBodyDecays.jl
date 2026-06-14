@@ -26,8 +26,6 @@ struct OverlapContribution{T}
     matrix::Hermitian{Complex{T},Matrix{Complex{T}}}
 end
 
-const OverlapMatrix = OverlapContribution
-
 _recoupling_label(h::NoRecoupling) = "$(d2(h.two_λa)), $(d2(h.two_λb))"
 _recoupling_label(h::ParityRecoupling) = "$(d2(h.two_λa)), $(d2(h.two_λb))"
 _recoupling_label(h::RecouplingLS) = "l=$(d2(h.two_ls[1])), s=$(d2(h.two_ls[2]))"
@@ -91,6 +89,13 @@ function chain_amplitudes(model::ThreeBodyDecay, samples)
     ChainAmplitudeCache(labels, collected_samples, amplitudes)
 end
 
+function _event_overlap_contribution(cache::ChainAmplitudeCache{T}, k::Int) where {T}
+    nchains = size(cache.amplitudes, 1)
+    overlaps = zeros(Complex{T}, nchains, nchains)
+    add_event_contribution!(overlaps, cache.amplitudes, k)
+    OverlapContribution(cache.labels, Hermitian(overlaps, :U))
+end
+
 """
     chain_overlap_matrix(cache)
 
@@ -107,27 +112,15 @@ function chain_overlap_matrix(cache::ChainAmplitudeCache{T}) where {T}
     OverlapContribution(cache.labels, Hermitian(overlaps, :U))
 end
 
-chain_overlap_contribution(cache::ChainAmplitudeCache) = chain_overlap_matrix(cache)
-
 """
     event_overlap_contributions(cache)
 
 Construct one stripped chain-basis overlap contribution per event.
 """
 function event_overlap_contributions(cache::ChainAmplitudeCache{T}) where {T}
-    nchains, _, nsamples = size(cache.amplitudes)
-    xs = Vector{OverlapContribution{T}}(undef, nsamples)
-
-    @inbounds for k = 1:nsamples
-        overlaps = zeros(Complex{T}, nchains, nchains)
-        add_event_contribution!(overlaps, cache.amplitudes, k)
-        xs[k] = OverlapContribution(cache.labels, Hermitian(overlaps, :U))
-    end
-
-    xs
+    nsamples = size(cache.amplitudes, 3)
+    [_event_overlap_contribution(cache, k) for k in 1:nsamples]
 end
-
-event_overlaps(cache::ChainAmplitudeCache) = event_overlap_contributions(cache)
 
 """
     chain_overlap_matrix(model, samples)
@@ -136,8 +129,6 @@ Convenience constructor for the stripped chain-basis overlap contribution.
 """
 chain_overlap_matrix(model::ThreeBodyDecay, samples) =
     chain_overlap_matrix(chain_amplitudes(model, samples))
-chain_overlap_contribution(model::ThreeBodyDecay, samples) =
-    chain_overlap_matrix(model, samples)
 
 function _check_overlap_compatibility(xs::AbstractVector{<:OverlapContribution})
     isempty(xs) && throw(ArgumentError("Need a non-empty vector of overlap contributions"))
@@ -153,18 +144,14 @@ function _check_overlap_compatibility(xs::AbstractVector{<:OverlapContribution})
     labels
 end
 
-function _sum_overlap_contributions(xs::AbstractVector{<:OverlapContribution{T}}) where {T}
+function Statistics.mean(xs::AbstractVector{<:OverlapContribution{T}}) where {T}
     labels = _check_overlap_compatibility(xs)
-    acc = zeros(Complex{T}, length(labels), length(labels))
+    n = length(labels)
+    acc = zeros(Complex{T}, n, n)
     for x in xs
         acc .+= x.matrix
     end
-    OverlapContribution(labels, Hermitian(acc, :U))
-end
-
-function Statistics.mean(xs::AbstractVector{<:OverlapContribution{T}}) where {T}
-    total = _sum_overlap_contributions(xs)
-    OverlapContribution(total.labels, Hermitian(parent(total.matrix) ./ length(xs), :U))
+    OverlapContribution(labels, Hermitian(acc ./ length(xs), :U))
 end
 
 function Statistics.std(
@@ -197,14 +184,10 @@ function Statistics.std(
     (labels = labels, re = sqrt.(sre ./ scale), im = sqrt.(sim ./ scale))
 end
 
-"""
-    stderr(xs)
-
-Elementwise Monte Carlo standard error for a vector of event-level overlap contributions.
-"""
+# Monte Carlo standard error for event-level overlap contributions (internal).
 function stderr(xs::AbstractVector{<:OverlapContribution}; corrected::Bool = true)
-    s = Statistics.std(xs; corrected)
     n = length(xs)
+    s = Statistics.std(xs; corrected)
     (labels = s.labels, re = s.re ./ sqrt(n), im = s.im ./ sqrt(n))
 end
 
@@ -274,15 +257,8 @@ function total_intensity(overlap::OverlapContribution{T}) where {T}
     total
 end
 
-"""
-    diagonal_integrals(overlap)
-
-Return the diagonal contributions of a labeled overlap contribution.
-"""
-diagonal_integrals(overlap::OverlapContribution) =
-    [real(overlap.matrix[i, i]) for i in eachindex(overlap.labels)]
-
-diagonal_contributions(overlap::OverlapContribution) = diagonal_integrals(overlap)
+_scaled_fraction(value, total, normalize::Bool, percent::Bool) =
+    (percent ? 100 * one(total) : one(total)) * (normalize ? value / total : value)
 
 """
     fit_fractions(overlap; normalize=true, percent=true, sort=true)
@@ -295,11 +271,13 @@ function fit_fractions(
     percent::Bool = true,
     sort::Bool = true,
 )
-    values = diagonal_integrals(overlap)
     total = total_intensity(overlap)
-    scale = percent ? 100 * one(total) : one(total)
-    values = normalize ? values ./ total .* scale : values .* scale
-    rows = [(; label, fraction) for (label, fraction) in zip(overlap.labels, values)]
+    rows = [
+        (;
+            label,
+            fraction = _scaled_fraction(real(overlap.matrix[i, i]), total, normalize, percent),
+        ) for (i, label) in pairs(overlap.labels)
+    ]
     sort ? Base.sort(rows; by = x -> x.fraction, rev = true) : rows
 end
 
@@ -319,8 +297,6 @@ function interference_terms(
     sort::Bool = true,
 )
     total = total_intensity(overlap)
-    norm = normalize ? total : one(total)
-    scale = percent ? 100 * one(total) : one(total)
     rows = NamedTuple[]
 
     @inbounds for j = 2:length(overlap.labels)
@@ -331,7 +307,7 @@ function interference_terms(
                 (;
                     label_i = overlap.labels[i],
                     label_j = overlap.labels[j],
-                    fraction = value / norm * scale,
+                    fraction = _scaled_fraction(value, total, normalize, percent),
                 ),
             )
         end
