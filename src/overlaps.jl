@@ -119,7 +119,7 @@ Construct one stripped chain-basis overlap contribution per event.
 """
 function event_overlap_contributions(cache::ChainAmplitudeCache{T}) where {T}
     nsamples = size(cache.amplitudes, 3)
-    [_event_overlap_contribution(cache, k) for k in 1:nsamples]
+    [_event_overlap_contribution(cache, k) for k = 1:nsamples]
 end
 
 """
@@ -275,7 +275,12 @@ function fit_fractions(
     rows = [
         (;
             label,
-            fraction = _scaled_fraction(real(overlap.matrix[i, i]), total, normalize, percent),
+            fraction = _scaled_fraction(
+                real(overlap.matrix[i, i]),
+                total,
+                normalize,
+                percent,
+            ),
         ) for (i, label) in pairs(overlap.labels)
     ]
     sort ? Base.sort(rows; by = x -> x.fraction, rev = true) : rows
