@@ -17,11 +17,11 @@ spectator `k`.
 - `k::Int`: Spectator index (1,2,3), selecting which pair forms the isobar.
 - `two_j::Int`: Twice the isobar spin `2J`.
 - `Xlineshape`: Lineshape function, typically called as `Xlineshape(σk)` with `σk` the isobar invariant.
-- `HRk::VertexFunction`: Vertex for the `0 → R k` decay.
-- `Hij::VertexFunction`: Vertex for the `R → i j` decay.
+- `HRk::Vertex`: production vertex `0 → R k`.
+- `Hij::Vertex`: decay vertex `R → ij`.
 - `tbs::ThreeBodySystem`: Masses and spins of the full system.
 """
-@with_kw struct DecayChain{X,T,R1<:VertexFunction,R2<:VertexFunction} <: AbstractDecayChain
+@with_kw struct DecayChain{X,T,R1<:Vertex,R2<:Vertex} <: AbstractDecayChain
     k::Int
     #
     two_j::Int # isobar spin
@@ -82,8 +82,8 @@ function DecayChainLS(;
         Xlineshape,
         tbs,
         _jp.two_j,
-        Hij = RecouplingLS(two_ls) |> VertexFunction,
-        HRk = RecouplingLS(two_LS) |> VertexFunction,
+        Hij = RecouplingLS(two_ls) |> Vertex,
+        HRk = RecouplingLS(two_LS) |> Vertex,
     )
 end
 
@@ -133,8 +133,8 @@ function DecayChainsLS(;
             Xlineshape,
             tbs,
             _jp.two_j,
-            Hij = RecouplingLS(two_ls) |> VertexFunction,
-            HRk = RecouplingLS(two_LS) |> VertexFunction,
+            Hij = RecouplingLS(two_ls) |> Vertex,
+            HRk = RecouplingLS(two_LS) |> Vertex,
         ) for (two_ls, two_LS) in ls_LS_matrix
     ]
 end
@@ -167,12 +167,12 @@ d^J_{λ_R λ_{R'}}(\\theta_{ij}) \\;
 V^{R \\to ij}_{λ_i λ_j}
 ```
 
-- ``V^{0 \\to Rk}_{λ_0 λ_R λ_k}``: vertex for parent decay into isobar + spectator (see [`VertexFunction`](@ref),
+- ``V^{0 \\to Rk}_{λ_0 λ_R λ_k}``: vertex for parent decay into isobar + spectator (see [`Vertex`](@ref),
   [`Recoupling`](@ref)).
 - ``d^J_{λ_R λ_{R'}}(\\theta_{ij})``: Wigner small-d for the angle between parent and isobar frames.
 - ``V^{R \\to ij}_{λ_i λ_j}``: vertex for isobar decay into the two-body pair ``(i,j)``.
 - ``\\mathcal{L}(\\sigma_k)``: lineshape and form-factor product for the chain (from `Xlineshape`,
-  `HRk.ff`, `Hij.ff`; see [`VertexFunction`](@ref)).
+  `HRk.ff`, `Hij.ff`; see [`Vertex`](@ref)).
 - ``n_J = \\sqrt{2J+1}``: normalization.
 
 The resonance projections are fixed by the external helicities:

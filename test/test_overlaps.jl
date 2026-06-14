@@ -14,8 +14,8 @@ function overlap_test_model()
         k = 1,
         two_j = 2,
         Xlineshape = σ -> 1 / (4.1^2 - σ - 0.1im),
-        Hij = RecouplingLS((2, 0)) |> VertexFunction,
-        HRk = RecouplingLS((2, 2)) |> VertexFunction,
+        Hij = RecouplingLS((2, 0)) |> Vertex,
+        HRk = RecouplingLS((2, 2)) |> Vertex,
         tbs,
     )
     ch2 = DecayChain(ch1; k = 2)

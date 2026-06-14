@@ -53,8 +53,8 @@ chains = let
             jp.two_j,
             tbs,
             Xlineshape,
-            HRk = RecouplingLS(two_LS) |> VertexFunction,
-            Hij = RecouplingLS(two_ls) |> VertexFunction,
+            HRk = RecouplingLS(two_LS) |> Vertex,
+            Hij = RecouplingLS(two_ls) |> Vertex,
         )
     end
 end
@@ -102,8 +102,8 @@ const model = let
                 two_jp.two_j,
                 tbs,
                 Xlineshape = identity,
-                HRk = RecouplingLS(two_LS) |> VertexFunction,
-                Hij = RecouplingLS(two_ls) |> VertexFunction,
+                HRk = RecouplingLS(two_LS) |> Vertex,
+                Hij = RecouplingLS(two_ls) |> Vertex,
             )
         end
         ci = ones(Float64, length(chains))
@@ -150,24 +150,30 @@ function (ff::FF)(m0sq, m1sq, m2sq)
     z = p / sqrt(1 + z^2)
 end
 
-@testset "VertexFunction constructor" begin
-    @test VertexFunction(RecouplingLS((2, 1))) isa VertexFunction
-    @test VertexFunction(RecouplingLS((2, 1)), FF(1.5)) isa VertexFunction
+@testset "Vertex constructor" begin
+    @test Vertex(RecouplingLS((2, 1))) isa Vertex
+    @test Vertex(RecouplingLS((2, 1)), FF(1.5)) isa Vertex
+end
+
+@testset "VertexFunction deprecation alias" begin
+    @test VertexFunction === Vertex
+    @test VertexFunction(RecouplingLS((2, 1))) isa Vertex
+    @test VertexFunction(RecouplingLS((2, 1)), FF(1.5)) isa Vertex
 end
 
 
 Random.seed!(1234)
-@testset "VertexFunction representation property" begin
+@testset "Vertex representation property" begin
     ms = ThreeBodyMasses(0.938, 0.49367, 0.13957; m0 = 2.46867)
     tbs = ThreeBodySystem(ms, ThreeBodySpins(1, 1, 1; two_h0 = 1))
 
-    # Test that VertexFunction preserves representation property
+    # Test that Vertex preserves representation property
     dc = DecayChain(;
         k = 1,
         two_j = 2,
         Xlineshape = σ -> 1.0,
-        HRk = VertexFunction(RecouplingLS((2, 1)), FF(1.5)),
-        Hij = VertexFunction(RecouplingLS((2, 1)), FF(1.5)),
+        HRk = Vertex(RecouplingLS((2, 1)), FF(1.5)),
+        Hij = Vertex(RecouplingLS((2, 1)), FF(1.5)),
         tbs,
     )
 
