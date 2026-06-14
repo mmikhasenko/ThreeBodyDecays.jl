@@ -1,6 +1,6 @@
 # [Renaming `VertexFunction` → `Vertex`](@id vertex_rename)
 
-ThreeBodyDecays.jl v0.15 renames the public type [`VertexFunction`](@ref) to [`Vertex`](@ref).
+ThreeBodyDecays.jl v0.15 renames the public type `VertexFunction` to [`Vertex`](@ref).
 
 ## Why
 

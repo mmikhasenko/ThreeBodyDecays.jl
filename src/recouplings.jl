@@ -120,7 +120,7 @@ Vertex(h::Recoupling, ff::F) # custom form-factor functor
 Vertices appear in [`DecayChain`](@ref) as `HRk` (production ``0 \\to Rk``) and `Hij` (decay ``R \\to ij``).
 
 !!! note "Renamed from `VertexFunction`"
-    [`VertexFunction`](@ref) is a deprecated alias for `Vertex` and will be removed in a future release.
+    `VertexFunction` is a deprecated alias for `Vertex` and will be removed in a future release.
     See [Renaming `VertexFunction` → `Vertex`](@ref vertex_rename).
 """
 struct Vertex{R<:Recoupling,F}
@@ -134,10 +134,4 @@ if VERSION >= v"1.11-"
 else
     const VertexFunction = Vertex
 end
-
-Core.@doc """
-    VertexFunction
-
-Deprecated alias for [`Vertex`](@ref). Prefer `Vertex` in new code.
-""" VertexFunction
 (ff::NoFormFactor)(m0², m1², m2²) = one(typeof(m0²))
