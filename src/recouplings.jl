@@ -121,7 +121,6 @@ Vertices appear in [`DecayChain`](@ref) as `HRk` (production ``0 \\to Rk``) and 
 
 !!! note "Renamed from `VertexFunction`"
     `VertexFunction` is a deprecated alias for `Vertex` and will be removed in a future release.
-    See [Renaming `VertexFunction` → `Vertex`](@ref vertex_rename).
 """
 struct Vertex{R<:Recoupling,F}
     h::R
