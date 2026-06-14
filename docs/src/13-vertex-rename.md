@@ -27,7 +27,8 @@ The struct fields are unchanged: `h` (recoupling) and `ff` (form factor).
 
 ## Backward compatibility
 
-For one release cycle, the old name remains available as a deprecated alias:
+For one release cycle, the old name remains available as a deprecated alias.
+On Julia 1.11 and later, using `VertexFunction` emits a deprecation warning; on Julia 1.9–1.10 it is a silent alias.
 
 ```julia
 using ThreeBodyDecays

@@ -129,10 +129,9 @@ struct Vertex{R<:Recoupling,F}
 end
 Vertex(h::Recoupling) = Vertex(h, NoFormFactor())
 
-"""
-    VertexFunction
-
-Deprecated alias for [`Vertex`](@ref). Prefer `Vertex` in new code.
-"""
-const VertexFunction = Vertex
+if VERSION >= v"1.11-"
+    Base.@deprecate_binding VertexFunction Vertex
+else
+    const VertexFunction = Vertex
+end
 (ff::NoFormFactor)(m0², m1², m2²) = one(typeof(m0²))
