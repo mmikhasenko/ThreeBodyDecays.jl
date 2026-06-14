@@ -60,7 +60,7 @@ samples = physical_samples(model, 24)
 cache = chain_amplitudes(model, samples)
 event_chain_overlaps = event_overlap_contributions(cache)
 
-chain_stripped = chain_overlap_contribution(cache)
+chain_stripped = chain_overlap_matrix(cache)
 chain_physical = physical_overlap(chain_stripped, model.couplings)
 name_physical = group_overlap(chain_physical, model.names)
 

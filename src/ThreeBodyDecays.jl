@@ -77,11 +77,10 @@ include("decay_channel.jl")
 export ThreeBodyDecay
 include("decay_model.jl")
 
-export ChainAmplitudeCache, OverlapContribution, OverlapMatrix
-export chain_amplitudes, chain_overlap_matrix, chain_overlap_contribution
-export event_overlap_contributions, event_overlaps, physical_overlap, group_overlap
-export total_intensity, diagonal_integrals, diagonal_contributions
-export fit_fractions, interference_terms, stderr
+export ChainAmplitudeCache, OverlapContribution
+export chain_amplitudes, chain_overlap_matrix, event_overlap_contributions
+export physical_overlap, group_overlap, total_intensity
+export fit_fractions, interference_terms
 include("overlaps.jl")
 
 export change_basis_3from1, change_basis_1from2, change_basis_2from3
