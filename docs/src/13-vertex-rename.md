@@ -18,7 +18,7 @@ Vertex(RecouplingLS((2, 0)), my_form_factor)
 ## What changed
 
 | Before | After |
-|--------|-------|
+| ------ | ----- |
 | `VertexFunction(h)` | `Vertex(h)` |
 | `VertexFunction(h, ff)` | `Vertex(h, ff)` |
 | `HRk::VertexFunction` in docstrings/types | `HRk::Vertex` |
