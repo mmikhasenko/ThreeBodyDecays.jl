@@ -90,8 +90,8 @@ function all_chains_for_parent(parent_jp::AbstractString, resonance_jp)
             two_j = resonance_jp.two_j,
             Xlineshape = identity,
             tbs,
-            Hij = VertexFunction(RecouplingLS(two_ls)),
-            HRk = VertexFunction(RecouplingLS(two_LS)),
+            Hij = Vertex(RecouplingLS(two_ls)),
+            HRk = Vertex(RecouplingLS(two_LS)),
         )
     end
     labels = [coupling_label(conf.two_ls, conf.two_LS) for conf in confs]

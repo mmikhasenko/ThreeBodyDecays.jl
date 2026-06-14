@@ -25,11 +25,11 @@ l = 1  # orbital angular momentum for decay
 chain1 = DecayChain(;
     k = 1,  # topology (23)1
     jp = jp"1-",
-    HRk = VertexFunction(  # production form-factor
+    HRk = Vertex(  # production form-factor
         RecouplingLS((2L, 0)),  # (two_l, two_s)
         BlattWeisskopf{L}(1.5)),  # {l}
     Xlineshape = BW(1.5195, 0.0156),  # propagator
-    Hij = VertexFunction(  # decay form-factor
+    Hij = Vertex(  # decay form-factor
         RecouplingLS((2l, 0)),  # (two_l, two_s)
         BlattWeisskopf{l}(1.5)),  # {l}
     tbs);

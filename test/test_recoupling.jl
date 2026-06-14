@@ -48,8 +48,8 @@ end
         Xlineshape = bw,
         tbs = tbs,
         two_j = 1,
-        Hij = ParityRecoupling(1, 0, '-') |> VertexFunction,
-        HRk = ParityRecoupling(1, 0, '-') |> VertexFunction,
+        Hij = ParityRecoupling(1, 0, '-') |> Vertex,
+        HRk = ParityRecoupling(1, 0, '-') |> Vertex,
     )
     #
     σs = randomPoint(tbs.ms)
@@ -64,8 +64,8 @@ end
         Xlineshape = bw,
         tbs = tbs,
         two_j = 1,
-        Hij = ParityRecoupling(1, 0, '-') |> VertexFunction,
-        HRk = NoRecoupling(1, 0) |> VertexFunction,
+        Hij = ParityRecoupling(1, 0, '-') |> Vertex,
+        HRk = NoRecoupling(1, 0) |> Vertex,
     )
     #
     @test amplitude(dc_pv, σs, [0, 1, 0, 1]) != 0
@@ -78,8 +78,8 @@ end
         Xlineshape = bw,
         tbs = tbs,
         two_j = 1,
-        Hij = ParityRecoupling(1, 0, '-') |> VertexFunction,
-        HRk = NoRecoupling(1, 0) |> VertexFunction,
+        Hij = ParityRecoupling(1, 0, '-') |> Vertex,
+        HRk = NoRecoupling(1, 0) |> Vertex,
     )
     #
     @test amplitude(dc_pv, σs, [0, 1, 0, 1]) != 0

@@ -13,6 +13,7 @@ The implementation is based on a research paper, "Dalitz-plot decomposition for 
 ## Documentation
 
 - **[Energy dependence of the amplitude](@ref energy_dependence)** - Understanding how helicity amplitudes depend on energy kinematic variables
+- **[Renaming `VertexFunction` → `Vertex`](@ref vertex_rename)** - Migration guide for the v0.15 API rename
 - **[Quantization reference frames](@ref quantization_reference)** - Reference kinematics and Wigner rotations for particles with spin
 - **[Performance notes](@ref performance_notes)** - What benchmarking says about where optimization can help
 - **[Tutorial](30-tutorial.md)** - Getting started with ThreeBodyDecays.jl

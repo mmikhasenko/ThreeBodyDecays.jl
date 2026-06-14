@@ -10,8 +10,8 @@ reference_model = let
         k = 1,
         Xlineshape = x -> 1.0 + 0.0im,
         two_j = 4,
-        HRk = RecouplingLS((4, 3)) |> VertexFunction,
-        Hij = RecouplingLS((4, 2)) |> VertexFunction,
+        HRk = RecouplingLS((4, 3)) |> Vertex,
+        Hij = RecouplingLS((4, 2)) |> Vertex,
         tbs,
     )
 
@@ -19,8 +19,8 @@ reference_model = let
         k = 3,
         Xlineshape = x -> 1.0 + 0.0im,
         two_j = 1,
-        HRk = RecouplingLS((2, 1)) |> VertexFunction,
-        Hij = RecouplingLS((2, 3)) |> VertexFunction,
+        HRk = RecouplingLS((2, 1)) |> Vertex,
+        Hij = RecouplingLS((2, 3)) |> Vertex,
         tbs,
     )
 

@@ -1,7 +1,7 @@
 """
     Recoupling
 
-Abstract supertype for recoupling schemes used inside [`VertexFunction`](@ref).
+Abstract supertype for recoupling schemes used inside [`Vertex`](@ref).
 
 Concrete subtypes implement `amplitude(::Recoupling, (two_λa, two_λb), (two_j, two_ja, two_jb))`,
 which provides the spin/helicity-dependent factor for a given vertex.
@@ -96,27 +96,43 @@ amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
 """
     NoFormFactor()
 
-Trivial form-factor functor used by default inside [`VertexFunction`](@ref).
+Trivial form-factor functor used by default inside [`Vertex`](@ref).
 
 Calling `NoFormFactor()(...)` always returns 1, i.e. no kinematic suppression.
 """
 struct NoFormFactor end
 
 """
-    VertexFunction{R<:Recoupling,F}
+    Vertex{R<:Recoupling,F}
 
-A struct that contains a recoupling and a form factor.
-There are two constructors:
+Local vertex payload for a two-body sub-decay: a [`Recoupling`](@ref) scheme and a form-factor functor.
+
+Spin/helicity structure enters through `h` (via [`amplitude`](@ref) on the recoupling type).
+Kinematic dependence enters through `ff`, called as `ff(m0², m1², m2²)` with masses of the
+three particles involved in that vertex. The default [`NoFormFactor`](@ref) is constant.
+
+# Constructors
 ```julia
-VertexFunction(h::Recoupling)        # translates to a trivial form factor
-VertexFunction(h::Recoupling, ff::F) # with a form factor
-# amplitude(V::VertexFunction{<:Recoupling, yourF}, args...) where {yourF} needs to be defined
+Vertex(h::Recoupling)        # trivial form factor (always 1)
+Vertex(h::Recoupling, ff::F) # custom form-factor functor
 ```
 
+Vertices appear in [`DecayChain`](@ref) as `HRk` (production ``0 \\to Rk``) and `Hij` (decay ``R \\to ij``).
+
+!!! note "Renamed from `VertexFunction`"
+    [`VertexFunction`](@ref) is a deprecated alias for `Vertex` and will be removed in a future release.
+    See [Renaming `VertexFunction` → `Vertex`](@ref vertex_rename).
 """
-struct VertexFunction{R<:Recoupling,F}
+struct Vertex{R<:Recoupling,F}
     h::R
     ff::F
 end
-VertexFunction(h::Recoupling) = VertexFunction(h, NoFormFactor())
+Vertex(h::Recoupling) = Vertex(h, NoFormFactor())
+
+"""
+    VertexFunction
+
+Deprecated alias for [`Vertex`](@ref). Prefer `Vertex` in new code.
+"""
+const VertexFunction = Vertex
 (ff::NoFormFactor)(m0², m1², m2²) = one(typeof(m0²))
