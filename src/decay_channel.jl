@@ -17,8 +17,8 @@ spectator `k`.
 - `k::Int`: Spectator index (1,2,3), selecting which pair forms the isobar.
 - `two_j::Int`: Twice the isobar spin `2J`.
 - `Xlineshape`: Lineshape function, typically called as `Xlineshape(σk)` with `σk` the isobar invariant.
-- `HRk::Vertex`: Vertex for the `0 → R k` decay.
-- `Hij::Vertex`: Vertex for the `R → i j` decay.
+- `HRk::Vertex`: production vertex `0 → R k`.
+- `Hij::Vertex`: decay vertex `R → ij`.
 - `tbs::ThreeBodySystem`: Masses and spins of the full system.
 """
 @with_kw struct DecayChain{X,T,R1<:Vertex,R2<:Vertex} <: AbstractDecayChain

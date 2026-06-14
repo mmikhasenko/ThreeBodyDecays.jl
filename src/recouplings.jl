@@ -1,7 +1,7 @@
 """
     Recoupling
 
-Abstract supertype for recoupling schemes used inside [`Vertex`](@ref).
+Abstract supertype for recoupling schemes in a [`Vertex`](@ref).
 
 Concrete subtypes implement `amplitude(::Recoupling, (two_λa, two_λb), (two_j, two_ja, two_jb))`,
 which provides the spin/helicity-dependent factor for a given vertex.
@@ -96,7 +96,7 @@ amplitude(cs::RecouplingLS, (two_λa, two_λb), (two_j, two_ja, two_jb)) =
 """
     NoFormFactor()
 
-Trivial form-factor functor used by default inside [`Vertex`](@ref).
+Trivial form factor for [`Vertex`](@ref).
 
 Calling `NoFormFactor()(...)` always returns 1, i.e. no kinematic suppression.
 """
@@ -109,18 +109,15 @@ Local vertex payload for a two-body sub-decay: a [`Recoupling`](@ref) scheme and
 
 Spin/helicity structure enters through `h` (via [`amplitude`](@ref) on the recoupling type).
 Kinematic dependence enters through `ff`, called as `ff(m0², m1², m2²)` with masses of the
-three particles involved in that vertex. The default [`NoFormFactor`](@ref) is constant.
+three particles involved in that vertex. [`NoFormFactor`](@ref) is the constant choice (always 1).
 
 # Constructors
 ```julia
-Vertex(h::Recoupling)        # trivial form factor (always 1)
-Vertex(h::Recoupling, ff::F) # custom form-factor functor
+Vertex(h::Recoupling)        # NoFormFactor
+Vertex(h::Recoupling, ff::F) # form-factor functor
 ```
 
 Vertices appear in [`DecayChain`](@ref) as `HRk` (production ``0 \\to Rk``) and `Hij` (decay ``R \\to ij``).
-
-!!! note "Renamed from `VertexFunction`"
-    `VertexFunction` is a deprecated alias for `Vertex` and will be removed in a future release.
 """
 struct Vertex{R<:Recoupling,F}
     h::R
