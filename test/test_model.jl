@@ -1,6 +1,6 @@
 using Test
 using ThreeBodyDecays
-using ThreeBodyDecays.StaticArrays
+using ThreeBodyDecays.Parameters
 
 
 # test model contraction
@@ -26,7 +26,7 @@ model = let
     ThreeBodyDecay("K(892)" .=> [(4.0, ch1), (2.0, ch2), (3.0, ch3)])
 end
 
-@testset "Construction with SVectors" begin
+@testset "Construction with tuples" begin
     _model = ThreeBodyDecay(
         ("K(892)", "K(892)", "K(892)") .=> zip(model.couplings, model.chains),
     )

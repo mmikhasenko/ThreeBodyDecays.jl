@@ -4,28 +4,28 @@
 Model for a three-body decay amplitude defined as a coherent sum of decay chains.
 
 The model stores:
-- `chains`: an `SVector` of [`AbstractDecayChain`](@ref) objects,
+- `chains`: a concretely typed `Tuple` of [`AbstractDecayChain`](@ref) objects,
 - `couplings`: complex (or real) coefficients multiplying each chain,
 - `names`: labels for the chains (typically resonance names).
 
 Evaluate with [`amplitude`](@ref) and summarize over spin projections with
 [`unpolarized_intensity`](@ref).
 """
-@with_kw struct ThreeBodyDecay{N,T<:AbstractDecayChain,L<:Number,S<:AbstractString}
-    chains::SVector{N,T}
-    couplings::SVector{N,L}
-    names::SVector{N,S}
+struct ThreeBodyDecay{N,Ch<:Tuple{Vararg{AbstractDecayChain}},L,S}
+    chains::Ch
+    couplings::NTuple{N,L}
+    names::NTuple{N,S}
 end
 
 """
-ThreeBodyDecay(; chains, couplings, names)
+ThreeBodyDecay(chains, couplings, names)
 
 Constructs a `ThreeBodyDecay` object with the given parameters.
 
 # Arguments
-- `chains`: An array of chains involved in the decay. The length of this array should match the lengths of `couplings` and `names`.
-- `couplings`: An array of coupling constants for each chain in the decay. The length of this array should match the lengths of `chains` and `names`.
-- `names`: An array of names for each chain, or names of resonances in the decay. The length of this array should match the lengths of `chains` and `couplings`.
+- `chains`: Chains involved in the decay, as a tuple or vector. The length should match `couplings` and `names`.
+- `couplings`: Coupling constants for each chain, as a tuple or vector.
+- `names`: Names for each chain, as a tuple or vector.
 
 # Returns
 - A `ThreeBodyDecay` object with the specified chains, couplings, and names.
@@ -33,23 +33,39 @@ Constructs a `ThreeBodyDecay` object with the given parameters.
 # Examples
 ```julia
 ThreeBodyDecay(
-chains=[chain1, chain2, chain3],
-couplings=[1.0, -1.0, 0.2im],
-names=["L1405", "L1405", "K892"])
+    (chain1, chain2, chain3),
+    (1.0, -1.0, 0.2im),
+    ("L1405", "L1405", "K892"),
+)
 ```
 """
 function ThreeBodyDecay(
-    chains::Vector{T},
-    couplings::Vector{L},
-    names::Vector{S},
-) where {T<:AbstractDecayChain,L<:Number,S<:AbstractString}
+    chains::Tuple{Vararg{AbstractDecayChain}},
+    couplings::Tuple{Vararg{Number}},
+    names::Tuple{Vararg{AbstractString}},
+)
     N = length(chains)
-    @assert length(couplings) == N && length(names) == N "The lengths of chains, couplings, and names must be equal"
-    return ThreeBodyDecay(
-        SVector{N,T}(chains),
-        SVector{N,L}(couplings),
-        SVector{N,S}(names),
+    length(couplings) == N == length(names) ||
+        throw(ArgumentError("The lengths of chains, couplings, and names must be equal"))
+    L = promote_type(typeof.(couplings)...)
+    coupling_tuple = ntuple(i -> convert(L, couplings[i]), N)
+    name_tuple = ntuple(i -> String(names[i]), N)
+    return ThreeBodyDecay{N,typeof(chains),L,eltype(name_tuple)}(
+        chains,
+        coupling_tuple,
+        name_tuple,
     )
+end
+
+function ThreeBodyDecay(
+    chains::AbstractVector{<:AbstractDecayChain},
+    couplings::AbstractVector{<:Number},
+    names::AbstractVector{<:AbstractString},
+)
+    N = length(chains)
+    length(couplings) == N == length(names) ||
+        throw(ArgumentError("The lengths of chains, couplings, and names must be equal"))
+    return ThreeBodyDecay((chains...,), (couplings...,), (names...,))
 end
 
 """
@@ -66,28 +82,40 @@ ThreeBodyDecay("K892" .=> zip([1.0, -1.0, 0.2im], [chain1, chain2, chain3]))
 ThreeBodyDecay(descriptor::Pair) = ThreeBodyDecay([descriptor])
 
 function ThreeBodyDecay(descriptor)
-    N = length(descriptor)
-    #
     names = first.(descriptor)
     cd = getindex.(descriptor, 2)
     couplings = first.(cd)
     chains = getindex.(cd, 2)
-    #
-    N = length(chains)
-    ThreeBodyDecay(SVector{N}(chains), SVector{N}(couplings), SVector{N}(names))
+    ThreeBodyDecay((chains...,), (couplings...,), (names...,))
 end
 
 amplitude(model::ThreeBodyDecay, p...; kw...) =
     sum(c * amplitude(d, p...; kw...) for (c, d) in zip(model.couplings, model.chains))
 
 import Base: getindex, length
+import LinearAlgebra: adjoint
 
-function getindex(model::ThreeBodyDecay, key...)
-    description =
-        getindex(model.names, key...) .=>
-            zip(getindex(model.couplings, key...), getindex(model.chains, key...))
-    ThreeBodyDecay(description)
+adjoint(c::NTuple{N,L}) where {N,L<:Number} = adjoint(SVector(c))
+function Base.:*(a::Adjoint{T,<:AbstractVector}, c::NTuple{N,L}) where {T,N,L<:Number}
+    return a * SVector(c)
 end
+function Base.:*(a::Transpose{T,<:AbstractVector}, c::NTuple{N,L}) where {T,N,L<:Number}
+    return a * SVector(c)
+end
+
+function _submodel(model::ThreeBodyDecay, idx::Tuple{Vararg{Int}})
+    N = length(idx)
+    chains = ntuple(i -> model.chains[idx[i]], N)
+    couplings = ntuple(i -> model.couplings[idx[i]], N)
+    names = ntuple(i -> model.names[idx[i]], N)
+    ThreeBodyDecay(chains, couplings, names)
+end
+
+getindex(model::ThreeBodyDecay, i::Integer) = _submodel(model, (i,))
+getindex(model::ThreeBodyDecay, r::AbstractRange{<:Integer}) = _submodel(model, Tuple(r))
+getindex(model::ThreeBodyDecay, idx::AbstractVector{<:Integer}) = _submodel(model, Tuple(idx))
+getindex(model::ThreeBodyDecay, mask::Union{NTuple{N,Bool},AbstractVector{Bool}} where {N}) =
+    getindex(model, findall(mask))
 
 length(model::ThreeBodyDecay{N}) where {N} = N
 
@@ -131,8 +159,8 @@ extended_model = vcat(model[2], model[2:3], model)
 ```
 """
 function Base.vcat(models::ThreeBodyDecay...)
-    names = vcat(getproperty.(models, :names)...)
-    couplings = vcat(getproperty.(models, :couplings)...)
-    chains = vcat(getproperty.(models, :chains)...)
-    ThreeBodyDecay(names .=> zip(couplings, chains))
+    chains = mapreduce(m -> m.chains, (a, b) -> (a..., b...), models)
+    couplings = mapreduce(m -> m.couplings, (a, b) -> (a..., b...), models)
+    names = mapreduce(m -> m.names, (a, b) -> (a..., b...), models)
+    ThreeBodyDecay(chains, couplings, names)
 end
