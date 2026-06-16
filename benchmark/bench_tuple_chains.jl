@@ -67,9 +67,9 @@ function homogeneous_model(n = 6)
         HRk = RecouplingLS((2, 2)) |> VertexFunction,
         tbs,
     )
-    chains = [DecayChain(base; k = mod1(i, 3)) for i in 1:n]
+    chains = [DecayChain(base; k = mod1(i, 3)) for i = 1:n]
     couplings = ComplexF64.(randn(n))
-    names = ["ch$i" for i in 1:n]
+    names = ["ch$i" for i = 1:n]
     ThreeBodyDecay(chains, couplings, names)
 end
 
@@ -83,7 +83,10 @@ ms = masses(model_hetero)
 println("=== Type stability ===")
 println("heterogeneous chains field: ", fieldtype(typeof(model_hetero), :chains))
 println("heterogeneous model type:   ", typeof(model_hetero))
-println("heterogeneous (vector path) chains field: ", fieldtype(typeof(model_hetero_vector), :chains))
+println(
+    "heterogeneous (vector path) chains field: ",
+    fieldtype(typeof(model_hetero_vector), :chains),
+)
 println("homogeneous chains field:   ", fieldtype(typeof(model_homo), :chains))
 
 @inferred ComplexF64 amplitude(model_hetero, σs, spins(model_hetero))
@@ -91,15 +94,15 @@ println("homogeneous chains field:   ", fieldtype(typeof(model_homo), :chains))
 
 println("\n=== Benchmark: heterogeneous 12-chain model (tuple storage) ===")
 t_hetero = @belapsed unpolarized_intensity($model_hetero, $σs)
-println("unpolarized_intensity: ", round(t_hetero * 1e6; digits=2), " µs")
+println("unpolarized_intensity: ", round(t_hetero * 1e6; digits = 2), " µs")
 
 println("\n=== Benchmark: heterogeneous 12-chain model (vector constructor) ===")
 t_hetero_vec = @belapsed unpolarized_intensity($model_hetero_vector, $σs)
-println("unpolarized_intensity: ", round(t_hetero_vec * 1e6; digits=2), " µs")
+println("unpolarized_intensity: ", round(t_hetero_vec * 1e6; digits = 2), " µs")
 
 println("\n=== Benchmark: homogeneous 12-chain model ===")
 t_homo = @belapsed unpolarized_intensity($model_homo, $σs)
-println("unpolarized_intensity: ", round(t_homo * 1e6; digits=2), " µs")
+println("unpolarized_intensity: ", round(t_homo * 1e6; digits = 2), " µs")
 
 println("\n=== Benchmark: 20-chain vcat model (test_ls_amplitude setup) ===")
 two_js, Ps = ThreeBodySpinParities("1-", "1/2+", "0-"; jp0 = "3/2+")
@@ -127,5 +130,5 @@ end
 model20 = vcat(models20...)
 σs20 = x2σs([0.5, 0.3], masses(model20); k = 1)
 t20 = @belapsed unpolarized_intensity($model20, $σs20)
-println("unpolarized_intensity (20 chains): ", round(t20 * 1e3; digits=2), " ms")
+println("unpolarized_intensity (20 chains): ", round(t20 * 1e3; digits = 2), " ms")
 println("model20 chains field: ", fieldtype(typeof(model20), :chains))

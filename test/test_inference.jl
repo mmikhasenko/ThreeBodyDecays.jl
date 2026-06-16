@@ -32,7 +32,11 @@ using ThreeBodyDecays.Parameters
         HRk = RecouplingLS((2, 2)) |> VertexFunction,
         tbs,
     )
-    model = ThreeBodyDecay((dc, ch_bw, DecayChain(dc; k = 3)), (1.0, -0.5, 0.2im), ("a", "b", "c"))
+    model = ThreeBodyDecay(
+        (dc, ch_bw, DecayChain(dc; k = 3)),
+        (1.0, -0.5, 0.2im),
+        ("a", "b", "c"),
+    )
     @test typeof(model.chains) <: Tuple
     @test length(model.chains) == 3
     @inferred Complex{Float64} amplitude(model, σs, two_λs)

@@ -113,9 +113,12 @@ end
 
 getindex(model::ThreeBodyDecay, i::Integer) = _submodel(model, (i,))
 getindex(model::ThreeBodyDecay, r::AbstractRange{<:Integer}) = _submodel(model, Tuple(r))
-getindex(model::ThreeBodyDecay, idx::AbstractVector{<:Integer}) = _submodel(model, Tuple(idx))
-getindex(model::ThreeBodyDecay, mask::Union{NTuple{N,Bool},AbstractVector{Bool}} where {N}) =
-    getindex(model, findall(mask))
+getindex(model::ThreeBodyDecay, idx::AbstractVector{<:Integer}) =
+    _submodel(model, Tuple(idx))
+getindex(
+    model::ThreeBodyDecay,
+    mask::Union{NTuple{N,Bool},AbstractVector{Bool}} where {N},
+) = getindex(model, findall(mask))
 
 length(model::ThreeBodyDecay{N}) where {N} = N
 
