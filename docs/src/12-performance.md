@@ -31,7 +31,9 @@ The practical conclusion is modest: keep the primitives inlineable and type-stab
 
 JET and `@inferred` checks are useful here as guardrails. They can catch type-instability before it turns into a performance regression, and they are especially helpful around generic tuple and keyword-heavy code.
 
-The current findings do not indicate that inference is the limiting factor for the main amplitude path. On Julia 1.11.5, inference succeeds for the tested uniform-tuple indexing cases. The same pattern would deserve renewed attention if the code started to use heterogeneous tuples, if indexed values became type parameters for later dispatch, or if a caller introduced an outer loop that could not specialize.
+`ThreeBodyDecay` stores chains as a concretely typed heterogeneous `Tuple`, with homogeneous `NTuple`s for couplings and names. That layout preserves per-chain physics types (lineshape, vertex payloads, topology wrapper) instead of widening them to `AbstractDecayChain` inside an `SVector`. The coherent sum in `amplitude(model, ...)` can therefore specialize on each slot.
+
+On Julia 1.11.5, `@inferred` succeeds for heterogeneous multi-chain models built from tuples or from the descriptor API. Pointwise benchmarks on a 12-chain model with three distinct chain types show similar runtime to the old `SVector` storage (about 29 µs for `unpolarized_intensity`); the main gain is compile-time stability rather than a large speedup on a single evaluation. Revisit this section if indexed values become type parameters for later dispatch, or if a caller introduces an outer loop that still fails to specialize.
 
 ## Aligned amplitude
 

@@ -113,7 +113,7 @@ Pcs = (Pc4312, Pc4440, Pc4457);
 
 # ## Unpolarized intensity
 
-# The full model is the vector of decay chains, and
+# The full model is a coherent sum of decay chains with
 # couplings for each decay chain.
 
 const model = ThreeBodyDecay(
