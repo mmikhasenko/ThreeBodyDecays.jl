@@ -23,6 +23,25 @@ using ThreeBodyDecays.Parameters
 
     @inferred Complex{Float64} amplitude(dc, σs, two_λs)
 
+    # heterogeneous chains should stay concretely typed in the model tuple
+    ch_bw = DecayChain(;
+        k = 2,
+        two_j = 2,
+        Xlineshape = σ -> 1 / (5.0^2 - σ - 0.5im),
+        Hij = RecouplingLS((2, 0)) |> VertexFunction,
+        HRk = RecouplingLS((2, 2)) |> VertexFunction,
+        tbs,
+    )
+    model = ThreeBodyDecay(
+        (dc, ch_bw, DecayChain(dc; k = 3)),
+        (1.0, -0.5, 0.2im),
+        ("a", "b", "c"),
+    )
+    @test typeof(model.chains) <: Tuple
+    @test length(model.chains) == 3
+    @inferred Complex{Float64} amplitude(model, σs, two_λs)
+    @inferred Float64 unpolarized_intensity(model, σs)
+
     # using InteractiveUtils
     # @code_warntype amplitude(dc, σs, two_λs)
 end

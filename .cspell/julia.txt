@@ -13,6 +13,8 @@ Dalitz
 deploydocs
 eachindex
 eltype
+fieldtype
+findall
 fitin
 inphrange
 inrange
@@ -32,8 +34,10 @@ mapslices
 misq
 mjsq
 mksq
+mapreduce
 mssq
 nonpole
+ntuple
 permutedims
 polardalitz
 postprocess
@@ -56,6 +60,7 @@ Testsets
 textrm
 tonumber
 tullio
+Vararg
 warntype
 xlims
 ylims
