@@ -155,12 +155,6 @@ end
     @test Vertex(RecouplingLS((2, 1)), FF(1.5)) isa Vertex
 end
 
-@testset "VertexFunction deprecation alias" begin
-    @test VertexFunction === Vertex
-    @test VertexFunction(RecouplingLS((2, 1))) isa Vertex
-    @test VertexFunction(RecouplingLS((2, 1)), FF(1.5)) isa Vertex
-end
-
 
 Random.seed!(1234)
 @testset "Vertex representation property" begin
