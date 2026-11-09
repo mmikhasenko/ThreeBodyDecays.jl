@@ -238,6 +238,33 @@ See also [`wr`](@ref), [`cosζ`](@ref).
 """ cosζk3_for3
 
 """
+    isfullturn(wr::AbstractWignerRotation)
+
+Whether the rotation `wr` includes a full turn by ``2π`` in addition to the angle
+given by [`cosζ`](@ref) and [`ispositive`](@ref).
+
+The rotations of the parent between the frames of the three chains are rotations
+about the same axis by the angles between the momenta of the spectators in the
+parent rest frame, which add up to a full turn:
+``ζ^0_{1(2)} + ζ^0_{2(3)} + ζ^0_{3(1)} = 2π``.
+For a rotation between chains 2 and 3 to be the composition of the rotations
+through chain 1, as for the spinors of a parent with half-integer spin, it is the
+rotation by ``ζ^0_{2(3)} - 2π`` (from 2 to 3) or ``2π - ζ^0_{2(3)}`` (from 3 to 2).
+The rotations of the final-state particles do not need this.
+"""
+isfullturn(wr::AbstractWignerRotation) = false
+isfullturn(wr::Arg0WignerRotation) = wr.k == 2
+
+"""
+    fullturn_phase(wr::AbstractWignerRotation, two_j)
+
+Phase ``(-1)^{2j}`` of the full turn of the rotation `wr` (see [`isfullturn`](@ref))
+for the spin `two_j/2`, one if there is no full turn.
+"""
+fullturn_phase(wr::AbstractWignerRotation, two_j) =
+    isfullturn(wr) && isodd(two_j) ? -one(two_j) : one(two_j)
+
+"""
 Phase for wigner d-functions for clockwise rotations
 """
 phase(two_λ1_minus_λ2) =

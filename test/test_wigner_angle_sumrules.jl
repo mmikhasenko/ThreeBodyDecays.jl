@@ -26,3 +26,22 @@ let
     just_13 = [wignerd(1, ν, 0, cosζ13_for1_) for ν ∈ -1:1]
     @test sum(prod_13 .≈ just_13) == 3
 end
+
+@testset "Composition of Wigner rotations" begin
+    ms = ThreeBodyMasses(m1 = 0.938, m2 = 0.49367, m3 = 0.13957, m0 = 2.46867)
+    σs = randomPoint(ms)
+    function d_matrix(a, b, particle, two_j)
+        w = wr(a, b, particle)
+        d = ThreeBodyDecays.wignerd_doublearg_sign(two_j, cosζ(w, σs, ms^2), ispositive(w))
+        return d .* ThreeBodyDecays.fullturn_phase(w, two_j)
+    end
+    for two_j in (1, 2, 3), (a, b, c) in Iterators.product(1:3, 1:3, 1:3)
+        # parent: the rotation from chain a to chain c is that from a to b followed
+        # by that from b to c, also for half-integer spin
+        @test d_matrix(a, c, 0, two_j) ≈ d_matrix(b, c, 0, two_j) * d_matrix(a, b, 0, two_j)
+        for particle in 1:3
+            @test d_matrix(a, c, particle, two_j) ≈
+                  d_matrix(a, b, particle, two_j) * d_matrix(b, c, particle, two_j)
+        end
+    end
+end

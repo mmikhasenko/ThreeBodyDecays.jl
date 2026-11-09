@@ -118,13 +118,21 @@ end
     ref_I = 17646.88022101494
     @test unpolarized_intensity(model, σs) ≈ ref_I
     @test unpolarized_intensity(model, σs; refζs = (1, 1, 1, 1)) ≈ ref_I
-    @test !(unpolarized_intensity(model, σs; refζs = (2, 2, 2, 2)) ≈ ref_I)
-    @test !(unpolarized_intensity(model, σs; refζs = (3, 3, 3, 3)) ≈ ref_I)
+    @test unpolarized_intensity(model, σs; refζs = (2, 2, 2, 2)) ≈ ref_I
+    @test unpolarized_intensity(model, σs; refζs = (3, 3, 3, 3)) ≈ ref_I
     # @btime unpolarized_intensity($model, $σs)
     eval_time = @elapsed unpolarized_intensity(model, σs)
     @info """Unpolarized_intensity for a model (3/2->1,1/2,0) with 20 chains is computed in $(round(1000*eval_time, digits=2)) ms
 Compare to my usual evaluation time of about 5ms
 """
+end
+
+@testset "Unpolarized intensity does not depend on the reference frames" begin
+    σs = x2σs([0.5, 0.3], masses(model); k = 1)
+    ref_I = unpolarized_intensity(model, σs)
+    @test all(Iterators.product(1:3, 1:3, 1:3, 1:3)) do refζs
+        unpolarized_intensity(model, σs; refζs) ≈ ref_I
+    end
 end
 
 @testset "Full amplitude components" begin

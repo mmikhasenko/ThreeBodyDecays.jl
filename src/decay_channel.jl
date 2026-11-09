@@ -274,7 +274,7 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2
     d_ζs = map(enumerate(zip(two_js, refζs))) do (l, (_two_j, _refζ))
         _w = wr(k, _refζ, mod(l, 4))
         _cosζ = cosζ(_w, σs, ms²)
-        wignerd_doublearg_sign(_two_j, _cosζ, ispositive(_w))
+        wignerd_doublearg_sign(_two_j, _cosζ, ispositive(_w)) .* fullturn_phase(_w, _two_j)
     end
     #
     ind = map(zip(two_js, two_λs)) do (_two_j, _two_λ)
@@ -316,7 +316,7 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple; refζs = (1, 2, 3, 1))
     d_ζs = map(enumerate(zip(two_js, refζs))) do (l, (_two_j, _refζ))
         _w = wr(k, _refζ, mod(l, 4))
         _cosζ = cosζ(_w, σs, ms²)
-        wignerd_doublearg_sign(_two_j, _cosζ, ispositive(_w))
+        wignerd_doublearg_sign(_two_j, _cosζ, ispositive(_w)) .* fullturn_phase(_w, _two_j)
     end
     #
     D1, D2, D3, D0 = d_ζs

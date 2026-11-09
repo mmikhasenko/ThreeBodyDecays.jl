@@ -49,7 +49,7 @@ export dalitzprojection # user plot function
 include("dalitz.jl")
 
 # Wigner Rotations - zeta angles
-export ispositive, TrivialWignerRotation, wr, cosζ
+export ispositive, isfullturn, TrivialWignerRotation, wr, cosζ
 export cosζ12_for0, cosζ23_for0, cosζ31_for0
 export cosζ21_for1, cosζ21_for2
 export cosζ13_for1, cosζ13_for3
