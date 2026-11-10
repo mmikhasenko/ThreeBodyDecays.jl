@@ -28,8 +28,8 @@ using ThreeBodyDecays.Parameters
         k = 2,
         two_j = 2,
         Xlineshape = σ -> 1 / (5.0^2 - σ - 0.5im),
-        Hij = RecouplingLS((2, 0)) |> VertexFunction,
-        HRk = RecouplingLS((2, 2)) |> VertexFunction,
+        Hij = RecouplingLS((2, 0)) |> Vertex,
+        HRk = RecouplingLS((2, 2)) |> Vertex,
         tbs,
     )
     model = ThreeBodyDecay(

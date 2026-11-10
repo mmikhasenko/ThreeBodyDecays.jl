@@ -16,8 +16,8 @@ function heterogeneous_model(n_per_topology = 2)
         k = 1,
         two_j = 2,
         Xlineshape = σ -> 1 / (4.1^2 - σ - 0.1im),
-        Hij = RecouplingLS((2, 0)) |> VertexFunction,
-        HRk = RecouplingLS((2, 2)) |> VertexFunction,
+        Hij = RecouplingLS((2, 0)) |> Vertex,
+        HRk = RecouplingLS((2, 2)) |> Vertex,
         tbs,
     )
     chain_groups = (
@@ -27,8 +27,8 @@ function heterogeneous_model(n_per_topology = 2)
                 k = mod1(i, 3),
                 two_j = 2,
                 Xlineshape = σ -> 1 / (5.0^2 - σ - 0.5im),
-                Hij = RecouplingLS((2, 0)) |> VertexFunction,
-                HRk = RecouplingLS((2, 2)) |> VertexFunction,
+                Hij = RecouplingLS((2, 0)) |> Vertex,
+                HRk = RecouplingLS((2, 2)) |> Vertex,
                 tbs,
             ),
             n_per_topology,
@@ -68,8 +68,8 @@ function homogeneous_model(n = 6)
         k = 1,
         two_j = 2,
         Xlineshape = σ -> 1 / (4.1^2 - σ - 0.1im),
-        Hij = RecouplingLS((2, 0)) |> VertexFunction,
-        HRk = RecouplingLS((2, 2)) |> VertexFunction,
+        Hij = RecouplingLS((2, 0)) |> Vertex,
+        HRk = RecouplingLS((2, 2)) |> Vertex,
         tbs,
     )
     chains = [DecayChain(base; k = mod1(i, 3)) for i = 1:n]
@@ -126,8 +126,8 @@ models20 = map([
             two_jp.two_j,
             tbs = tbs20,
             Xlineshape = identity,
-            HRk = RecouplingLS(two_LS) |> VertexFunction,
-            Hij = RecouplingLS(two_ls) |> VertexFunction,
+            HRk = RecouplingLS(two_LS) |> Vertex,
+            Hij = RecouplingLS(two_ls) |> Vertex,
         )
     end
     ThreeBodyDecay(name .=> zip(ones(length(chains)), chains); reference_k = 1)

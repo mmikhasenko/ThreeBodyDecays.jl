@@ -189,7 +189,7 @@ Convenience wrapper for `spins(system(model))`.
 spins(model::ThreeBodyDecay) = spins(system(model))
 
 """
-unpolarized_intensity(model::ThreeBodyDecay, σs)
+    unpolarized_intensity(model::ThreeBodyDecay, σs)
     unpolarized_intensity(model::ThreeBodyDecay, angles, σs)
 
 Computes squared amplitude summed over spin projections. Model evaluation uses the

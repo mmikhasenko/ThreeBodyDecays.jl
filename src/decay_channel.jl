@@ -295,7 +295,7 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; reference_k::I
 end
 
 """
-    amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; reference_k::Integer = 1)
+    amplitude(dc::DecayChain, σs::MandelstamTuple; reference_k::Integer = 1)
 
 Compute the total amplitude for a given decay chain, kinematic configuration, and all possible helicity values.
 
