@@ -52,8 +52,7 @@ The full helicity amplitude [`amplitude`](@ref) performs this rotation automatic
 Every chain is rotated to the single reference topology stored in the model.
 The cyclic choices are `1 => ((2,3),1)`, `2 => ((3,1),2)`, and `3 => ((1,2),3)`.
 All four helicity indices use that topology. Wigner rotations depend on the
-invariants and are computed automatically, including the full-turn sign required
-for half-integer spins when rotating the parent between topologies 2 and 3.
+invariants and are computed automatically.
 
 ## Constructing and evaluating a model
 
@@ -95,14 +94,18 @@ package does not transform fitted coefficients automatically. Record the
 reference alongside serialized models and use the same topology when converting
 four-vectors into angles.
 
-Changing the common external spin basis preserves the fully spin-summed intensity
-for the package's chain amplitudes, but changes individual helicity components.
-This identity is a check of the package's explicit basis rotation, not permission
-to relabel fitted models. Changing a fit's reference convention may require SU(2)
-phase changes in its couplings; no convenience operation copies a model into a
-new reference.
-The corrected full-turn sign also changes affected half-integer-spin amplitudes
-between references 2 and 3 compared with earlier releases.
+Every model carries one reference and its couplings are tied to it. Changing a
+fit's reference convention may require SU(2) phase changes in its couplings; no
+convenience operation copies a model into a new reference.
+
+!!! note "Parent rotation between topologies 2 and 3"
+    The three parent rotations between topologies share one axis and their angles
+    add up to ``2π``. For a half-integer parent spin they cannot all be taken as
+    the short rotation and still compose consistently. This release keeps the
+    previous rotations unchanged, so for a half-integer parent the same couplings
+    give different spin-summed intensities for references 2 and 3; equivalently,
+    one topology's couplings differ in sign. How to fix this convention is
+    discussed in #127.
 
 ## Further reading
 

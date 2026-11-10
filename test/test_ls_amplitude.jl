@@ -138,12 +138,12 @@ end
 
 @testset "Full amplitude components" begin
     σs = x2σs([0.5, 0.3], masses(model); k = 1)
-    # Fixed polarized oracle from the pre-migration API with PR127 applied,
+    # Fixed polarized oracle from the pre-migration API (main),
     # using the old common-reference tuples (k,k,k,k).
     expected = (
         (24.313600920343276, -16.53265693046843),
-        (50.229995478449446, -24.058528487645827),
-        (18.9248869858599, 35.88922534086035),
+        (40.37973824558429, -14.059543287122107),
+        (27.740984239852448, -4.141879753609057),
     )
     for k = 1:3
         referenced =

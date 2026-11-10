@@ -120,6 +120,10 @@ using ThreeBodyDecays.PartialWaveFunctions: wignerD_doublearg
         intensity = unpolarized_intensity(model, σs)
         if isnothing(reference_intensity)
             reference_intensity = intensity
+        elseif k == 2
+            # Half-integer parent with a topology-3 chain: the 3→2 parent rotation
+            # lacks the SU(2) full-turn sign (#127).
+            @test_broken intensity ≈ reference_intensity
         else
             @test intensity ≈ reference_intensity
         end

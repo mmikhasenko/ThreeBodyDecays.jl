@@ -12,16 +12,20 @@ using ThreeBodyDecays, Random, LinearAlgebra, Test
         s=randomPoint(ms)
         function d(a, b, p, j)
             w=wr(a, b, p)
-            # Independently express the required lift using endpoints, not dispatch.
-            lift=(p==0 && a!=b && a!=1 && b!=1 && isodd(j)) ? -1 : 1
-            lift .* ThreeBodyDecays.wignerd_doublearg_sign(
+            ThreeBodyDecays.wignerd_doublearg_sign(
                 j,
                 cosζ(w, s, ms^2),
                 ThreeBodyDecays.ispositive(w),
             )
         end
         for j = 1:4, a = 1:3, b = 1:3, c = 1:3, p = 0:3
-            @test d(a, c, p, j) ≈ d(a, b, p, j)*d(b, c, p, j) atol=1e-10
+            # Half-integer parent, three distinct topologies: the composition
+            # crosses the 2↔3 rotation, which lacks the SU(2) full-turn sign (#127).
+            if p == 0 && isodd(j) && length(Set((a, b, c))) == 3
+                @test_broken d(a, c, p, j) ≈ d(a, b, p, j)*d(b, c, p, j) atol=1e-10
+            else
+                @test d(a, c, p, j) ≈ d(a, b, p, j)*d(b, c, p, j) atol=1e-10
+            end
         end
         tbs=ThreeBodySystem(ms, ThreeBodySpins(1, 2, 0; two_h0 = 1))
         c1=DecayChain(
@@ -55,9 +59,15 @@ using ThreeBodyDecays, Random, LinearAlgebra, Test
                     for inp in CartesianIndices(A[1])
                 )
             end
-            @test transformed ≈ A[r] atol=1e-11
+            # Reference 2: the topology-3 chain needs the 3→2 parent rotation,
+            # which differs by the full-turn sign from 3→1→2 (#127).
+            if r == 2
+                @test_broken transformed ≈ A[r] atol=1e-11
+            else
+                @test transformed ≈ A[r] atol=1e-11
+            end
         end
-        @test sum(abs2, A[1]) ≈ sum(abs2, A[2]) atol=1e-11
+        @test_broken sum(abs2, A[1]) ≈ sum(abs2, A[2]) atol=1e-11
         @test sum(abs2, A[1]) ≈ sum(abs2, A[3]) atol=1e-11
     end
 end
