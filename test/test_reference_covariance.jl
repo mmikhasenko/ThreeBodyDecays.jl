@@ -14,8 +14,11 @@ using ThreeBodyDecays, Random, LinearAlgebra, Test
             w=wr(a, b, p)
             # Independently express the required lift using endpoints, not dispatch.
             lift=(p==0 && a!=b && a!=1 && b!=1 && isodd(j)) ? -1 : 1
-            lift .*
-            ThreeBodyDecays.wignerd_doublearg_sign(j, cosζ(w, s, ms^2), ispositive(w))
+            lift .* ThreeBodyDecays.wignerd_doublearg_sign(
+                j,
+                cosζ(w, s, ms^2),
+                ThreeBodyDecays.ispositive(w),
+            )
         end
         for j = 1:4, a = 1:3, b = 1:3, c = 1:3, p = 0:3
             @test d(a, c, p, j) ≈ d(a, b, p, j)*d(b, c, p, j) atol=1e-10
