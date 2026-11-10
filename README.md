@@ -29,6 +29,13 @@ The code mostly inherits notations of the paper:
 - `ζ_kj_for_0` is the Wigner angle of the 0-particle, an angle of `vec pⱼ+pⱼ` with respect the the chain `j`.
 - `ζ_ij_for_k` is the Wigner angle for the particle `k` (the angle in the rest frame of particle `k`) that is mismatched for the chain `i` with respect to the chain `j`.
 
+## Reference topology in 0.16
+
+Construct models with an explicit reference: `ThreeBodyDecay(chains, couplings, names; reference_k = 1)`.
+The model retains this choice for amplitude evaluation, slicing, and overlap calculations.
+The former `refζs` evaluation keyword is removed; see the
+[migration and reference-frame guide](docs/src/11-quantization-reference.md) before migrating fitted models.
+
 ## Installation
 
 ```julia

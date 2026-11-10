@@ -35,7 +35,8 @@ using ThreeBodyDecays.Parameters
     model = ThreeBodyDecay(
         (dc, ch_bw, DecayChain(dc; k = 3)),
         (1.0, -0.5, 0.2im),
-        ("a", "b", "c"),
+        ("a", "b", "c");
+        reference_k = 1,
     )
     @test typeof(model.chains) <: Tuple
     @test length(model.chains) == 3

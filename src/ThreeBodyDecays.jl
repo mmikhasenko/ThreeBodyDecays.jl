@@ -74,7 +74,7 @@ export amplitude, aligned_amplitude, itr, summed_over_polarization, system
 export unpolarized_intensity
 include("decay_channel.jl")
 
-export ThreeBodyDecay
+export ThreeBodyDecay, reference_k
 include("decay_model.jl")
 
 export ChainAmplitudeCache, OverlapContribution, OverlapMatrix

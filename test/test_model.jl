@@ -23,16 +23,19 @@ model = let
     ch2 = DecayChain(ch1; k = 2)
     ch3 = DecayChain(ch1; k = 3)
     #
-    ThreeBodyDecay("K(892)" .=> [(4.0, ch1), (2.0, ch2), (3.0, ch3)])
+    ThreeBodyDecay("K(892)" .=> [(4.0, ch1), (2.0, ch2), (3.0, ch3)]; reference_k = 1)
 end
 
 @testset "Construction with tuples" begin
     _model = ThreeBodyDecay(
-        ("K(892)", "K(892)", "K(892)") .=> zip(model.couplings, model.chains),
+        ("K(892)", "K(892)", "K(892)") .=> zip(model.couplings, model.chains);
+        reference_k = 1,
     )
     @test _model == model
-    _model =
-        ThreeBodyDecay(SubString("K(892))", 1, 6) .=> zip(model.couplings, model.chains))
+    _model = ThreeBodyDecay(
+        SubString("K(892))", 1, 6) .=> zip(model.couplings, model.chains);
+        reference_k = 1,
+    )
     @test _model isa ThreeBodyDecay
 end
 
@@ -60,9 +63,6 @@ end
     σs = x2σs([0.1, 0.9], ms; k = 2)
     refA_xxx1 = 0.5360686514001554 + 0.005104210009658071im
     @test amplitude(model, σs, spins(model)) ≈ refA_xxx1
-    @test amplitude(model, σs, spins(model); refζs = (1, 2, 3, 1)) ≈ refA_xxx1
-    @test amplitude(model, σs, spins(model); refζs = (2, 3, 2, 1)) ≈ refA_xxx1
-    @test amplitude(model, σs, spins(model); refζs = (2, 2, 3, 1)) ≈ refA_xxx1
 end
 
 @testset "Intensity with ThreeBodyDecay" begin
@@ -70,7 +70,6 @@ end
     σs = x2σs([0.1, 0.9], ms; k = 2)
     refI = 0.574791303947608
     @test unpolarized_intensity(model, σs) ≈ refI
-    @test unpolarized_intensity(model, σs; refζs = (1, 2, 3, 1)) ≈ refI
 end
 
 @testset "Range indexing model" begin
@@ -104,7 +103,8 @@ ThreeBodyDecays.amplitude(::MyDecayChain, σs, spins) = 1.5
 end
 
 model3 = ThreeBodyDecay(
-    "MyResonance" .=> zip([3.3, 4.4], [MyDecayChain(1.0), MyDecayChain(2.2)]),
+    "MyResonance" .=> zip([3.3, 4.4], [MyDecayChain(1.0), MyDecayChain(2.2)]);
+    reference_k = 1,
 )
 
 @testset "Customary model" begin

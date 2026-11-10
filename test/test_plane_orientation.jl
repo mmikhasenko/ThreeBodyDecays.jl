@@ -24,7 +24,10 @@ reference_model = let
         tbs,
     )
 
-    ThreeBodyDecay(["ξ(23)", "ξ(12)"] .=> zip([1.0 + 0.0im, 1.0 + 0.0im], [chain1, chain3]))
+    ThreeBodyDecay(
+        ["ξ(23)", "ξ(12)"] .=> zip([1.0 + 0.0im, 1.0 + 0.0im], [chain1, chain3]);
+        reference_k = 1,
+    )
 end
 
 # kinematics
@@ -66,8 +69,8 @@ function amplitude_helicity(model, angles, pars...; reference_chain, kw...)
         cis(γ * two_λs[reference_chain] / 2)
     end
     #
-    refζs = fill(reference_chain, 4)
-    F0 = amplitude(model, angles, pars...; refζs, kw...)
+    @assert reference_chain == reference_k(model)
+    F0 = amplitude(model, angles, pars...)
     #
     F = similar(F0)
     @tullio F[_i, _j, _k, _z] = phase[_i, _j, _k] * F0[_i, _j, _k, _z]
@@ -85,8 +88,8 @@ function amplitude_minusphi(model, angles, pars...; reference_chain, kw...)
     phase = map(all_two_js_ijk) do two_λs
         cis(γ′ * (two_λs[reference_chain] - two_λs[refζi] + two_λs[refζj]) / 2)
     end
-    refζs = fill(reference_chain, 4)
-    F0 = amplitude(model, angles, pars...; refζs, kw...)
+    @assert reference_chain == reference_k(model)
+    F0 = amplitude(model, angles, pars...)
     #
     F = similar(F0)
     @tullio F[_i, _j, _k, _z] = phase[_i, _j, _k] * F0[_i, _j, _k, _z]

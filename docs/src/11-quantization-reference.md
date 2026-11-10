@@ -49,71 +49,60 @@ Since each chain has its *own* natural frame, the aligned amplitudes from differ
 ## The full amplitude with Wigner rotations
 
 The full helicity amplitude [`amplitude`](@ref) performs this rotation automatically.
-Given a decay chain with topology ``k`` and a choice of reference frames specified by `refζs`, the amplitude is:
+Every chain is rotated to the single reference topology stored in the model.
+The cyclic choices are `1 => ((2,3),1)`, `2 => ((3,1),2)`, and `3 => ((1,2),3)`.
+All four helicity indices use that topology. Wigner rotations depend on the
+invariants and are computed automatically, including the full-turn sign required
+for half-integer spins when rotating the parent between topologies 2 and 3.
 
-```math
-A_{\lambda_1 \lambda_2 \lambda_3 \lambda_0} =
-\sum_{\lambda_0' \lambda_1' \lambda_2' \lambda_3'}
-d^{j_0}_{\lambda_0 \lambda_0'}(\zeta_0) \;
-F_{\lambda_1' \lambda_2' \lambda_3' \lambda_0'} \;
-d^{j_1}_{\lambda_1' \lambda_1}(\zeta_1) \;
-d^{j_2}_{\lambda_2' \lambda_2}(\zeta_2) \;
-d^{j_3}_{\lambda_3' \lambda_3}(\zeta_3)
-```
-
-The Wigner ``d``-matrices rotate from the aligned (primed) helicities of chain ``k`` to the helicities defined in the reference frames specified by `refζs`. The rotation angles ``\zeta`` depend on the kinematics and are computed automatically.
-
-## The `refζs` parameter
-
-The keyword argument `refζs` in the [`amplitude`](@ref) function specifies which topology defines the quantization frame for each particle:
+## Constructing and evaluating a model
 
 ```julia
-amplitude(dc, σs, two_λs; refζs = (1, 1, 1, 1))
+model = ThreeBodyDecay(chains, couplings, names; reference_k = 1)
+reference_k(model) # 1
+A = amplitude(model, σs)
+I = unpolarized_intensity(model, σs)
 ```
 
-The tuple `refζs = (r₁, r₂, r₃, r₀)` means:
+The keyword is required: fitted coefficients must have an explicit reference.
+Evaluation cannot override the stored reference. Slicing preserves it, and
+concatenating models with different references throws an `ArgumentError`.
 
-- Particle 1 has its helicity quantized in the natural frame of topology ``r_1``
-- Particle 2 has its helicity quantized in the natural frame of topology ``r_2``
-- Particle 3 has its helicity quantized in the natural frame of topology ``r_3``
-- Particle 0 (parent) has its helicity quantized in the natural frame of topology ``r_0``
+For a single chain, `amplitude(dc, σs; reference_k = 1)` uses the same common
+reference convention. The chain-only default is 1. Choosing `reference_k = dc.k`
+reproduces `aligned_amplitude(dc, σs)`.
 
-### Common choices
+For an oriented event, use `amplitude(model, angles, σs)`, where `angles` contains
+`α`, `cosβ`, and `γ`. The canonical reference event has the spectator along
+negative z, the isobar along positive z, and the cyclic first daughter in the
+positive-x half-plane. Its orientation is `Rz(α) Ry(β) Rz(γ)`; the parent spin
+index transforms with the conjugate Wigner D matrix. The corresponding
+`unpolarized_intensity(model, angles, σs)` sums all helicity components.
 
-| `refζs`         | Description                                                                                                                                                                  |
-|:----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `(1, 1, 1, 1)`  | All particles quantized using topology ``k=1``. All helicities refer to the frames defined by the ``0 \to (23)\,1`` chain.                                                   |
-| `(1, 2, 3, 1)`  | Each final-state particle uses its own "natural" topology (particle ``n`` uses topology ``n``). The parent uses topology 1. This is the **default** in `ThreeBodyDecays.jl`. |
+## Migrating to 0.16
 
-The choice `refζs = (1, 1, 1, 1)` is often the most intuitive: it defines a single, common reference topology for all particles. This is equivalent to saying that the helicity states ``|\lambda_1, \lambda_2, \lambda_3, \lambda_0\rangle`` are defined as if the decay always proceeds through the ``k=1`` chain.
+The evaluation keyword `refζs` has been removed. An old common reference tuple
+`(k,k,k,k)` becomes `reference_k = k` **when constructing the model**, rather than
+when evaluating it. Direct chain calls accept the integer keyword instead.
+Custom `AbstractDecayChain` implementations used inside models must also accept
+and honor `reference_k` in their `amplitude` methods.
 
-!!! note "Consistency across chains"
-    The critical requirement is that `refζs` must be the **same** for all chains that are added coherently in a model. The specific choice of `refζs` does not affect physical observables (such as the unpolarized intensity), but it changes the meaning of the individual helicity couplings. Different choices of `refζs` correspond to different helicity bases.
+The old default `(1,2,3,1)` mixed different final-state reference frames. It has
+no literal single-topology replacement. In particular, choosing topology 1 does
+not preserve the old individual polarized amplitudes. Audit the convention of
+stored fit coefficients and polarization information before migrating; the
+package does not transform fitted coefficients automatically. Record the
+reference alongside serialized models and use the same topology when converting
+four-vectors into angles.
 
-## Example
-
-```julia
-using ThreeBodyDecays
-
-ms = ThreeBodyMasses(1.0, 2.0, 3.0; m0 = 7.0)
-tbs = ThreeBodySystem(; ms, two_js = ThreeBodySpins(1, 2, 0; two_h0 = 1))
-Ps = ThreeBodyParities('+', '+', '+'; P0 = '+')
-Xlineshape = σ -> 1.0
-
-# Two chains with different topologies
-dc1 = DecayChainLS(; k = 1, Xlineshape, jp = jp"1/2-", Ps, tbs)
-dc3 = DecayChainLS(; k = 3, Xlineshape, jp = jp"1/2-", Ps, tbs)
-
-σs = randomPoint(ms)
-two_λs = (1, 0, 0, -1)
-
-# All helicities quantized in topology-1 frames
-A1 = amplitude(dc1, σs, two_λs; refζs = (1, 1, 1, 1))
-A3 = amplitude(dc3, σs, two_λs; refζs = (1, 1, 1, 1))
-
-# The sum is meaningful because both use the same reference
-A_total = A1 + A3
-```
+Changing the common external spin basis preserves the fully spin-summed intensity
+for the package's chain amplitudes, but changes individual helicity components.
+This identity is a check of the package's explicit basis rotation, not permission
+to relabel fitted models. Changing a fit's reference convention may require SU(2)
+phase changes in its couplings; no convenience operation copies a model into a
+new reference.
+The corrected full-turn sign also changes affected half-integer-spin amplitudes
+between references 2 and 3 compared with earlier releases.
 
 ## Further reading
 

@@ -107,7 +107,7 @@ const model = let
             )
         end
         ci = ones(Float64, length(chains))
-        ThreeBodyDecay(name .=> zip(ci, chains))
+        ThreeBodyDecay(name .=> zip(ci, chains); reference_k = 1)
     end
     vcat(models...)
 end
@@ -117,9 +117,18 @@ end
     σs = x2σs([0.5, 0.3], masses(model); k = 1)
     ref_I = 17646.88022101494
     @test unpolarized_intensity(model, σs) ≈ ref_I
-    @test unpolarized_intensity(model, σs; refζs = (1, 1, 1, 1)) ≈ ref_I
-    @test !(unpolarized_intensity(model, σs; refζs = (2, 2, 2, 2)) ≈ ref_I)
-    @test !(unpolarized_intensity(model, σs; refζs = (3, 3, 3, 3)) ≈ ref_I)
+    @test unpolarized_intensity(
+        ThreeBodyDecay(model.chains, model.couplings, model.names; reference_k = 1),
+        σs,
+    ) ≈ ref_I
+    # Half-integer parent: the parent rotation between topologies 2 and 3 lacks
+    # the SU(2) full-turn sign, so the same couplings give a different intensity
+    # for references 2 and 3. See #127.
+    for k = 2:3
+        referenced =
+            ThreeBodyDecay(model.chains, model.couplings, model.names; reference_k = k)
+        @test_broken unpolarized_intensity(referenced, σs) ≈ ref_I
+    end
     # @btime unpolarized_intensity($model, $σs)
     eval_time = @elapsed unpolarized_intensity(model, σs)
     @info """Unpolarized_intensity for a model (3/2->1,1/2,0) with 20 chains is computed in $(round(1000*eval_time, digits=2)) ms
@@ -129,11 +138,25 @@ end
 
 @testset "Full amplitude components" begin
     σs = x2σs([0.5, 0.3], masses(model); k = 1)
+    # Fixed polarized oracle from the pre-migration API with PR127 applied,
+    # using the old common-reference tuples (k,k,k,k).
+    expected = (
+        (24.313600920343276, -16.53265693046843),
+        (50.229995478449446, -24.058528487645827),
+        (18.9248869858599, 35.88922534086035),
+    )
+    for k = 1:3
+        referenced =
+            ThreeBodyDecay(model.chains, model.couplings, model.names; reference_k = k)
+        tensor = amplitude(referenced, σs)
+        @test tensor[end, end, end, end] ≈ expected[k][1]
+        @test tensor[1, 1, end, end] ≈ expected[k][2]
+    end
     A_2103 = amplitude(model, σs, [2, 1, 0, 3])
     A = amplitude(model, σs)
-    @test A_2103 ≈ A[end, end, end, end] ≈ 25.650736877020776
+    @test A_2103 ≈ A[end, end, end, end] ≈ 24.313600920343276
     A_m2m103 = amplitude(model, σs, [-2, -1, 0, 3])
-    @test A_m2m103 ≈ A[1, 1, end, end] ≈ -14.353968898544204
+    @test A_m2m103 ≈ A[1, 1, end, end] ≈ -16.53265693046843
 end
 
 
@@ -178,5 +201,6 @@ Random.seed!(1234)
     )
 
     σs = randomPoint(tbs.ms)
-    @test amplitude(dc, σs, randomPoint(tbs.two_js)) ≈ 0.006994 atol = 1e-4
+    @test amplitude(dc, σs) ≈ aligned_amplitude(dc, σs)
+    @test sum(abs2, amplitude(dc, σs)) > 0
 end

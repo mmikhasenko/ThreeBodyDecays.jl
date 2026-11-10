@@ -120,7 +120,8 @@ const model = ThreeBodyDecay(
     ["Λ1520", "Λ1690", "Λ1810", "Pc4312", "Pc4440", "Pc4457"] .=> zip(
         [2, 2.1, 1.4im, 0.4, 0.3im, -0.8im],
         [Λ1520, Λ1690, Λ1810, Pc4312, Pc4440, Pc4457],
-    ),
+    );
+    reference_k = 1,
 );
 
 # just a random point of the Dalitz Plot
