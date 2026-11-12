@@ -24,7 +24,7 @@ function overlap_test_model()
     chains = [ch1, ch2, ch3]
     couplings = ComplexF64[4.0, 2.0, 3.0]
     names = ["K(892)", "K(892)", "L(1520)"]
-    ThreeBodyDecay(chains, couplings, names)
+    ThreeBodyDecay(chains, couplings, names; reference_k = 1)
 end
 
 function physical_samples(model, nsamples)
@@ -98,8 +98,12 @@ end
 
     random_couplings =
         complex.(randn(length(model.couplings)), randn(length(model.couplings)))
-    random_model =
-        ThreeBodyDecay(collect(model.chains), random_couplings, collect(model.names))
+    random_model = ThreeBodyDecay(
+        collect(model.chains),
+        random_couplings,
+        collect(model.names);
+        reference_k = 1,
+    )
     random_total = sum(σs -> unpolarized_intensity(random_model, σs), samples)
     @test real(random_couplings' * Matrix(chain_stripped.matrix) * random_couplings) ≈
           random_total atol = 1e-8 rtol = 1e-10

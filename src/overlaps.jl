@@ -74,14 +74,20 @@ function chain_amplitudes(model::ThreeBodyDecay, samples)
     end
     collected_samples = collect(samples)
     nchains = length(model.chains)
-    first_amplitude = amplitude(model.chains[1], collected_samples[1])
+    first_amplitude =
+        amplitude(model.chains[1], collected_samples[1]; reference_k = reference_k(model))
     nhelicity = length(first_amplitude)
-    amplitudes =
-        Array{eltype(first_amplitude)}(undef, nchains, nhelicity, length(collected_samples))
+    amplitudes = Array{typeof(complex(zero(eltype(first_amplitude))))}(
+        undef,
+        nchains,
+        nhelicity,
+        length(collected_samples),
+    )
 
     for (k, σs) in pairs(collected_samples)
         for i in eachindex(model.chains)
-            chain_amplitude = amplitude(model.chains[i], σs)
+            chain_amplitude =
+                amplitude(model.chains[i], σs; reference_k = reference_k(model))
             @inbounds for h in eachindex(chain_amplitude)
                 amplitudes[i, h, k] = chain_amplitude[h]
             end

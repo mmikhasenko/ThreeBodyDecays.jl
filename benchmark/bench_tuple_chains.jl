@@ -16,8 +16,8 @@ function heterogeneous_model(n_per_topology = 2)
         k = 1,
         two_j = 2,
         Xlineshape = σ -> 1 / (4.1^2 - σ - 0.1im),
-        Hij = RecouplingLS((2, 0)) |> VertexFunction,
-        HRk = RecouplingLS((2, 2)) |> VertexFunction,
+        Hij = RecouplingLS((2, 0)) |> Vertex,
+        HRk = RecouplingLS((2, 2)) |> Vertex,
         tbs,
     )
     chain_groups = (
@@ -27,8 +27,8 @@ function heterogeneous_model(n_per_topology = 2)
                 k = mod1(i, 3),
                 two_j = 2,
                 Xlineshape = σ -> 1 / (5.0^2 - σ - 0.5im),
-                Hij = RecouplingLS((2, 0)) |> VertexFunction,
-                HRk = RecouplingLS((2, 2)) |> VertexFunction,
+                Hij = RecouplingLS((2, 0)) |> Vertex,
+                HRk = RecouplingLS((2, 2)) |> Vertex,
                 tbs,
             ),
             n_per_topology,
@@ -46,12 +46,17 @@ function heterogeneous_model(n_per_topology = 2)
     )
     couplings = Tuple(ComplexF64.(randn(length(chain_groups))))
     names = Tuple("ch$i" for i in eachindex(chain_groups))
-    ThreeBodyDecay(chain_groups, couplings, names)
+    ThreeBodyDecay(chain_groups, couplings, names; reference_k = 1)
 end
 
 function heterogeneous_model_via_vector(n_per_topology = 2)
     model = heterogeneous_model(n_per_topology)
-    ThreeBodyDecay(collect(model.chains), collect(model.couplings), collect(model.names))
+    ThreeBodyDecay(
+        collect(model.chains),
+        collect(model.couplings),
+        collect(model.names);
+        reference_k = 1,
+    )
 end
 
 function homogeneous_model(n = 6)
@@ -63,14 +68,14 @@ function homogeneous_model(n = 6)
         k = 1,
         two_j = 2,
         Xlineshape = σ -> 1 / (4.1^2 - σ - 0.1im),
-        Hij = RecouplingLS((2, 0)) |> VertexFunction,
-        HRk = RecouplingLS((2, 2)) |> VertexFunction,
+        Hij = RecouplingLS((2, 0)) |> Vertex,
+        HRk = RecouplingLS((2, 2)) |> Vertex,
         tbs,
     )
     chains = [DecayChain(base; k = mod1(i, 3)) for i = 1:n]
     couplings = ComplexF64.(randn(n))
     names = ["ch$i" for i = 1:n]
-    ThreeBodyDecay(chains, couplings, names)
+    ThreeBodyDecay(chains, couplings, names; reference_k = 1)
 end
 
 model_hetero = heterogeneous_model(4)  # 12 chains, 3 distinct chain types
@@ -121,11 +126,11 @@ models20 = map([
             two_jp.two_j,
             tbs = tbs20,
             Xlineshape = identity,
-            HRk = RecouplingLS(two_LS) |> VertexFunction,
-            Hij = RecouplingLS(two_ls) |> VertexFunction,
+            HRk = RecouplingLS(two_LS) |> Vertex,
+            Hij = RecouplingLS(two_ls) |> Vertex,
         )
     end
-    ThreeBodyDecay(name .=> zip(ones(length(chains)), chains))
+    ThreeBodyDecay(name .=> zip(ones(length(chains)), chains); reference_k = 1)
 end
 model20 = vcat(models20...)
 σs20 = x2σs([0.5, 0.3], masses(model20); k = 1)

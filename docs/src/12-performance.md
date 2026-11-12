@@ -47,7 +47,7 @@ The best reason to revisit this block would be a profile from a real fitting wor
 
 The full `amplitude` call builds Wigner small-`d` matrices for the parent and final-state particles, then contracts them with the aligned amplitude. For a single chain this is already a meaningful part of the computation. For a model with many chains, the same alignment rotations can be recomputed for every chain at the same phase-space point.
 
-This makes caching a stronger optimization candidate than rewriting the local tensor containers. A model-level path could compute the alignment matrices once for a given `(σs, refζs, two_js)` and pass them into the chain evaluations. The expected benefit depends on the number of chains and helicity dimensions, but the direction is aligned with the observed cost structure: avoid repeated Wigner work rather than only changing where small arrays live.
+This makes caching a stronger optimization candidate than rewriting the local tensor containers. A model-level path could compute the alignment matrices once for a given `(σs, reference_k, two_js)` and pass them into the chain evaluations. The expected benefit depends on the number of chains and helicity dimensions, but the direction is aligned with the observed cost structure: avoid repeated Wigner work rather than only changing where small arrays live.
 
 ## Static spin dimensions
 

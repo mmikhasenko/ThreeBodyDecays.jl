@@ -238,7 +238,7 @@ function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
 end
 
 """
-    amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2, 3, 1))
+    amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; reference_k::Integer = 1)
 
 Helicity amplitude ``A_{λ_1 λ_2 λ_3 λ_0}`` for the given decay chain and kinematics.
 Masses for particles 0-3 are fixed by the mass tuple `ms` (see [`MassTuple`](@ref),
@@ -265,12 +265,12 @@ So: ``d`` (parent) ``\\times`` ``(V \\cdot d \\cdot V)`` (aligned chain) ``\\tim
 - `dc::DecayChain`: The decay-chain object.
 - `σs::MandelstamTuple`: Kinematic invariants (three pair squared masses).
 - `two_λs`: Helicity values (twice-helicity convention) for the four particles.
-- `refζs`: Reference indices for the alignment angles ζ (default `(1, 2, 3, 1)`).
+- `reference_k`: Common reference topology for all helicities (default `1`).
 
 # Returns
 - The complex amplitude (scalar) for the requested helicity configuration.
 """
-function amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2, 3, 1))
+function amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; reference_k::Integer = 1)
     @unpack k, tbs, two_j = dc
     ms² = tbs.ms^2
     two_js = tbs.two_js
@@ -278,8 +278,9 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2
     F0 = aligned_amplitude(dc, σs)
 
     # alignment rotations
-    d_ζs = map(enumerate(zip(two_js, refζs))) do (l, (_two_j, _refζ))
-        _w = wr(k, _refζ, mod(l, 4))
+    reference_k = _validate_reference_k(reference_k)
+    d_ζs = map(enumerate(two_js)) do (l, _two_j)
+        _w = wr(k, reference_k, mod(l, 4))
         _cosζ = cosζ(_w, σs, ms²)
         wignerd_doublearg_sign(_two_j, _cosζ, ispositive(_w))
     end
@@ -301,27 +302,28 @@ function amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2
 end
 
 """
-    amplitude(dc::DecayChain, σs::MandelstamTuple, two_λs; refζs = (1, 2, 3, 1))
+    amplitude(dc::DecayChain, σs::MandelstamTuple; reference_k::Integer = 1)
 
 Compute the total amplitude for a given decay chain, kinematic configuration, and all possible helicity values.
 
 # Arguments
 - `dc::DecayChain`: The decay-chain object.
 - `σs::MandelstamTuple`: Tuple representing Mandelstam variables that describe the kinematic invariants of the process.
-- `refζs`: Reference ζ indices for alignment rotations (default is `(1, 2, 3, 1)`).
+- `reference_k`: Common reference topology for all helicities (default `1`).
 
 # Returns
 - A four-dimensional array of amplitude values.
 """
-function amplitude(dc::DecayChain, σs::MandelstamTuple; refζs = (1, 2, 3, 1))
+function amplitude(dc::DecayChain, σs::MandelstamTuple; reference_k::Integer = 1)
     @unpack k, tbs, two_j = dc
     ms² = tbs.ms^2
     two_js = tbs.two_js
 
     F0 = aligned_amplitude(dc, σs)
     # alignment rotations
-    d_ζs = map(enumerate(zip(two_js, refζs))) do (l, (_two_j, _refζ))
-        _w = wr(k, _refζ, mod(l, 4))
+    reference_k = _validate_reference_k(reference_k)
+    d_ζs = map(enumerate(two_js)) do (l, _two_j)
+        _w = wr(k, reference_k, mod(l, 4))
         _cosζ = cosζ(_w, σs, ms²)
         wignerd_doublearg_sign(_two_j, _cosζ, ispositive(_w))
     end
@@ -338,7 +340,7 @@ end
 const PlaneOrientation = NamedTuple{(:α, :cosβ, :γ),Tuple{T,T,T}} where {T<:Real}
 
 """
-    amplitude(dc::DecayChain, orientation_angles::PlaneOrientation, σs::MandelstamTuple; kw...)
+    amplitude(dc::DecayChain, orientation_angles::PlaneOrientation, σs::MandelstamTuple; reference_k = 1)
 
 Compute the amplitude for a given decay chain with orientation angles applied to the rotation of the final state.
 
@@ -346,7 +348,7 @@ Compute the amplitude for a given decay chain with orientation angles applied to
 - `dc::DecayChain`: The decay chain object containing the system's configuration (e.g., spin, parity, etc.).
 - `orientation_angles::PlaneOrientation`: Named tuple representing the plane orientation angles (`α`, `cosβ`, `γ`) for the final state.
 - `σs::MandelstamTuple`: Tuple representing the Mandelstam variables that describe the kinematic invariants of the process.
-- `kw...`: Additional keyword arguments to be passed to the underlying `amplitude` calculation (e.g `refζs` reference kinematics).
+- `reference_k`: Common topology whose canonical frame defines the orientation angles.
 
 # Returns
 - A four dimensional amplitude array
@@ -359,17 +361,17 @@ function amplitude(
     dc::DecayChain,
     orientation_angles::PlaneOrientation,
     σs::MandelstamTuple;
-    kw...,
+    reference_k::Integer = 1,
 )
     @unpack k, tbs, two_j = dc
     two_j0 = tbs.two_js[4]
 
-    F0 = amplitude(dc, σs; kw...)
+    F0 = amplitude(dc, σs; reference_k)
 
     # alignment rotations
     D0 = conj.(wignerD_doublearg(two_j0, orientation_angles...))
     #
-    F = similar(F0)
+    F = similar(F0, promote_type(eltype(F0), eltype(D0)))
     @tullio F[_i, _j, _k, _z] = D0[_z, _z′] * F0[_i, _j, _k, _z′]
     #
     return F

@@ -80,7 +80,8 @@ const model = ThreeBodyDecay(
             DecayChainLS(; k = 1, Xlineshape = BW(1.5195, 0.0156), jp = jp"3/2+", Ps, tbs),
             DecayChainLS(; k = 1, Xlineshape = BW(1.685, 0.050), jp = jp"1/2+", Ps, tbs),
         ],
-    ),
+    );
+    reference_k = 1,
 );
 
 # ## Dalitz Plot Visualization

@@ -14,6 +14,7 @@ end
 @safetestset "Test of the ThreeBodyDecay structure" begin
     include("test_model.jl")
     include("test_overlaps.jl")
+    include("test_reference_topology.jl")
 end
 
 @safetestset "Wigner rotation" begin
