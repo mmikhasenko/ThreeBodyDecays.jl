@@ -31,3 +31,11 @@ jobs:
                     - macOS-latest
                     - windows-latest
                 allow_failure: [false]
+                # Julia 1.9's bundled libopenlibm cannot load on newer Linux runners.
+                exclude:
+                    - version: "1.9"
+                      os: ubuntu-latest
+                include:
+                    - version: "1.9"
+                      os: ubuntu-22.04
+                      allow_failure: false
