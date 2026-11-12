@@ -215,9 +215,13 @@ function aligned_amplitude(dc::DecayChain, σs::MandelstamTuple)
     F0 = zeros(typeof(lineshape), Tuple(two_js) .+ 1)
     F = permutedims(F0, (i, j, k, 4))
     #
+    # Cover the entire external-helicity domain, including projections outside
+    # the isobar's range. Insufficient padding makes Tullio truncate output axes.
+    production_pad = max(0, cld(two_js[4] + two_js[k] - two_j, 2))
+    decay_pad = max(0, cld(two_js[i] + two_js[j] - two_j, 2))
     @tullio F[_i, _j, _k, _z] =
-        VRk[pad(_z + _k + $Δ_zk, two_j + 1), _k] *
-        d_θ[pad(_z + _k + $Δ_zk, two_j + 1), pad(_i - _j + $Δ_ij, two_j + 1)] *
+        VRk[pad(_z + _k + $Δ_zk, production_pad), _k] *
+        d_θ[pad(_z + _k + $Δ_zk, production_pad), pad(_i - _j + $Δ_ij, decay_pad)] *
         Vij[_i, _j]
     #
     one_T = one(typeof(two_js[1]))
