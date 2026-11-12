@@ -121,13 +121,17 @@ end
         ThreeBodyDecay(model.chains, model.couplings, model.names; reference_k = 1),
         σs,
     ) ≈ ref_I
-    # Half-integer parent: the parent rotation between topologies 2 and 3 lacks
-    # the SU(2) full-turn sign, so the same couplings give a different intensity
-    # for references 2 and 3. See #127.
-    for k = 2:3
-        referenced =
-            ThreeBodyDecay(model.chains, model.couplings, model.names; reference_k = k)
-        @test_broken unpolarized_intensity(referenced, σs) ≈ ref_I
+    # Convert the reference-1 couplings, rather than relabeling the same numbers.
+    sign_for(k, r) = k == r ? 1 : (-1)^spins(model)[6-k-r]
+    for r = 2:3
+        converted = map(model.chains, model.couplings) do chain, c
+            sign_for(chain.k, r) * sign_for(chain.k, 1) * c
+        end
+        referenced = ThreeBodyDecay(model.chains, converted, model.names; reference_k = r)
+        @test unpolarized_intensity(referenced, σs) ≈ ref_I
+        unchanged =
+            ThreeBodyDecay(model.chains, model.couplings, model.names; reference_k = r)
+        @test !isapprox(unpolarized_intensity(unchanged, σs), ref_I)
     end
     # @btime unpolarized_intensity($model, $σs)
     eval_time = @elapsed unpolarized_intensity(model, σs)
