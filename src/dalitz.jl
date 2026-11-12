@@ -276,10 +276,12 @@ dalitzprojection
 @recipe function f(
     dalitz_projection::DalitzProjection,
     args...;
-    k::Int,
-    bins::Int = 100,
+    k = nothing,
+    bins = 100,
     xlims = (:auto, :auto),
 )
+    isnothing(k) && throw(ArgumentError("dalitzprojection requires keyword k (1, 2, or 3)"))
+
     # Extract arguments - can be (ms, function_of_σs, integrator) or (function_of_σs, ms, integrator)
     if length(dalitz_projection.args) == 3
         integrator = dalitz_projection.args[3]  # integrator is now the last argument

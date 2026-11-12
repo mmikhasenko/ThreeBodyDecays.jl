@@ -47,3 +47,7 @@ end
 @safetestset "Integrals" begin
     include("test_integrals.jl")
 end
+
+@safetestset "Plot recipe definitions" begin
+    include("test_recipes.jl")
+end
