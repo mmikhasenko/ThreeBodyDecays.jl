@@ -57,3 +57,11 @@ If you want to contribute, please first take a look at our [contributing guide o
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+## Tests and benchmarks
+
+Run correctness tests with `julia --project -e 'using Pkg; Pkg.test()'`.
+Keep distinct physical cases and numerical regression values in the test suite;
+avoid duplicate assertions and timing thresholds. Performance measurements live
+under `benchmark/`, outside the correctness suite. Run the kinematic benchmarks with
+`julia --project=benchmark benchmark/bench_kinematics.jl` after instantiating that environment.

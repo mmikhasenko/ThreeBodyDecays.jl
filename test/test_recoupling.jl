@@ -28,8 +28,6 @@ end
     # intermediate resonances
     mΣb = 5.81065
     ΓΣb = 0.005
-    mΣb_x = 5.83032
-    ΓΣb_x = 0.0094
 
     mΛb2S = 6.3 # just a peak of the plot
 
@@ -70,20 +68,5 @@ end
     #
     @test amplitude(dc_pv, σs, [0, 1, 0, 1]) != 0
     @test amplitude(dc_pv, σs, [0, -1, 0, 1]) != 0
-    @test amplitude(dc_pv, σs, [0, -1, 0, -1]) == 0im
-    @test amplitude(dc_pv, σs, [0, -1, 0, -1]) == 0im
-    #
-    dc_pv = DecayChain(
-        k = 1,
-        Xlineshape = bw,
-        tbs = tbs,
-        two_j = 1,
-        Hij = ParityRecoupling(1, 0, '-') |> Vertex,
-        HRk = NoRecoupling(1, 0) |> Vertex,
-    )
-    #
-    @test amplitude(dc_pv, σs, [0, 1, 0, 1]) != 0
-    @test amplitude(dc_pv, σs, [0, -1, 0, 1]) != 0
-    @test amplitude(dc_pv, σs, [0, -1, 0, -1]) == 0im
     @test amplitude(dc_pv, σs, [0, -1, 0, -1]) == 0im
 end
