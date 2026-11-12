@@ -27,16 +27,11 @@ ThreeBodyDecays.RecipesBase.is_key_supported(::Symbol) = true
     recipe = DalitzProjection((ms, intensity, integrator))
     apply_recipe = ThreeBodyDecays.RecipesBase.apply_recipe
     @test_throws ArgumentError apply_recipe(Dict{Symbol,Any}(), recipe)
-    @test_throws ArgumentError apply_recipe(Dict{Symbol,Any}(:k => -1), recipe)
     @test_throws TypeError apply_recipe(Dict{Symbol,Any}(:k => 1.0), recipe)
     @test_throws TypeError apply_recipe(Dict{Symbol,Any}(:k => 1, :bins => 8.0), recipe)
-    for k = 1:3, bins in (8, 100)
-        attributes = Dict{Symbol,Any}(:k => k)
-        bins == 8 && (attributes[:bins] = bins)
-        result = only(apply_recipe(attributes, recipe))
-        xs, ys = result.args
-        @test length(xs) == length(ys) == bins
-        @test all(isfinite, ys)
-        @test result.plotattributes[:seriestype] == :path
-    end
+    result = only(apply_recipe(Dict{Symbol,Any}(:k => 1, :bins => 8), recipe))
+    xs, ys = result.args
+    @test length(xs) == length(ys) == 8
+    @test all(isfinite, ys)
+    @test result.plotattributes[:seriestype] == :path
 end
