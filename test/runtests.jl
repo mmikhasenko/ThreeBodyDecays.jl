@@ -19,6 +19,7 @@ end
 end
 
 @safetestset "Wigner rotation" begin
+    using ThreeBodyDecays: ispositive
     include("test_wigner_rotation_dispatch.jl")
     #
     include("test_wigner_permutations.jl")
@@ -32,6 +33,7 @@ end
     include("test_couplings.jl")
     include("test_recoupling.jl")
     include("test_ls_amplitude.jl")
+    include("test_aligned_helicity_padding.jl")
     include("test_sum_over_polarization.jl")
 end
 
