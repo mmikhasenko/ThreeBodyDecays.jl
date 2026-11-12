@@ -126,7 +126,8 @@ couplings = [
 [(r.label, couplings[i]) for (i, r) in pairs(records)]
 
 model = ThreeBodyDecay(
-    getproperty.(records, :label) .=> zip(couplings, getproperty.(records, :chain)),
+    getproperty.(records, :label) .=> zip(couplings, getproperty.(records, :chain));
+    reference_k = 1,
 );
 
 # A pointwise sanity check is cheap and helpful: the unpolarized intensity is
