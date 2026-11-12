@@ -17,6 +17,7 @@ end
 end
 
 @safetestset "Wigner rotation" begin
+    using ThreeBodyDecays: ispositive
     include("test_wigner_rotation_dispatch.jl")
     #
     include("test_wigner_permutations.jl")
