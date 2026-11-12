@@ -58,7 +58,7 @@ invariants and are computed automatically.
 
 ```julia
 model = ThreeBodyDecay(chains, couplings, names; reference_k = 1)
-reference_k(model) # 1
+ThreeBodyDecays.reference_k(model) # 1
 A = amplitude(model, σs)
 I = unpolarized_intensity(model, σs)
 ```

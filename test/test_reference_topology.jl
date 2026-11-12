@@ -68,18 +68,18 @@ using ThreeBodyDecays.PartialWaveFunctions: wignerD_doublearg
     reference_intensity = nothing
     for k = 1:3
         model = ThreeBodyDecay(chains, coefficients, names; reference_k = k)
-        @test reference_k(model) == model.reference_k == k
-        @test reference_k(
+        @test ThreeBodyDecays.reference_k(model) == model.reference_k == k
+        @test ThreeBodyDecays.reference_k(
             ThreeBodyDecay(; chains, couplings = coefficients, names, reference_k = k),
         ) == k
-        @test reference_k(
+        @test ThreeBodyDecays.reference_k(
             ThreeBodyDecay("R1" => (coefficients[1], chain1); reference_k = k),
         ) == k
-        @test reference_k(model[1]) == k
-        @test reference_k(model[1:2]) == k
-        @test reference_k(model[[2, 1]]) == k
-        @test reference_k(model[(true, false)]) == k
-        @test reference_k(vcat(model[1], model[2])) == k
+        @test ThreeBodyDecays.reference_k(model[1]) == k
+        @test ThreeBodyDecays.reference_k(model[1:2]) == k
+        @test ThreeBodyDecays.reference_k(model[[2, 1]]) == k
+        @test ThreeBodyDecays.reference_k(model[(true, false)]) == k
+        @test ThreeBodyDecays.reference_k(vcat(model[1], model[2])) == k
         other = ThreeBodyDecay(chains, coefficients, names; reference_k = mod1(k + 1, 3))
         @test_throws ArgumentError vcat(model, other)
         @test_throws MethodError amplitude(model, σs; reference_k = mod1(k + 1, 3))

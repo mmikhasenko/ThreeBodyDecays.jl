@@ -69,7 +69,7 @@ function amplitude_helicity(model, angles, pars...; reference_chain, kw...)
         cis(γ * two_λs[reference_chain] / 2)
     end
     #
-    @assert reference_chain == reference_k(model)
+    @assert reference_chain == ThreeBodyDecays.reference_k(model)
     F0 = amplitude(model, angles, pars...)
     #
     F = similar(F0)
@@ -88,7 +88,7 @@ function amplitude_minusphi(model, angles, pars...; reference_chain, kw...)
     phase = map(all_two_js_ijk) do two_λs
         cis(γ′ * (two_λs[reference_chain] - two_λs[refζi] + two_λs[refζj]) / 2)
     end
-    @assert reference_chain == reference_k(model)
+    @assert reference_chain == ThreeBodyDecays.reference_k(model)
     F0 = amplitude(model, angles, pars...)
     #
     F = similar(F0)
