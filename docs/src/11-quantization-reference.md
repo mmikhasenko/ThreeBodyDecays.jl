@@ -78,34 +78,18 @@ positive-x half-plane. Its orientation is `Rz(α) Ry(β) Rz(γ)`; the parent spi
 index transforms with the conjugate Wigner D matrix. The corresponding
 `unpolarized_intensity(model, angles, σs)` sums all helicity components.
 
-## Migrating to 0.16
+## Reference conventions and couplings
 
-The evaluation keyword `refζs` has been removed. An old common reference tuple
-`(k,k,k,k)` becomes `reference_k = k` **when constructing the model**, rather than
-when evaluating it. Direct chain calls accept the integer keyword instead.
-Custom `AbstractDecayChain` implementations used inside models must also accept
-and honor `reference_k` in their `amplitude` methods.
+The reference topology is part of the model's amplitude convention, together
+with its coupling coefficients. Changing the reference can require corresponding
+phase changes in the couplings, in addition to rotating the external spin basis.
+Keeping the same numerical couplings while changing the reference therefore does
+not generally describe the same physical model.
 
-The old default `(1,2,3,1)` mixed different final-state reference frames. It has
-no literal single-topology replacement. In particular, choosing topology 1 does
-not preserve the old individual polarized amplitudes. Audit the convention of
-stored fit coefficients and polarization information before migrating; the
-package does not transform fitted coefficients automatically. Record the
-reference alongside serialized models and use the same topology when converting
-four-vectors into angles.
-
-Every model carries one reference and its couplings are tied to it. Changing a
-fit's reference convention may require SU(2) phase changes in its couplings; no
-convenience operation copies a model into a new reference.
-
-!!! note "Parent rotation between topologies 2 and 3"
-    The three parent rotations between topologies share one axis and their angles
-    add up to ``2π``. For a half-integer parent spin they cannot all be taken as
-    the short rotation and still compose consistently. This release keeps the
-    previous rotations unchanged, so for a half-integer parent the same couplings
-    give different spin-summed intensities for references 2 and 3; equivalently,
-    one topology's couplings differ in sign. How to fix this convention is
-    discussed in #127.
+The package does not convert couplings between reference conventions automatically.
+Record the reference alongside serialized models and use the same topology when
+converting four-vectors into orientation angles. Custom `AbstractDecayChain`
+implementations used inside a model must honor its `reference_k`.
 
 ## Further reading
 
