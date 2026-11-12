@@ -2,7 +2,6 @@ using ThreeBodyDecays
 using Test
 
 using ThreeBodyDecays.Parameters
-using BenchmarkTools
 using Random
 
 @testset "LS amplitude scalars" begin
@@ -112,7 +111,7 @@ const model = let
     vcat(models...)
 end
 
-@testset "Elapsed time" begin
+@testset "Twenty-chain intensity regression" begin
     @test length(model) == 20
     σs = x2σs([0.5, 0.3], masses(model); k = 1)
     ref_I = 17646.88022101494
@@ -133,11 +132,6 @@ end
             ThreeBodyDecay(model.chains, model.couplings, model.names; reference_k = r)
         @test !isapprox(unpolarized_intensity(unchanged, σs), ref_I)
     end
-    # @btime unpolarized_intensity($model, $σs)
-    eval_time = @elapsed unpolarized_intensity(model, σs)
-    @info """Unpolarized_intensity for a model (3/2->1,1/2,0) with 20 chains is computed in $(round(1000*eval_time, digits=2)) ms
-Compare to my usual evaluation time of about 5ms
-"""
 end
 
 @testset "Full amplitude components" begin
@@ -184,8 +178,6 @@ end
 
 @testset "VertexFunction deprecation alias" begin
     @test VertexFunction === Vertex
-    @test VertexFunction(RecouplingLS((2, 1))) isa Vertex
-    @test VertexFunction(RecouplingLS((2, 1)), FF(1.5)) isa Vertex
 end
 
 

@@ -8,7 +8,6 @@ Random.seed!(1234)
 N = 100_000
 rand_sample = eachslice(rand(2, N); dims = 2)
 pre_sample = y2σs.(rand_sample, Ref(ms))
-physical_sample = filter(Base.Fix2(inphrange, ms), pre_sample)
 physical_sample = filter(Base.Fix2(isphysical, ms), pre_sample)
 @testset "Generated flat sample" begin
     @test length(physical_sample) / N == 0.70207

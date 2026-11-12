@@ -166,15 +166,18 @@ end
         names = ["chain $k" for k = 1:3]
         c = [1.0 + 0.3im, -0.4 + 0.7im, 0.6 - 0.2im]
         sign_for(k, r) = k == r ? 1 : (-1)^two_js[6-k-r]
-        for r = 1:3, s = 1:3
+        for r = 1:3
             source = ThreeBodyDecay(chains, c, names; reference_k = r)
-            converted = [sign_for(k, s) * sign_for(k, r) * c[k] for k = 1:3]
-            target = ThreeBodyDecay(chains, converted, names; reference_k = s)
-            for x in ([0.2, 0.3], [0.5, 0.6], [0.8, 0.4])
-                σs = x2σs(x, tbs.ms; k = 1)
-                expected = unpolarized_intensity(source, σs)
-                @test expected > 1e-8
-                @test unpolarized_intensity(target, σs) ≈ expected
+            points = [x2σs(x, tbs.ms; k = 1) for x in ([0.2, 0.3], [0.5, 0.6], [0.8, 0.4])]
+            expected = [unpolarized_intensity(source, σs) for σs in points]
+            @test all(>(1e-8), expected)
+            for s = 1:3
+                r == s && continue # Relabeling a reference to itself adds no coverage.
+                converted = [sign_for(k, s) * sign_for(k, r) * c[k] for k = 1:3]
+                target = ThreeBodyDecay(chains, converted, names; reference_k = s)
+                for (σs, value) in zip(points, expected)
+                    @test unpolarized_intensity(target, σs) ≈ value
+                end
             end
         end
     end
