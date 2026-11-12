@@ -91,7 +91,7 @@ Record the reference alongside serialized models and use the same topology when
 converting four-vectors into orientation angles. Custom `AbstractDecayChain`
 implementations used inside a model must honor its `reference_k`.
 
-<!-- cspell:ignore pmatrix mathrm nondegenerate spinor spinors zeta perp lambda boldsymbol ispositive noncollinear mathtt -->
+<!-- cspell:ignore pmatrix mathrm nondegenerate spinor spinors zeta perp lambda boldsymbol ispositive noncollinear mathtt leftarrow leftrightarrow notin -->
 
 ## Planar rotations and the parent-angle sum rule
 
