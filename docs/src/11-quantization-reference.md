@@ -91,70 +91,327 @@ Record the reference alongside serialized models and use the same topology when
 converting four-vectors into orientation angles. Custom `AbstractDecayChain`
 implementations used inside a model must honor its `reference_k`.
 
-<!-- cspell:ignore pmatrix mathrm nondegenerate spinor -->
+<!-- cspell:ignore pmatrix mathrm nondegenerate spinor spinors zeta perp lambda boldsymbol ispositive noncollinear mathtt -->
 
-## CD–TBD signs and reference conversion
+## Planar rotations and the parent-angle sum rule
 
-For the ordered cyclic chains `1 => ((2,3),1)`, `2 => ((3,1),2)`, and
-`3 => ((1,2),3)`, let ``j_a`` be the spin of final particle ``a`` and define
-``a_a=(-1)^{2j_a}``. The sign relating CascadeDecays (CD) and the present
-ThreeBodyDecays (TBD) convention is
+Work in the parent rest frame, first in the canonical plane and then oriented
+relative to external axes. The overall orientation below is a rotation, not a
+boost of the parent into a laboratory frame.
+Momentum conservation, ``\boldsymbol p_1+\boldsymbol p_2+\boldsymbol p_3=0``,
+puts the three momenta in one plane. TBD takes this to be the ``xz`` plane,
+with its normal along ``y``. For each cyclic topology ``k=((i,j),k)``, the
+canonical configuration has the isobar along ``+z``, spectator ``k`` along
+``-z``, and daughter ``i`` in the positive-``x`` half-plane.
+
+The internal transformations preserve this common plane: rotations are about
+``y`` and boosts have their velocities in the ``xz`` plane. The resulting
+Wigner rotations also have their axis along ``y``. Thus every external-leg
+alignment is described by a **signed angle** and a real small-``d`` matrix,
 
 ```math
-S(k,r)=\begin{cases}
+R_y\!\left(\zeta^a_{k(r)}\right),\qquad
+ d^{j_a}_{\lambda'\lambda}\!\left(\zeta^a_{k(r)}\right),
+\qquad a=0,1,2,3.
+```
+
+Here ``a=0`` denotes the parent, ``k`` the chain, and ``r`` the reference.
+In the implementation, `cosζ(wr(k,r,a), σs, ms^2)` supplies the cosine and
+`ispositive(wr(k,r,a))` supplies the direction. Each signed angle is chosen in
+``[-\pi,\pi]``. There is no independently accumulated winding number in this
+pairwise prescription.
+
+For the parent, the positive cyclic angles are the angles between spectator
+momenta:
+
+```math
+\cos\zeta^0_{i(j)}
+=\frac{\boldsymbol p_i\cdot\boldsymbol p_j}
+ {|\boldsymbol p_i|\,|\boldsymbol p_j|},
+\qquad (i,j)=(1,2),(2,3),(3,1).
+```
+
+For a noncollinear event they lie strictly between zero and ``\pi``. The three
+momentum directions surround the origin, so their successive angular gaps obey
+
+```math
+\boxed{\zeta^0_{1(2)}+\zeta^0_{2(3)}+\zeta^0_{3(1)}=2\pi},
+\qquad
+\zeta^0_{j(i)}=-\zeta^0_{i(j)}.
+```
+
+No individual angle crosses ``2\pi``; the **cyclic sum is identically** ``2\pi``.
+For example,
+
+```math
+\zeta^0_{1(2)}+\zeta^0_{2(3)}
+=\zeta^0_{1(3)}+2\pi.
+```
+
+The direct principal rotation and the two-step rotation therefore reach the
+same spatial axes, but differ by a full turn along their rotation paths. In a
+spin representation this means
+
+```math
+d^{j_0}\!\left(\zeta^0_{1(2)}\right)
+d^{j_0}\!\left(\zeta^0_{2(3)}\right)
+=(-1)^{2j_0}\,
+d^{j_0}\!\left(\zeta^0_{1(3)}\right).
+```
+
+This is the spin representation of the stated angle prescription, not a loss
+of planarity. In particular, one must not replace a direct principal rotation
+by a composed path while discarding its full-turn sign.
+
+### Negative angles and Euler representations
+
+Use the convention
+``R(\phi,\theta,\psi)=R_z(\phi)R_y(\theta)R_z(\psi)``.
+Writing ``\theta=|\zeta|``, the planar rotation has the Euler representations
+
+```math
+R_y(\zeta)=
+\begin{cases}
+R(0,\theta,0),&\zeta\geq0,\\
+R(\pi,\theta,-\pi),&\zeta<0.
+\end{cases}
+```
+
+The second equality is exact even for spinors:
+``R_z(\pi)R_y(\theta)R_z(-\pi)=R_y(-\theta)``.
+It introduces **no** extra full-turn sign. The apparent ``z`` rotations are
+only an Euler representation of a pure ``y`` rotation; the net transformation
+preserves the chosen plane normal.
+
+By contrast, changing the last angle from ``-\pi`` to ``+\pi`` gives
+
+```math
+D^j(\pi,\theta,\pi)
+=(-1)^{2j}D^j(\pi,\theta,-\pi)
+=(-1)^{2j}d^j(-\theta).
+```
+
+These rotations agree as ordinary three-dimensional rotation matrices, but
+have opposite signs for half-integer spin. Reducing Euler angles modulo
+``2\pi`` without retaining this sign loses information needed by amplitudes.
+
+## Overall orientation and the reference-spectator phase
+
+Let ``r=\mathtt{reference\_k}`` and let
+``\Omega_r=(\alpha_r,\beta_r,\gamma_r)`` orient its canonical planar event:
+
+```math
+R(\Omega_r)=R_z(\alpha_r)R_y(\beta_r)R_z(\gamma_r).
+```
+
+The angles are those of the **reference topology**, not those of each term in
+the coherent sum. If ``\mathcal A^{k;r}`` is the planar chain tensor, TBD forms
+
+```math
+A_{\mathrm{TBD},\,m_0,\boldsymbol\lambda}^{k;r}(\Omega_r,\sigma)
+=\sum_{\nu=-j_0}^{j_0}
+D^{j_0*}_{m_0\nu}(\alpha_r,\beta_r,\gamma_r)
+\mathcal A_{\boldsymbol\lambda,\nu}^{k;r}(\sigma).
+```
+
+Here ``m_0`` is the parent projection in the external frame, ``\nu`` its
+projection in the reference planar frame, and
+``\boldsymbol\lambda=(\lambda_1,\lambda_2,\lambda_3)`` the final helicities.
+The API is `amplitude(model, (α=αr, cosβ=cos(βr), γ=γr), σs)`.
+The overall rotation acts on the parent index; it is distinct from the
+internal small-``d`` alignments.
+
+To compare with the usual two-body helicity construction
+``R(\phi_A,\theta_A,0)`` for ``R\to A B``, fix the Wigner convention
+
+```math
+D^j_{mn}(\alpha,\beta,\gamma)
+=e^{-im\alpha}d^j_{mn}(\beta)e^{-in\gamma}.
+```
+
+Consider the reference chain ``0\to R+r``, ``R\to i+j``. Its ordinary
+helicity construction contains the angular factors
+
+```math
+D^{j_0*}_{m_0,\lambda_R-\lambda_r}(\alpha_r,\beta_r,0)
+D^{j_R*}_{\lambda_R,\lambda_i-\lambda_j}(\gamma_r,\theta_{ij},0).
+```
+
+The inner azimuth ``\gamma_r`` specifies the daughter plane after the first
+rotation. With ``\mu=\lambda_R-\lambda_r``,
+
+```math
+D^{j_R*}_{\lambda_R,\lambda_i-\lambda_j}(\gamma_r,\theta_{ij},0)
+=e^{+i\lambda_R\gamma_r}
+ d^{j_R}_{\lambda_R,\lambda_i-\lambda_j}(\theta_{ij}),
+```
+
+whereas the third angle of the overall rotation contributes
+``e^{+i\mu\gamma_r}``. Consequently,
+
+```math
+\begin{aligned}
+&D^{j_0*}_{m_0,\lambda_R-\lambda_r}(\alpha_r,\beta_r,0)
+D^{j_R*}_{\lambda_R,\lambda_i-\lambda_j}(\gamma_r,\theta_{ij},0)\\
+&\quad=
+D^{j_0*}_{m_0,\lambda_R-\lambda_r}(\alpha_r,\beta_r,\gamma_r)
+e^{+i\lambda_r\gamma_r}
+ d^{j_R}_{\lambda_R,\lambda_i-\lambda_j}(\theta_{ij}).
+\end{aligned}
+```
+
+Thus the TBD overall ``D^*`` factor absorbs the inner azimuth except for
+``e^{+i\lambda_r\gamma_r}``. This remaining phase involves the **reference
+spectator helicity**, not the parent projection ``\nu`` or ``m_0``. All
+helicities in these equations are physical spin projections, not the doubled
+integers used in parts of the Julia API. TBD does not include this spectator
+phase in its oriented-amplitude API; include it when converting to the CD
+helicity convention.
+
+## How cascade frame paths produce the discrete signs
+
+TBD factors out the reference orientation once, then uses only signed planar
+``R_y`` alignments. A cascade construction instead applies
+``R(\phi_A,\theta_A,0)`` and a boost at each vertex, and aligns the resulting
+final-state helicity frames with those of the reference chain. Its relative
+Wigner matrices generally have three Euler angles.
+
+The geometric decay plane is the same in both constructions. What can differ
+is the orientation of the local axes attached to it: an azimuthal ``\pi``
+rotation reverses both ``x`` and ``y``. Thus a cascade path can reverse a local
+plane normal and later restore it. Products of such rotations can leave an
+extra ``R_z(2\pi)`` (equivalently the central full turn about any axis) relative
+to the planar path. It is invisible to spatial axes but acts as
+``(-1)^{2j}`` on spin ``j``: minus for half-integer spin, plus for integer spin.
+This statement concerns the chosen frame paths, not a physical reflection of
+the event.
+
+Before extracting these signs, the continuous spectator phases must also be
+accounted for. An explicit matrix comparison makes the separation precise.
+Let ``C_a(k\leftarrow r)`` be the CD conjugated Wigner matrix on final leg
+``a``, with rows in the chain frame and columns in the reference frame, and set
+
+```math
+P_a(q)_{mm'}=\delta_{mm'}e^{i m\gamma_q\delta_{aq}}.
+```
+
+With ``d_a(k,r)`` denoting the TBD signed small-``d`` alignment in the same
+index order, the corresponding path comparisons have the form
+
+```math
+\begin{aligned}
+D^{j_0*}(\Omega_k)
+ &=\epsilon_0^{\,2j_0}D^{j_0*}(\Omega_r)d_0(k,r),\\
+P_a(k)C_a(k\leftarrow r)
+ &=\epsilon_a^{\,2j_a}d_a(k,r)P_a(r),\qquad a=1,2,3,
+\end{aligned}
+\qquad \epsilon_a\in\{+1,-1\}.
+```
+
+The ``\epsilon_a`` are the residual signs of the spin-``1/2`` frame maps.
+For a direct numerical check, compare the two sides at spin ``1/2`` before
+inserting ``\epsilon_a``: their relative matrix must be ``+I`` or ``-I``.
+A noncentral residual is not a sign ambiguity; it indicates unmatched frame
+conventions, kinematics, or a numerical problem. Individual leg signs can
+change with Euler branches; their physical product below does not.
+
+### Example: chain ``(12)3`` with reference ``(23)1``
+
+Here ``k=3`` and ``r=1``. Both calculations express the final helicities in
+the ``(23)1`` reference frames. In CD the chain starts from its own two-vertex
+angles, ``\Omega_3`` and ``\theta_{12}``, and its final legs are aligned by
+``C_a(3\leftarrow1)``. In TBD the parent orientation is ``\Omega_1`` and the
+chain is aligned by the planar ``d_a(3,1)`` matrices. The path identities above
+relate these two ways of assembling the same event.
+
+For a continuous Euler branch one can obtain
+``(\epsilon_0,\epsilon_1,\epsilon_2,\epsilon_3)=(+,+,-,+)``:
+the remaining full-turn sign sits on particle 2. A different branch can
+redistribute the leg signs, so this assignment is not itself an invariant.
+The complete chain relation is
+
+```math
+\boxed{A_{\mathrm{CD}}^{3;1}
+=(-1)^{2j_2}e^{i\lambda_1\gamma_1}A_{\mathrm{TBD}}^{3;1}}.
+```
+
+The discrete sign is therefore negative when particle 2 has half-integer spin,
+regardless of whether other particles also have half-integer spin. It is not
+in general a sign determined by the parent alone.
+
+## General CD–TBD conversion recipe
+
+Match the cyclic daughter order, local vertex/LS conventions, particle-2
+phases, line shapes, and normalization first. The product of the four external
+spin signs is
+
+```math
+S(k,r)=\epsilon_0^{2j_0}\prod_{a=1}^3\epsilon_a^{2j_a}.
+```
+
+Angular-momentum coupling requires
+``2j_0=2j_1+2j_2+2j_3\pmod 2``. Define the reduced leg signs
+``q_a=\epsilon_0\epsilon_a``; then
+
+```math
+S(k,r)=\prod_{a=1}^3 q_a^{2j_a}.
+```
+
+Comparing the cyclic frame paths gives the following reduced signs. Unlike an
+individual ``\epsilon_a``, these combinations are unchanged when a regular
+Euler branch change flips all four spinor signs together.
+
+| Chain/reference pair | ``q_1`` | ``q_2`` | ``q_3`` |
+| :--------------------- | :-------: | :-------: | :-------: |
+| ``1\leftrightarrow2`` | ``+1`` | ``+1`` | ``-1`` |
+| ``1\leftrightarrow3`` | ``+1`` | ``-1`` | ``+1`` |
+| ``2\leftrightarrow3`` | ``-1`` | ``+1`` | ``+1`` |
+| ``k=r`` | ``+1`` | ``+1`` | ``+1`` |
+
+Only the particle absent from the chain/reference pair has a negative reduced
+sign. This gives the symmetric rule
+
+```math
+\boxed{S(k,r)=\begin{cases}
 1,&k=r,\\
 (-1)^{2j_\ell},&\ell\notin\{k,r\},
-\end{cases}
+\end{cases}}
 \qquad
 S=\begin{pmatrix}
 1&a_3&a_2\\
 a_3&1&a_1\\
 a_2&a_1&1
-\end{pmatrix}.
+\end{pmatrix},\quad a_i=(-1)^{2j_i}.
 ```
 
-Rows label the chain ``k``; columns label the common reference ``r``.
-For matching local vertices, cyclic daughter order, particle-2 convention,
-normalization, and external helicity labels, the full complex tensors obey
+Rows label chain ``k`` and columns reference ``r``. This covers multiple
+half-integer spins as well as integer spins; it does not depend on the chosen
+spin magnitudes or allowed LS couplings. For every chain at a fixed reference,
 
 ```math
-A_{\mathrm{CD}}^{k;r}
-=S(k,r)\,e^{i\lambda_r\gamma_r}A_{\mathrm{TBD}}^{k;r}.
+\boxed{A_{\mathrm{CD}}^{k;r}
+=S(k,r)e^{i\lambda_r\gamma_r}A_{\mathrm{TBD}}^{k;r}}.
 ```
 
-Here ``\lambda_r`` is the **physical helicity**, not its doubled integer, of
-reference spectator ``r``. The angle ``\gamma_r`` is the inner azimuth in the
-reference topology's helicity construction (the third Euler angle in the
-corresponding factorization). This phase is common to every chain at fixed
-reference and helicities. It cancels from unpolarized intensities but must be
-retained when comparing polarized tensors. See the
-[Cascade comparison note](https://github.com/RUB-EP1/CascadeDecays.jl/blob/e72eb7c44e378be7a549f8e2921c60511eef6d79/docs/cascade-vs-dpd.qmd)
-for the frame construction. In that revision, the explanatory inner conjugated-D
-exponent should have a plus sign, ``+i\lambda_R\gamma_r``.
-
-This relation uses the existing TBD principal-angle convention, without the
-alternative parent full-turn prescription proposed in
-[PR #127](https://github.com/mmikhasenko/ThreeBodyDecays.jl/pull/127).
-It applies to massive, nondegenerate kinematics with consistent helicity-frame
-lifts. At exact Euler poles or degenerate boundaries, use a coordinated limiting
-frame; independent Euler-angle choices need not preserve the spinor sign.
-
-For a coherent model, the coefficients therefore convert as
+To convert a coherent CD model, multiply each coefficient by the sign for its
+chain topology. To change the reference of a TBD model, apply the signs for
+both the old and new references:
 
 ```math
 c_{\mathrm{TBD},n}^{(r)}=S(k_n,r)c_{\mathrm{CD},n},\qquad
-c_{\mathrm{TBD},n}^{(s)}=S(k_n,s)S(k_n,r)c_{\mathrm{TBD},n}^{(r)}.
+\boxed{c_{\mathrm{TBD},n}^{(s)}
+=S(k_n,s)S(k_n,r)c_{\mathrm{TBD},n}^{(r)}}.
 ```
 
-The index ``n`` labels a chain, so the same sign applies to every resonance and
-LS coupling with topology ``k_n``. The latter formula converts an existing TBD
-model from reference ``r`` to ``s``. It preserves unpolarized intensities;
-polarized tensors additionally require transforming their external spin bases.
-They are not expected to agree component by component in different frames.
+The index ``n`` labels a chain, including its resonance and LS coupling. The
+spectator phase is common to all chains at fixed external helicities, so it
+cancels from unpolarized intensities. Keep it for polarized comparisons; when
+changing reference, also transform the external spin bases. Tensors in
+different reference frames need not agree component by component.
 
-For example, the following explicit conversion constructs a new model without
-changing the source model. It applies to the standard `DecayChain` convention;
-custom chain implementations must establish their own convention first.
+The following explicit conversion constructs a new model without changing the
+source. It applies to the standard `DecayChain` convention; custom chain
+implementations must establish their own convention first.
 
 ```julia
 function convert_reference(model::ThreeBodyDecay, s::Integer)
@@ -172,34 +429,17 @@ converted = convert_reference(model, 3)
 # unpolarized_intensity(converted, σs) ≈ unpolarized_intensity(model, σs)
 ```
 
-For example, with only particle 1 carrying half-integer spin, the signs for
-references 1, 2, and 3 are respectively ``(+,+,+)``, ``(+,+,-)``, and ``(+,-,+)``
-as vectors over chain topologies. Converting from reference 1 to reference 2
-negates topology-3 couplings; converting to reference 3 negates topology-2
-couplings. Relabeling the reference without these changes generally changes
-interference.
+This prescription retains the principal planar rotations. No additional
+full-turn factor is inserted during TBD evaluation. The coupling conversion
+is essential: changing only `reference_k` generally changes interference.
+The formulas assume massive, nondegenerate events and consistently tracked
+spin-frame paths. At exact Euler poles or degenerate boundaries, a common
+limiting-frame prescription is required.
 
-### Why a full turn is not an additional default correction
-
-The three signed principal parent rotations around the spectator directions
-accumulate a full ``2\pi`` turn. Its spin representation is ``(-1)^{2j_0}``.
-Consequently, the direct short rotation and the composition through another
-topology can differ by that central sign: they reach the same spatial orientation
-along different rotation paths.
-
-PR #127 chose topology 1 as an anchor and added a parent full-turn sign on the
-``2\leftrightarrow3`` pair. This gives consistently composed spin-frame maps,
-but changes the coupling convention. For a half-integer parent it negates chain
-3 at reference 2 and chain 2 at reference 3; reference 1 is unchanged.
-Its CD conversion signs become ``g_k g_r``, where
-``g=(1,(-1)^{2j_3},(-1)^{2j_2})``. Both conventions can describe the same physical
-model when their couplings are converted.
-
-The package retains the symmetric ``S(k,r)`` rule above and binds the reference
-to the model. There is no extra full-turn factor for users to apply during
-model evaluation. The old expectation that one could freely change the reference
-while keeping all numerical couplings was too strong. Tests instead compare
-models after the explicit coupling conversion.
+The [Cascade comparison note](https://github.com/RUB-EP1/CascadeDecays.jl/blob/e72eb7c44e378be7a549f8e2921c60511eef6d79/docs/cascade-vs-dpd.qmd)
+contains explicit path and angle examples. In that revision the displayed
+inner conjugated-``D`` exponent has a sign typo: the derivation above uses
+``+i\lambda_R\gamma_r``, consistently with the stated ``D`` convention.
 
 ## Further reading
 
