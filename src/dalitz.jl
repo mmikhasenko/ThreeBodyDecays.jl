@@ -276,10 +276,15 @@ dalitzprojection
 @recipe function f(
     dalitz_projection::DalitzProjection,
     args...;
-    k::Int,
-    bins::Int = 100,
+    k = -1,
+    bins = 100,
     xlims = (:auto, :auto),
 )
+    # RecipesBase does not support typed keyword declarations; check types here.
+    k::Int
+    bins::Int
+    k < 0 && throw(ArgumentError("dalitzprojection requires keyword k (1, 2, or 3)"))
+
     # Extract arguments - can be (ms, function_of_σs, integrator) or (function_of_σs, ms, integrator)
     if length(dalitz_projection.args) == 3
         integrator = dalitz_projection.args[3]  # integrator is now the last argument

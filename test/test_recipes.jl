@@ -1,0 +1,37 @@
+using Test
+using Logging
+using ThreeBodyDecays
+
+@testset "Recipes expand without warnings" begin
+    # Expand the actual definitions even when the package was loaded from cache.
+    source = read(joinpath(pkgdir(ThreeBodyDecays), "src", "dalitz.jl"), String)
+    expressions = Meta.parseall(source)
+    recipes = filter(expressions.args) do expression
+        expression isa Expr &&
+            expression.head == :macrocall &&
+            expression.args[1] == Symbol("@recipe")
+    end
+    @test !isempty(recipes)
+    for recipe in recipes
+        @test_logs min_level = Logging.Warn macroexpand(ThreeBodyDecays, recipe)
+    end
+end
+
+# Supply the backend hook without requiring a plotting backend.
+ThreeBodyDecays.RecipesBase.is_key_supported(::Symbol) = true
+
+@testset "Dalitz projection keywords" begin
+    ms = ThreeBodyMasses(0.1, 0.2, 0.3; m0 = 2.0)
+    intensity = σs -> 1.0
+    integrator = (f, a, b) -> ((b-a) * f((a+b)/2), 0.0)
+    recipe = DalitzProjection((ms, intensity, integrator))
+    apply_recipe = ThreeBodyDecays.RecipesBase.apply_recipe
+    @test_throws ArgumentError apply_recipe(Dict{Symbol,Any}(), recipe)
+    @test_throws TypeError apply_recipe(Dict{Symbol,Any}(:k => 1.0), recipe)
+    @test_throws TypeError apply_recipe(Dict{Symbol,Any}(:k => 1, :bins => 8.0), recipe)
+    result = only(apply_recipe(Dict{Symbol,Any}(:k => 1, :bins => 8), recipe))
+    xs, ys = result.args
+    @test length(xs) == length(ys) == 8
+    @test all(isfinite, ys)
+    @test result.plotattributes[:seriestype] == :path
+end

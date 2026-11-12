@@ -68,3 +68,8 @@ ylims
 σjofk
 σkmax
 σkmin
+isfinite
+macrocall
+macroexpand
+parseall
+pkgdir
