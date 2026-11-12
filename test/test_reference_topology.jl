@@ -65,7 +65,9 @@ using ThreeBodyDecays.PartialWaveFunctions: wignerD_doublearg
         )
     end
 
-    reference_intensity = nothing
+    sign_for(k, r) = k == r ? 1 : (-1)^tbs.two_js[6-k-r]
+    reference_model = ThreeBodyDecay(chains, coefficients, names; reference_k = 1)
+    reference_intensity = unpolarized_intensity(reference_model, σs)
     for k = 1:3
         model = ThreeBodyDecay(chains, coefficients, names; reference_k = k)
         @test ThreeBodyDecays.reference_k(model) == model.reference_k == k
@@ -118,14 +120,13 @@ using ThreeBodyDecays.PartialWaveFunctions: wignerD_doublearg
         @test rotated ≈ expected_rotation
         @test unpolarized_intensity(model, orientation, σs) ≈ sum(abs2, expected)
         intensity = unpolarized_intensity(model, σs)
-        if isnothing(reference_intensity)
-            reference_intensity = intensity
-        elseif k == 2
-            # Half-integer parent with a topology-3 chain: the 3→2 parent rotation
-            # lacks the SU(2) full-turn sign (#127).
-            @test_broken intensity ≈ reference_intensity
-        else
-            @test intensity ≈ reference_intensity
+        converted = map(chains, coefficients) do chain, c
+            sign_for(chain.k, k) * sign_for(chain.k, 1) * c
+        end
+        converted_model = ThreeBodyDecay(chains, converted, names; reference_k = k)
+        @test unpolarized_intensity(converted_model, σs) ≈ reference_intensity
+        if k == 2
+            @test !isapprox(intensity, reference_intensity)
         end
 
         # Checking the polarized cache catches dropping model.reference_k even when
@@ -142,5 +143,39 @@ using ThreeBodyDecays.PartialWaveFunctions: wignerD_doublearg
     for chain in chains
         @test amplitude(chain, σs; reference_k = chain.k) ≈
               ThreeBodyDecays.aligned_amplitude(chain, σs)
+    end
+end
+
+@testset "Coupling conversion preserves coherent intensities" begin
+    # All eight integer/half-integer final-spin sectors, including several fermions.
+    # Maximal spin couplings with L=l=0 give allowed, nonzero vertices in every sector.
+    for bits in Iterators.product(0:1, 0:1, 0:1)
+        two_js = ThreeBodySpins(bits...; two_h0 = sum(bits))
+        tbs = ThreeBodySystem(1.1, 1.3, 1.5; m0 = 5.5, two_js)
+        chains = map(1:3) do k
+            two_j = sum(bits) - bits[k]
+            DecayChain(;
+                k,
+                two_j,
+                tbs,
+                Xlineshape = σ -> 1 / (8.0 - σ - 0.7im),
+                HRk = Vertex(RecouplingLS((0, sum(bits)))),
+                Hij = Vertex(RecouplingLS((0, two_j))),
+            )
+        end
+        names = ["chain $k" for k = 1:3]
+        c = [1.0 + 0.3im, -0.4 + 0.7im, 0.6 - 0.2im]
+        sign_for(k, r) = k == r ? 1 : (-1)^two_js[6-k-r]
+        for r = 1:3, s = 1:3
+            source = ThreeBodyDecay(chains, c, names; reference_k = r)
+            converted = [sign_for(k, s) * sign_for(k, r) * c[k] for k = 1:3]
+            target = ThreeBodyDecay(chains, converted, names; reference_k = s)
+            for x in ([0.2, 0.3], [0.5, 0.6], [0.8, 0.4])
+                σs = x2σs(x, tbs.ms; k = 1)
+                expected = unpolarized_intensity(source, σs)
+                @test expected > 1e-8
+                @test unpolarized_intensity(target, σs) ≈ expected
+            end
+        end
     end
 end

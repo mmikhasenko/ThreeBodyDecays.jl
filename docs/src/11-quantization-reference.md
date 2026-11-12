@@ -91,6 +91,116 @@ Record the reference alongside serialized models and use the same topology when
 converting four-vectors into orientation angles. Custom `AbstractDecayChain`
 implementations used inside a model must honor its `reference_k`.
 
+<!-- cspell:ignore pmatrix mathrm nondegenerate spinor -->
+
+## CD–TBD signs and reference conversion
+
+For the ordered cyclic chains `1 => ((2,3),1)`, `2 => ((3,1),2)`, and
+`3 => ((1,2),3)`, let ``j_a`` be the spin of final particle ``a`` and define
+``a_a=(-1)^{2j_a}``. The sign relating CascadeDecays (CD) and the present
+ThreeBodyDecays (TBD) convention is
+
+```math
+S(k,r)=\begin{cases}
+1,&k=r,\\
+(-1)^{2j_\ell},&\ell\notin\{k,r\},
+\end{cases}
+\qquad
+S=\begin{pmatrix}
+1&a_3&a_2\\
+a_3&1&a_1\\
+a_2&a_1&1
+\end{pmatrix}.
+```
+
+Rows label the chain ``k``; columns label the common reference ``r``.
+For matching local vertices, cyclic daughter order, particle-2 convention,
+normalization, and external helicity labels, the full complex tensors obey
+
+```math
+A_{\mathrm{CD}}^{k;r}
+=S(k,r)\,e^{i\lambda_r\gamma_r}A_{\mathrm{TBD}}^{k;r}.
+```
+
+Here ``\lambda_r`` is the **physical helicity**, not its doubled integer, of
+reference spectator ``r``. The angle ``\gamma_r`` is the inner azimuth in the
+reference topology's helicity construction (the third Euler angle in the
+corresponding factorization). This phase is common to every chain at fixed
+reference and helicities. It cancels from unpolarized intensities but must be
+retained when comparing polarized tensors. See the
+[Cascade comparison note](https://github.com/RUB-EP1/CascadeDecays.jl/blob/e72eb7c44e378be7a549f8e2921c60511eef6d79/docs/cascade-vs-dpd.qmd)
+for the frame construction. In that revision, the explanatory inner conjugated-D
+exponent should have a plus sign, ``+i\lambda_R\gamma_r``.
+
+This relation uses the existing TBD principal-angle convention, without the
+alternative parent full-turn prescription proposed in
+[PR #127](https://github.com/mmikhasenko/ThreeBodyDecays.jl/pull/127).
+It applies to massive, nondegenerate kinematics with consistent helicity-frame
+lifts. At exact Euler poles or degenerate boundaries, use a coordinated limiting
+frame; independent Euler-angle choices need not preserve the spinor sign.
+
+For a coherent model, the coefficients therefore convert as
+
+```math
+c_{\mathrm{TBD},n}^{(r)}=S(k_n,r)c_{\mathrm{CD},n},\qquad
+c_{\mathrm{TBD},n}^{(s)}=S(k_n,s)S(k_n,r)c_{\mathrm{TBD},n}^{(r)}.
+```
+
+The index ``n`` labels a chain, so the same sign applies to every resonance and
+LS coupling with topology ``k_n``. The latter formula converts an existing TBD
+model from reference ``r`` to ``s``. It preserves unpolarized intensities;
+polarized tensors additionally require transforming their external spin bases.
+They are not expected to agree component by component in different frames.
+
+For example, the following explicit conversion constructs a new model without
+changing the source model. It applies to the standard `DecayChain` convention;
+custom chain implementations must establish their own convention first.
+
+```julia
+function convert_reference(model::ThreeBodyDecay, s::Integer)
+    s in 1:3 && !(s isa Bool) || throw(ArgumentError("reference must be 1, 2, or 3"))
+    r = ThreeBodyDecays.reference_k(model)
+    two_js = spins(model) # doubled spins
+    sign_for(k, ref) = k == ref ? 1 : (-1)^two_js[6-k-ref]
+    couplings = map(model.chains, model.couplings) do chain, c
+        sign_for(chain.k, s) * sign_for(chain.k, r) * c
+    end
+    return ThreeBodyDecay(model.chains, couplings, model.names; reference_k = s)
+end
+
+converted = convert_reference(model, 3)
+# unpolarized_intensity(converted, σs) ≈ unpolarized_intensity(model, σs)
+```
+
+For example, with only particle 1 carrying half-integer spin, the signs for
+references 1, 2, and 3 are respectively ``(+,+,+)``, ``(+,+,-)``, and ``(+,-,+)``
+as vectors over chain topologies. Converting from reference 1 to reference 2
+negates topology-3 couplings; converting to reference 3 negates topology-2
+couplings. Relabeling the reference without these changes generally changes
+interference.
+
+### Why a full turn is not an additional default correction
+
+The three signed principal parent rotations around the spectator directions
+accumulate a full ``2\pi`` turn. Its spin representation is ``(-1)^{2j_0}``.
+Consequently, the direct short rotation and the composition through another
+topology can differ by that central sign: they reach the same spatial orientation
+along different rotation paths.
+
+PR #127 chose topology 1 as an anchor and added a parent full-turn sign on the
+``2\leftrightarrow3`` pair. This gives consistently composed spin-frame maps,
+but changes the coupling convention. For a half-integer parent it negates chain
+3 at reference 2 and chain 2 at reference 3; reference 1 is unchanged.
+Its CD conversion signs become ``g_k g_r``, where
+``g=(1,(-1)^{2j_3},(-1)^{2j_2})``. Both conventions can describe the same physical
+model when their couplings are converted.
+
+The package retains the symmetric ``S(k,r)`` rule above and binds the reference
+to the model. There is no extra full-turn factor for users to apply during
+model evaluation. The old expectation that one could freely change the reference
+while keeping all numerical couplings was too strong. Tests instead compare
+models after the explicit coupling conversion.
+
 ## Further reading
 
 The concept of Wigner rotations for cascade decays, including alternative conventions (minus-phi and canonical), is discussed thoroughly in:
