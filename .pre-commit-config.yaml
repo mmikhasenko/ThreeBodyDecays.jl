@@ -28,7 +28,7 @@ repos:
           - id: markdownlint-fix
             language_version: 24.12.0
     - repo: https://github.com/streetsidesoftware/cspell-cli
-      rev: v10.4.0
+      rev: v10.4.1
       hooks:
           - id: cspell
             language_version: 24.12.0
@@ -48,6 +48,6 @@ repos:
       hooks:
           - id: yamllint
     - repo: https://github.com/JuliaEditorSupport/JuliaFormatter.jl
-      rev: v2.14.9
+      rev: v2.14.12
       hooks:
           - id: julia-formatter
